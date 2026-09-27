@@ -30,6 +30,7 @@
     "./pie": "./src/charts/pie.js",
     "./heatmap": "./src/charts/heatmap.js",
     "./range": "./src/charts/range.js",
+    "./diverging": "./src/charts/diverging.js",
     "./state": "./src/charts/state.js",
     "./legend": "./src/charts/legend.js",
     "./runtime": "./src/runtime/index.js"

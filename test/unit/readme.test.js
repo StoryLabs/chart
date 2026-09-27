@@ -5,7 +5,7 @@ import { test, expect } from 'bun:test'
 import { readFileSync } from 'node:fs'
 import * as SC from '../../src/index.js'
 
-const GRAFICOS = ['bullet', 'rings', 'segmented', 'ribbon', 'line', 'stackedLine', 'columns', 'stacked', 'pie', 'heatmap', 'range', 'state', 'legend']
+const GRAFICOS = ['bullet', 'rings', 'segmented', 'ribbon', 'line', 'stackedLine', 'columns', 'stacked', 'pie', 'heatmap', 'range', 'diverging', 'state', 'legend']
 const readme = readFileSync(new URL('../../README.md', import.meta.url), 'utf8')
 const bloques = [...readme.matchAll(/```js\n([\s\S]*?)```/g)].map(m => m[1].trim())
 const llamadas = bloques.filter(b => new RegExp('^(' + GRAFICOS.join('|') + ')\\(').test(b))

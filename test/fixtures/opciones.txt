@@ -19,5 +19,6 @@ pie          label variant fill unit[] center.value center.label slices[].key sl
              slices[].value slices[].hue slices[].hatched hidden[]
 heatmap      label rows[] values[][] steps unit[] emptyLabel colTicks[] hue id
 range        unit min max ticks[] hue hue2 rows[].label rows[].from rows[].to
+diverging    unit max sides[] reference[] hue negativeHue rows[].key rows[].label rows[].value rows[].hue
 state        kind title detail
 legend       [].key [].label [].hue [].color [].hatched [].off #1

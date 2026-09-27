@@ -29,6 +29,7 @@ const GRAFICOS = {
   stacked: b => SC.stacked({ max: maxDe(b), unit: ['x', 'xs'], series: [{ key: 'a', label: 'A', hue: 'blue' }], data: lista(b, i => ({ label: 'd' + i, values: { a: b.v(i) } })) }),
   pie: b => SC.pie({ unit: ['x', 'xs'], slices: lista(b, i => ({ key: 'p' + i, label: 'p', value: b.v(i), hue: 'blue' })) }),
   heatmap: b => SC.heatmap({ rows: lista(b, i => 'f' + i), values: lista(b, () => lista(b, b.v)), steps: 'max' in b ? b.max : 3 }),
+  diverging: b => SC.diverging({ max: maxDe(b), reference: [-1, 1], rows: lista(b, i => ({ key: 'r' + i, label: 'r', value: b.v(i) })) }),
   range: b => SC.range({ max: maxDe(b), rows: lista(b, i => ({ label: 'r', from: b.v(i), to: b.v(i) * 2 })) })
 }
 

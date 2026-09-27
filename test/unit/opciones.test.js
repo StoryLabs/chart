@@ -39,6 +39,6 @@ test('toda opción de la lista aparece en algún caso canónico', () => {
   expect(sinCaso).toEqual([])
 })
 
-test('la lista cubre las doce funciones que dibujan', () => {
-  expect(Object.keys(lista).sort()).toEqual(['bullet', 'columns', 'heatmap', 'legend', 'line', 'pie', 'range', 'rings', 'segmented', 'stacked', 'stackedLine', 'state'].concat(['ribbon']).sort())
+test('la lista cubre las funciones que dibujan', () => {
+  expect(Object.keys(lista).sort()).toEqual(['bullet', 'columns', 'diverging', 'heatmap', 'legend', 'line', 'pie', 'range', 'rings', 'segmented', 'stacked', 'stackedLine', 'state'].concat(['ribbon']).sort())
 })

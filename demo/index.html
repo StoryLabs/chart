@@ -148,7 +148,7 @@
 
   <section class="bloque">
     <h2>Catálogo</h2>
-    <p>Once gráficos. Pasá el cursor por cualquiera, hacé click en las leyendas y abrí «API» para ver la llamada que lo dibuja.</p>
+    <p>Doce gráficos. Pasá el cursor por cualquiera, hacé click en las leyendas y abrí «API» para ver la llamada que lo dibuja.</p>
     <div class="grid" id="grid">
       <article class="card c3 r2"><div class="card-head"><div class="kind">bullet()</div><h3>Valor contra su rango de referencia</h3></div><div class="slot" id="sBullet"></div><details class="api"><summary>API</summary><pre><code id="cBullet"></code></pre></details></article>
       <article class="card c3"><div class="card-head"><div class="kind">rings()</div><h3>Score por dimensión</h3></div><div class="slot" id="sRings"></div><details class="api"><summary>API</summary><pre><code id="cRings"></code></pre></details></article>
@@ -185,6 +185,7 @@
         <div class="slot" id="sPie"></div><details class="api"><summary>API</summary><pre><code id="cPie"></code></pre></details></article>
       <article class="card c3"><div class="card-head"><div class="kind">heatmap()</div><h3>Cold starts por hora, última semana</h3></div><div class="slot" id="sHeatmap"></div><details class="api"><summary>API</summary><pre><code id="cHeatmap"></code></pre></details></article>
       <article class="card c3"><div class="card-head"><div class="kind">range()</div><h3>Warm p50 a p95 por API</h3></div><div class="slot" id="sRange"></div><details class="api"><summary>API</summary><pre><code id="cRange"></code></pre></details></article>
+      <article class="card c3"><div class="card-head"><div class="kind">diverging()</div><h3>Cada API contra la mediana del sweep</h3></div><div class="slot" id="sDiverging"></div><details class="api"><summary>API</summary><pre><code id="cDiverging"></code></pre></details></article>
       <article class="card c3"><div class="card-head"><div class="kind">line() · con huecos</div><h3>Pings que no llegaron</h3></div>
         <div class="seg" id="segGaps">
           <button type="button" id="gpHatched" data-gaps="hatched">hatched</button>
@@ -373,6 +374,22 @@ import * as StorylabsCharts from '../src/index.js'
   }
 
   pintarHuecos()
+
+  pintar('diverging', {
+    unit: 'ms',
+    max: 60,
+    sides: ['más rápida', 'más lenta'],
+    reference: [-12, 12],
+    rows: [
+      { key: 'checkout', label: 'checkout-api', value: 38, hue: 'orange' },
+      { key: 'search', label: 'search-api', value: 14, hue: 'amber' },
+      { key: 'auth', label: 'auth-api', value: 3 },
+      { key: 'catalog', label: 'catalog-api', value: -2 },
+      { key: 'billing', label: 'billing-api', value: -9 },
+      { key: 'reports', label: 'reports-api', value: null },
+      { key: 'export', label: 'export-api', value: 240 }
+    ]
+  }, 'sDiverging', 'cDiverging')
 
   // Una columna que falta y una en cero, una al lado de la otra: con gaps por defecto no se confunden.
   pintar('columns', {

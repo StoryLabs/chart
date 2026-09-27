@@ -12,7 +12,7 @@ const ejemplo = (fn, extra = '') => bloques.find(b => b.startsWith(fn + '(') && 
 
 // ribbon dibuja en un viewBox de 1100 y no se achica: a menos ancho se desplaza de costado.
 const ANCHO = { stackedLine: 860, ribbon: 1140, state: 860, hero: 860 }
-const GRAFICOS = ['bullet', 'rings', 'segmented', 'line', 'stackedLine', 'ribbon', 'columns', 'stacked', 'pie', 'heatmap', 'range']
+const GRAFICOS = ['bullet', 'rings', 'segmented', 'line', 'stackedLine', 'ribbon', 'columns', 'stacked', 'pie', 'heatmap', 'range', 'diverging']
 
 // Cada pieza es código que corre en la página, con SC a mano, y devuelve el HTML a pintar.
 const piezas = {

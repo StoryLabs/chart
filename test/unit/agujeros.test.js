@@ -16,6 +16,7 @@ const LISTAS = {
   stacked: o => (o.data || []).map((_, i) => ['data', i, 'values']),
   pie: o => (o.slices || []).map((_, i) => ['slices', i, 'value']),
   heatmap: o => (o.values || []).map((_, i) => ['values', i]),
+  diverging: o => (o.rows || []).map((_, i) => ['rows', i, 'value']),
   range: o => (o.rows || []).flatMap((_, i) => [['rows', i, 'from'], ['rows', i, 'to']])
 }
 const HUECOS = [null, undefined, 'x']

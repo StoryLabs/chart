@@ -8,7 +8,7 @@ Sin dependencias, sin framework y en menos de 18 KB.
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/img/hero-dark.png">
   <source media="(prefers-color-scheme: light)" srcset="docs/img/hero-light.png">
-  <img alt="Once gráficos de storylabs-charts: bullet, rings, ribbon, line, stacked, pie y heatmap, entre otros" src="docs/img/hero-light.png" width="860">
+  <img alt="Doce gráficos de storylabs-charts: bullet, rings, ribbon, line, stacked, pie y heatmap, entre otros" src="docs/img/hero-light.png" width="860">
 </picture>
 
 </div>
@@ -78,7 +78,8 @@ Son tres piezas:
 | [<img src="docs/img/bullet-mini.png" width="250" alt="">](#bullet)<br>[`bullet()`](#bullet) | [<img src="docs/img/rings-mini.png" width="250" alt="">](#rings)<br>[`rings()`](#rings) | [<img src="docs/img/segmented-mini.png" width="250" alt="">](#segmented)<br>[`segmented()`](#segmented) |
 | [<img src="docs/img/line-mini.png" width="250" alt="">](#line)<br>[`line()`](#line) | [<img src="docs/img/stackedLine-mini.png" width="250" alt="">](#stackedline)<br>[`stackedLine()`](#stackedline) | [<img src="docs/img/ribbon-mini.png" width="250" alt="">](#ribbon)<br>[`ribbon()`](#ribbon) |
 | [<img src="docs/img/columns-mini.png" width="250" alt="">](#columns)<br>[`columns()`](#columns) | [<img src="docs/img/stacked-mini.png" width="250" alt="">](#stacked)<br>[`stacked()`](#stacked) | [<img src="docs/img/pie-mini.png" width="250" alt="">](#pie)<br>[`pie()`](#pie) |
-| [<img src="docs/img/heatmap-mini.png" width="250" alt="">](#heatmap)<br>[`heatmap()`](#heatmap) | [<img src="docs/img/range-mini.png" width="250" alt="">](#range)<br>[`range()`](#range) | [<img src="docs/img/state-mini.png" width="250" alt="">](#estados)<br>[`state()`](#estados) |
+| [<img src="docs/img/heatmap-mini.png" width="250" alt="">](#heatmap)<br>[`heatmap()`](#heatmap) | [<img src="docs/img/range-mini.png" width="250" alt="">](#range)<br>[`range()`](#range) | [<img src="docs/img/diverging-mini.png" width="250" alt="">](#diverging)<br>[`diverging()`](#diverging) |
+| [<img src="docs/img/state-mini.png" width="250" alt="">](#estados)<br>[`state()`](#estados) | | |
 
 ## Dónde se usa
 
@@ -645,6 +646,49 @@ range({
 | `ticks` | number[] | `[min, max]` |
 | `unit` | string | |
 | `hue`, `hue2` | tono | `'sky'`, `'violet'` |
+
+</details>
+
+<a id="diverging"></a>
+
+### `diverging()` · desde un cero al medio
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/img/diverging-dark.png">
+  <source media="(prefers-color-scheme: light)" srcset="docs/img/diverging-light.png">
+  <img alt="diverging()" src="docs/img/diverging-light.png" width="560">
+</picture>
+
+```js
+diverging({
+  unit: 'ms',
+  max: 60,
+  sides: ['más rápida', 'más lenta'],
+  reference: [-12, 12],
+  rows: [
+    { key: 'checkout', label: 'checkout-api', value: 38, hue: 'orange' },
+    { key: 'search', label: 'search-api', value: 14 },
+    { key: 'auth', label: 'auth-api', value: -2 },
+    { key: 'billing', label: 'billing-api', value: -9 },
+    { key: 'reports', label: 'reports-api', value: null }
+  ]
+})
+```
+
+Cuánto se aparta cada fila de un centro, hacia un lado o hacia el otro. La escala es simétrica: una
+barra de +30 mide lo mismo que una de -30. El valor se escribe con signo.
+
+<details>
+<summary>Opciones</summary>
+
+| Opción | Tipo | Default |
+|---|---|---|
+| `rows` ★ | `[{ key, label, value, hue }]` | |
+| `max` ★ | number | La escala va de `-max` a `+max`. |
+| `reference` | `[desde, hasta]` | La banda rayada: lo normal. |
+| `sides` | `[izquierda, derecha]` | El rótulo de cada mitad. |
+| `hue`, `negativeHue` | tono | `'blue'` para positivo, `'green'` para negativo. |
+| `unit` | string | |
 
 </details>
 

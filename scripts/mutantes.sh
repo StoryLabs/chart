@@ -90,3 +90,7 @@ m src/charts/rings.js "  if (o.rings.length > 6) return fallo('rings', 'entran h
 " "" "rings sin tope"
 # range: marcas del eje.
 m src/charts/range.js ".filter(t => valor(t) !== null && valor(t) >= min && valor(t) <= o.max)" "" "range dibuja marcas fuera de escala"
+# diverging.
+m src/charts/diverging.js "  const pos = v => n1(entre(0.5 + v / (2 * o.max)) * 100)" "  const pos = v => n1(entre(v / o.max) * 100)" "diverging sin el cero al medio"
+m src/charts/diverging.js "  const signo = v => (v > 0 ? '+' + v : String(v))" "  const signo = v => String(v)" "diverging sin signo"
+m src/charts/diverging.js "(v !== null && Math.abs(v) > o.max ? ' data-sc-over' : '')" "''" "diverging sin data-sc-over"

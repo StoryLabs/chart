@@ -37,7 +37,7 @@
      o en una columna de 300 px. Bullet, líneas, heatmap, cinta y columnas no cambian de forma, así
      que no pagan por serlo. Medido en un tablero de 55 gráficos con la CPU frenada 6×: estilo más
      layout bajan de 25.1 a 22.4 ms por repintado. Es un 11%, no más. */
-  .sc-rings, .sc-pie, .sc-range, .sc-stacked, .sc-segmented { container-type: inline-size; }
+  .sc-rings, .sc-pie, .sc-range, .sc-diverging, .sc-stacked, .sc-segmented { container-type: inline-size; }
   .sc-chart *, .sc-tip * { box-sizing: border-box; }
   .sc-group { display: grid; gap: 22px; min-width: 0; }
   .sc-chart svg { display: block; width: 100%; height: auto; }
@@ -184,6 +184,15 @@
   .sc-dot { position: absolute; top: 50%; width: 14px; height: 14px; margin: -7px 0 0 -7px; border-radius: 50%; background: var(--c); border: 3px solid var(--sc-surface); z-index: 3; }
   .sc-range .sc-v { color: var(--sc-muted); white-space: nowrap; }
   .sc-range .sc-v b { color: var(--sc-text); font-weight: 600; }
+  .sc-diverging { --c: var(--sc-neutral); font-size: 13.5px; display: grid; gap: 10px; }
+  .sc-diverging .sc-bar { height: 12px; margin-block: 3px; border-radius: 4px; }
+  .sc-diverging .sc-ref { top: -3px; bottom: -3px; }
+  .sc-diverging .sc-val { border-radius: 4px; }
+  .sc-cero { position: absolute; left: 50%; top: -5px; bottom: -5px; width: 2px; margin-left: -1px; border-radius: 1px; background: var(--sc-muted); z-index: 2; }
+  /* La columna del valor tiene ancho fijo: si no, cada fila se arma su pista y el cero no se alinea. */
+  .sc-diverging .sc-range-row, .sc-diverging .sc-axis { grid-template-columns: minmax(84px, 120px) minmax(0, 1fr) 76px; }
+  .sc-diverging .sc-v { color: var(--sc-muted); white-space: nowrap; text-align: right; }
+  .sc-diverging .sc-v b { color: var(--sc-text); font-weight: 600; }
   .sc-axis { font: 11px/1 var(--sc-mono); color: var(--sc-muted); }
   .sc-axis div { position: relative; height: 11px; }
   .sc-axis div span { position: absolute; top: 0; white-space: nowrap; }
@@ -200,6 +209,8 @@
     .sc-range-row .sc-bar { grid-column: 1 / -1; grid-row: 2; }
     .sc-axis { grid-template-columns: minmax(0, 1fr); }
     .sc-axis > span { display: none; }
+    .sc-diverging .sc-range-row { grid-template-columns: minmax(0, 1fr) auto; }
+    .sc-diverging .sc-axis { grid-template-columns: minmax(0, 1fr); }
     /* El rótulo parte en dos renglones, «dom» y «20», antes que pisar al vecino. */
     .sc-xlab { white-space: normal; text-align: center; line-height: 1.3; }
     .sc-cols { gap: 4px; }

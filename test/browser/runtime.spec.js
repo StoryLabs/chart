@@ -127,6 +127,12 @@ test.describe('hover y tooltip', () => {
     expect(await tip(page)).toEqual({ t: 'checkout-api', v: '68 / 257 ms', d: 'Dispersión de 189 ms' })
   })
 
+  test('diverging: tooltip con signo y hover de la fila', async ({ page }) => {
+    await page.locator('#c-diverging-residuo [data-sc-s="e"] .sc-bar').hover()
+    expect(await tip(page)).toEqual({ t: 'billing-api', v: '-9 ms', d: 'más rápida' })
+    await expect(page.locator('#c-diverging-residuo .sc-on')).toHaveCount(1)
+  })
+
   test('una serie apagada no muestra tooltip aunque el puntero caiga sobre ella', async ({ page }) => {
     // Con display:none el navegador nunca la elige como destino; el evento se despacha a mano para
     // probar la guarda del runtime, que es la que cubre un CSS que la deje visible.
