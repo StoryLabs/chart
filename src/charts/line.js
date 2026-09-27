@@ -33,7 +33,7 @@ export const line = o => {
   const pts = (a, b) => { const p = []; for (let i = a; i <= b; i++) p.push(x(i) + ' ' + y(v[i])); return 'M ' + p.join(' L ') }
   const area = (a, b) => pts(a, b) + ' L ' + x(b) + ' ' + y0 + ' L ' + x(a) + ' ' + y0 + ' Z'
   const grad = (id, h, vertical, fin) => '<linearGradient id="' + id + '" x1="0" y1="0" x2="' + (vertical ? 0 : 1) + '" y2="' + (vertical ? 1 : 0) + '"><stop offset="0" style="stop-color:' + col(h) + (vertical ? ';stop-opacity:.4' : '') + '"></stop><stop offset="1" style="stop-color:' + col(fin || h) + (vertical ? ';stop-opacity:0' : '') + '"></stop></linearGradient>'
-  const R = recursos(k => grad('scga' + k, hue, true) + grad('scgw' + k, alerta, true) + grad('scgb' + k, hue, false, o.hue2 || 'sky'))
+  const R = recursos(k => grad('scga' + k, hue, true) + grad('scgw' + k, alerta, true) + grad('scgb' + k, hue, false, o.hue2 || 'sky'), o.id)
   const firme = o.buffer ? N - 2 : N - 1
   const tramos = []
 

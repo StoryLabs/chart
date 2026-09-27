@@ -333,3 +333,18 @@ test('el CSS de quien usa la librería manda sobre la separación del rayado', a
   })
   await expect(page.locator('#c-columns-hatched pattern[data-sc-g="d"]')).toHaveAttribute('width', '11', { timeout: 1000 })
 })
+
+test('render con id: la segunda vez no toca el DOM y la leyenda apagada sobrevive', async ({ page }) => {
+  const r = await page.evaluate(() => {
+    const el = document.getElementById('c-state-empty')
+    const o = { id: 'estable', values: [64, 71, 66, 69], max: 100, band: [60, 70] }
+    const primero = window.SC.render(el, window.SC.line(o))
+
+    el.querySelector('[data-sc-leg="band"]').click()
+    const segundo = window.SC.render(el, window.SC.line(o))
+
+    return [primero, segundo, el.querySelector('[data-sc-leg="band"]').getAttribute('aria-pressed')]
+  })
+
+  expect(r).toEqual([true, false, 'false'])
+})

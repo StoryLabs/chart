@@ -14,7 +14,7 @@ export const columns = o => {
 
   const hue = o.hue || 'sky'
   const variante = o.variant || 'solid'
-  const R = recursos(k => '<linearGradient id="scgc' + k + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:' + col(hue) + '"></stop><stop offset="1" style="stop-color:' + col(hue) + ';stop-opacity:.12"></stop></linearGradient>')
+  const R = recursos(k => '<linearGradient id="scgc' + k + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:' + col(hue) + '"></stop><stop offset="1" style="stop-color:' + col(hue) + ';stop-opacity:.12"></stop></linearGradient>', o.id)
   const L = 30, T = 12, W = 480, H = 170
   const paso = W / o.data.length
   const ancho = paso * 0.56

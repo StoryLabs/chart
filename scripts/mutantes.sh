@@ -82,3 +82,5 @@ m src/charts/line.js "  const fuera = v.some(n => n !== null && (n > o.max || n 
 m src/charts/columns.js "(sePasa(d0) ? recortado(R.k) : '')" "''" "columns sin marcar la columna que se pasa"
 m src/charts/stacked.js "const sePasa = partes.reduce((a, q) => a + q.v, 0) > o.max" "const sePasa = false" "stacked sin recorte"
 m src/charts/stackedLine.js "  const fuera = sePasa.includes(true)" "  const fuera = false" "stackedLine sin recorte"
+# id: salida estable.
+m src/core/recursos.js "const k = propio ? '-' + propio : nextId()" "const k = nextId()" "recursos ignora id"

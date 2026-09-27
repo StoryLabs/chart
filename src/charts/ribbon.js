@@ -98,7 +98,7 @@ export const ribbon = o => {
     }
 
     return g + '</linearGradient>'
-  })
+  }, o.id)
 
   // Rachas de tramos medidos seguidos. Un tramo sin datos corta la cinta.
   const rachas = []

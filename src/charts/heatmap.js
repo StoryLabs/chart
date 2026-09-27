@@ -21,7 +21,7 @@ export const heatmap = o => {
   //
   // Cada casilla se dibuja como un cuadrado chico engordado con un trazo de unión redonda: el
   // trazo lo lleva al tamaño y le redondea las esquinas, en 20 caracteres en vez de 80.
-  const R = recursos()
+  const R = recursos(null, o.id)
   const radio = 5
   const lado = celda - radio * 2
   const niveles = Array.from({ length: tope + 1 }, () => [])

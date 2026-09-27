@@ -9,7 +9,7 @@ export const rings = o => {
   if (malo) return malo
   if (!o.rings.length) return vacio()
 
-  const R = recursos()
+  const R = recursos(null, o.id)
   const c = 130
   const sw = 22
   let s = '<svg viewBox="0 0 260 260" role="img" aria-label="' + esc(o.rings.map(r => r.label + ' ' + r.value).join(', ')) + '">' + R.defs

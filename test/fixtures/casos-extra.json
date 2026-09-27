@@ -1547,5 +1547,142 @@
     ]
    }
   ]
+ },
+ {
+  "id": "rings-id",
+  "fn": "rings",
+  "args": [
+   {
+    "id": "score",
+    "rings": [
+     {
+      "key": "a",
+      "label": "A",
+      "value": 60,
+      "hue": "blue"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "ribbon-id",
+  "fn": "ribbon",
+  "args": [
+   {
+    "id": "estado",
+    "rest": "w",
+    "states": {
+     "w": {
+      "label": "W",
+      "hue": "blue",
+      "lane": 0
+     }
+    },
+    "segments": [
+     [
+      0,
+      24,
+      "w"
+     ]
+    ]
+   }
+  ]
+ },
+ {
+  "id": "line-id",
+  "fn": "line",
+  "args": [
+   {
+    "id": "ttfb",
+    "values": [
+     64,
+     71,
+     66,
+     69
+    ],
+    "max": 100,
+    "unit": "ms"
+   }
+  ]
+ },
+ {
+  "id": "stackedLine-id",
+  "fn": "stackedLine",
+  "args": [
+   {
+    "id": "partes",
+    "max": 100,
+    "series": [
+     {
+      "key": "a",
+      "label": "A",
+      "hue": "blue",
+      "values": [
+       1,
+       2,
+       3
+      ]
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "columns-id",
+  "fn": "columns",
+  "args": [
+   {
+    "id": "dias",
+    "max": 4,
+    "data": [
+     {
+      "label": "a",
+      "value": 2
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "pie-id",
+  "fn": "pie",
+  "args": [
+   {
+    "id": "torta",
+    "slices": [
+     {
+      "key": "a",
+      "label": "A",
+      "value": 2,
+      "hue": "blue"
+     },
+     {
+      "key": "b",
+      "label": "B",
+      "value": 1,
+      "hue": "sky"
+     }
+    ]
+   }
+  ]
+ },
+ {
+  "id": "heatmap-id",
+  "fn": "heatmap",
+  "args": [
+   {
+    "id": "horas",
+    "rows": [
+     "a"
+    ],
+    "values": [
+     [
+      1,
+      "x"
+     ]
+    ]
+   }
+  ]
  }
 ]

@@ -23,7 +23,7 @@ export const pie = o => {
     '<radialGradient id="scgp' + k + '_' + i + '" gradientUnits="userSpaceOnUse" cx="' + c + '" cy="' + c + '" r="' + ro + '">' +
       '<stop offset="' + n1(ri / ro) + '" style="stop-color:' + col(sl.hue) + ';stop-opacity:' + SUAVE / 100 + '"></stop>' +
       '<stop offset="1" style="stop-color:' + col(sl.hue) + ';stop-opacity:' + FUERTE / 100 + '"></stop></radialGradient>'
-  ).join(''))
+  ).join(''), o.id)
   let a0 = -Math.PI / 2
   let rellenos = ''
   let bordes = ''

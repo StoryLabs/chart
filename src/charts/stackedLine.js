@@ -63,7 +63,7 @@ export const stackedLine = entrada => {
   }
   const R = recursos(id => vivas.map((se, k) =>
     '<linearGradient id="scgs' + id + '_' + k + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:' + col(se.hue) + ';stop-opacity:' + FUERTE / 100 + '"></stop><stop offset="1" style="stop-color:' + col(se.hue) + ';stop-opacity:' + SUAVE / 100 + '"></stop></linearGradient>'
-  ).join(''))
+  ).join(''), o.id)
   // Qué series se pasan de la escala: su techo sobre max, o su piso bajo cero.
   const sePasa = vivas.map((_, k) => acum[k].some((t, i) => t !== null && (t > o.max || piso(k, i) > T + H || t < 0)))
   const fuera = sePasa.includes(true)

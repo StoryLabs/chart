@@ -782,6 +782,17 @@ Medido en una Apple M4 Max con Chrome. El peso lo vigila un test; los tiempos, `
 `render()` no vuelve a pintar lo que no cambió. En un tablero que se refresca cada pocos
 segundos, eso baja el costo de 5 ms a menos de 1.
 
+Para que eso pase con un gráfico en SVG (`line`, `stackedLine`, `ribbon`, `columns`, `pie`,
+`heatmap`, `rings`), pasale un **`id`** propio: sin él, los ids internos del SVG salen de un
+contador y cada llamada devuelve un HTML distinto, así que `render()` repinta siempre y se
+pierden el hover y las leyendas apagadas. Con `id`, las mismas opciones dan el mismo HTML.
+
+```js
+render(el, line({ id: 'ttfb-checkout', values, max: 400 }))
+```
+
+Dos gráficos de la misma página necesitan ids distintos. `id` acepta letras, números, `-` y `_`.
+
 ## Navegadores
 
 Chrome 111, Safari 16.2 y Firefox 113, o más nuevos. Usa `color-mix()`, container queries y

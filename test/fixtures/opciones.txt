@@ -3,21 +3,21 @@
 # un caso canónico (JSON) y se prueba en graficos.test.js. La usa test/unit/opciones.test.js en las dos direcciones:
 # toda opción de acá aparece en algún caso canónico, y toda hoja de un caso canónico está acá.
 bullet       label value unit min max reference[] side hue hue2 key
-rings        center.value center.label rings[].key rings[].label rings[].value rings[].max rings[].hue
+rings        center.value center.label rings[].key rings[].label rings[].value rings[].max rings[].hue id
 segmented    segments[].key segments[].label segments[].value segments[].detail segments[].hue segments[].hatched
-ribbon       label headline.parts[][] headline.chip states.*.label states.*.hue states.*.lane states.*.hatched
+ribbon       label headline.parts[][] headline.chip states.*.label states.*.hue states.*.lane states.*.hatched id
              rest domain[] segments[][] ticks[].at ticks[].label ticks[].sub unit format()
-line         label headline.parts[][] headline.chip values[] labels[] unit max yTicks[] xLabels[] band[]
+line         label headline.parts[][] headline.chip values[] labels[] unit max yTicks[] xLabels[] band[] id
              threshold.value threshold.label buffer bufferLabel hue hue2 alertHue maxPoints
-stackedLine  label headline.parts[][] headline.chip wide unit max yTicks[] totalLabel buffer bufferLabel
+stackedLine  label headline.parts[][] headline.chip wide unit max yTicks[] totalLabel buffer bufferLabel id
              labels[] xTicks[].at xTicks[].label series[].key series[].label series[].hue series[].values[]
              hidden[] maxPoints
-columns      label variant unit[] max yTicks[] hue data[].label data[].title data[].value data[].projected
+columns      label variant unit[] max yTicks[] hue data[].label data[].title data[].value data[].projected id
 stacked      label variant unit[] max yTicks[] height series[].key series[].label series[].hue
              series[].hatched data[].label data[].title data[].current data[].values.* hidden[]
-pie          label variant fill unit[] center.value center.label slices[].key slices[].label
+pie          label variant fill unit[] center.value center.label slices[].key slices[].label id
              slices[].value slices[].hue slices[].hatched hidden[]
-heatmap      label rows[] values[][] steps unit[] emptyLabel colTicks[] hue
+heatmap      label rows[] values[][] steps unit[] emptyLabel colTicks[] hue id
 range        unit min max ticks[] hue hue2 rows[].label rows[].from rows[].to
 state        kind title detail
 legend       [].key [].label [].hue [].color [].hatched [].off #1
