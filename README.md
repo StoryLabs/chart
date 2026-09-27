@@ -576,13 +576,17 @@ Al apagar una porción desde la leyenda, el círculo se vuelve a repartir entre 
 
 ```js
 heatmap({
-  rows: ['lun', 'mar'],
+  rows: ['lun', 'mar', 'mié', 'jue', 'vie'],
   values: [
-    [0, 1, 3, 0, 2, 0],
-    [2, 0, 'En pausa', 'En pausa', 1, 0]
+    [0, 1, 0, 0, 2, 0, 1, 3, 0, 0, 1, 0],
+    [0, 0, 1, 0, 0, 1, 0, 2, 1, 0, 0, 0],
+    [1, 0, 0, 'En pausa', 'En pausa', 'En pausa', 0, 1, 0, 2, 0, 0],
+    [0, 2, 0, 0, 1, 0, 0, 3, 2, 0, 1, 0],
+    [0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 0]
   ],
   unit: ['cold start', 'cold starts'],
-  emptyLabel: 'Sin pings'
+  emptyLabel: 'Sin pings',
+  colTicks: [0, 6, 11]
 })
 ```
 
