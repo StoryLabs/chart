@@ -246,6 +246,18 @@ describe('columns', () => {
   })
 })
 
+test('columns: un valor en cero no dibuja cuerpo ni tapa en ninguna variante, y su tooltip dice 0', () => {
+  for (const variant of ['solid', 'stripped', 'gradient', 'duotone', 'hatched']) {
+    const html = SC.columns({ variant, max: 4, unit: ['ping', 'pings'], data: [{ label: 'a', value: 0 }] })
+    const g = html.split('data-sc-s="c0"')[1].split('</g>')[0]
+
+    expect(g).not.toContain('<path')
+    expect(g).not.toContain('sc-hatch')
+    expect(g).toContain('fill="transparent"')
+    expect(tooltips(html)[0].v).toBe('0 pings')
+  }
+})
+
 describe('stacked', () => {
   const o = {
     max: 10, unit: ['ping', 'pings'],

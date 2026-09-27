@@ -66,3 +66,4 @@ m src/charts/line.js "      const x1 = x(b < N - 1 ? b + 1 : b)" "      const x1
 m src/charts/stacked.js "o.series.every(se => valor((d.values || {})[se.key]) === null)
 " "!d.values
 " "stacked: una fila con todos los valores nulos no cuenta como hueco"
+m src/charts/columns.js "    } else if (val === 0 && !enCurso) {" "    } else if (false) {" "columns: el cero vuelve a dibujar tapa"

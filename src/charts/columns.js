@@ -46,6 +46,9 @@ export const columns = o => {
     if (val === null && !enCurso) {
       // La columna que falta: rayada neutra de todo el alto, para no confundirse con una en cero.
       dibujo = conBanda(o) ? '<g data-sc-s="gaps">' + franja('x="' + xa + '" y="' + T + '" width="' + n1(xb - xa) + '" height="' + H + '" rx="6"', R) + '</g>' : ''
+    } else if (val === 0 && !enCurso) {
+      // Un cero es un valor medido: no hay cuerpo ni tapa que dibujar, pero el hover y el tooltip siguen.
+      dibujo = ''
     } else if (enCurso) {
       dibujo = rayada(y(d.projected)) + '<rect x="' + xa + '" y="' + y(d.value) + '" width="' + n1(xb - xa) + '" height="' + n1(base - y(d.value)) + '" style="fill:' + col(hue) + '"></rect>'
     } else if (variante === 'stripped') {
