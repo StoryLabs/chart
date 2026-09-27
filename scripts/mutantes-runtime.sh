@@ -30,3 +30,4 @@ m src/runtime/mount.js "    if (v === null) {
 m src/runtime/mount.js "    if (d.s[0].v[i] === null) {" "    if (false) {" "cursor de stackedLine sobre un hueco"
 m src/core/huecos.js "'<rect ' + caja + ' style=\"fill:var(--sc-surface)\"></rect><rect '" "'<rect '" "hueco sin base opaca"
 m src/core/huecos.js "export const conBanda = o => o.gaps !== 'empty'" "export const conBanda = () => false" "hueco sin banda (corte simple)"
+m src/runtime/mount.js "pto.setAttribute('cy', d.T + entre(1 - v / d.max) * d.H)" "pto.setAttribute('cy', d.T + (1 - v / d.max) * d.H)" "cursor: el punto sale del plot"

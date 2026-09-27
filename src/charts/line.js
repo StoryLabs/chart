@@ -4,7 +4,7 @@ import { headline } from '../core/headline.js'
 import { muestreo } from '../core/muestreo.js'
 import { recursos } from '../core/recursos.js'
 import { requiere, vacio, conEscala } from '../core/guardas.js'
-import { conBanda, rachasNulas, franja, itemHueco } from '../core/huecos.js'
+import { conBanda, rachasNulas, franja, itemHueco, recorte, recortado } from '../core/huecos.js'
 
 export const line = o => {
   const malo = requiere('line', o, ['values'])
@@ -49,7 +49,8 @@ export const line = o => {
     else tramos.push({ a: i, b: i + 1, arriba })
   }
 
-  let s = '<svg viewBox="0 0 640 236" role="img" aria-label="' + esc(o.label || 'Serie en el tiempo') + '">' + R.defs
+  const fuera = v.some(n => n !== null && (n > o.max || n < 0))
+  let s = '<svg viewBox="0 0 640 236" role="img" aria-label="' + esc(o.label || 'Serie en el tiempo') + '">' + R.defs + (fuera ? recorte(R.k, L, T, W, H) : '')
 
   for (const t of o.yTicks || [0, o.max]) {
     s += '<line x1="' + L + '" x2="' + (L + W) + '" y1="' + y(t) + '" y2="' + y(t) + '" style="stroke:var(--sc-line)"></line>'
@@ -82,7 +83,7 @@ export const line = o => {
     s += '</g>'
   }
 
-  s += '<g data-sc-s="series">'
+  s += '<g data-sc-s="series"' + (fuera ? recortado(R.k) : '') + '>'
   for (const t of tramos) s += '<path class="sc-a-in" d="' + area(t.a, t.b) + '" fill="url(#scg' + (t.arriba ? 'w' : 'a') + R.k + ')"></path>'
   tramos.forEach((t, i) => { s += '<path class="sc-a-draw" pathLength="100" d="' + pts(t.a, t.b) + '" fill="none" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" style="stroke:' + col(t.arriba ? alerta : hue) + ';--i:' + i * 5 + '"></path>' })
   // Un punto aislado entre dos huecos se dibuja como punto.
@@ -94,7 +95,7 @@ export const line = o => {
   const finHue = thr !== null && v[N - 1] >= thr ? alerta : hue
 
   // Buffer: el último punto todavía está en curso. Su tramo va punteado y el área, rayada.
-  s += '<g data-sc-s="buffer" class="sc-a-in" style="--c:' + col(finHue) + ';--i:8">'
+  s += '<g data-sc-s="buffer" class="sc-a-in" style="--c:' + col(finHue) + ';--i:8"' + (fuera ? ' clip-path="url(#sccp' + R.k + ')"' : '') + '>'
   if (o.buffer && v[N - 2] !== null && v[N - 1] !== null) {
     s += '<path d="' + area(N - 2, N - 1) + '" style="fill:' + tinte(finHue, 'var(--sc-track)') + '"></path>'
     s += '<path d="' + area(N - 2, N - 1) + '" mask="' + R.d + '" class="sc-hatch" style="fill:' + col(finHue) + '"></path>'

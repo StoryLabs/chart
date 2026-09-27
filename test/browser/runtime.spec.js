@@ -256,6 +256,15 @@ test.describe('cursor', () => {
     expect(color).toBe(0)
   })
 
+  test('recorte: el cursor sobre un pico fuera de escala dice el valor real y el punto queda en el borde', async ({ page }) => {
+    await page.evaluate(() => {
+      window.SC.render(document.getElementById('c-state-empty'), window.SC.line({ values: [70, 72, 3000, 71, 70], labels: ['a', 'b', 'c', 'd', 'e'], max: 400, unit: 'ms' }))
+    })
+    await apuntar(page, page.locator('#c-state-empty rect[data-sc-line]'), 0.5)
+    expect(await tip(page)).toEqual({ t: 'c', v: '3000 ms', d: '' })
+    await expect(page.locator('#c-state-empty .sc-pto')).toHaveAttribute('cy', '14')
+  })
+
   test('salir de la página limpia resaltado, guía y tooltip', async ({ page }) => {
     await page.locator('#c-bullet-demo-1 .sc-bullet').hover()
     await apuntar(page, cap(page, 'line-demo', 'data-sc-line'), 0.5)

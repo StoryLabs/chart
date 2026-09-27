@@ -139,7 +139,8 @@ export const mount = () => {
       return mostrar(ev, d.l ? d.l[i] : 'Punto ' + (i + 1), textos.empty, '', 'neutral')
     }
     pto.setAttribute('cx', x)
-    pto.setAttribute('cy', d.T + (1 - v / d.max) * d.H)
+    // Un valor fuera de escala: el punto queda en el borde del plot, el tooltip dice el real.
+    pto.setAttribute('cy', d.T + entre(1 - v / d.max) * d.H)
     pto.style.fill = col(hue)
     pto.setAttribute('visibility', 'visible')
 
@@ -179,7 +180,7 @@ export const mount = () => {
     d.s.forEach((se, k) => {
       suma += se.v[i]
       ptos[k].setAttribute('cx', x)
-      ptos[k].setAttribute('cy', d.T + (1 - suma / d.max) * d.H)
+      ptos[k].setAttribute('cy', d.T + entre(1 - suma / d.max) * d.H)
       ptos[k].setAttribute('visibility', 'visible')
     })
 

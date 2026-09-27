@@ -677,6 +677,10 @@ Ninguna función lanza un error y ninguna dibuja un gráfico roto.
 
 El error dibujado lleva `data-sc-error="<función>"`, para detectarlo desde un test o un monitoreo.
 
+Un valor que se pasa de la escala, como un pico de 3 000 ms con `max: 400`, se **recorta contra el
+área del gráfico**: no se aplasta a `max`, que lo haría pasar por un valor que vale exactamente eso.
+El elemento lleva `data-sc-over` y el tooltip muestra el valor real.
+
 <a id="datos-que-faltan"></a>
 
 ### Un dato que falta no es un cero
@@ -813,7 +817,6 @@ La demo está en `demo/index.html` y consume `src/` directo: serví el repo y ab
 - `setHatch()` con los valores en inglés, y el rayado configurable desde CSS.
 - `locale`, para cambiar el idioma de los textos.
 - `max` y marcas de eje calculados de los datos.
-- Recorte de los valores que se pasan de la escala.
 - `heatmap()` y `ribbon()` con cualquier unidad de tiempo.
 
 ## Créditos

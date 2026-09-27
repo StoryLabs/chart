@@ -32,7 +32,10 @@ export const stacked = o => {
         // Una fila sin ningún dato: rayada neutra de todo el alto, para no confundirse con una en cero.
         const falta = conBanda(o) && o.series.every(se => valor((d.values || {})[se.key]) === null)
 
-        return '<div class="sc-col"><div class="sc-stack sc-a-y" style="--i:' + i + '">' +
+        // Una pila que pasa de max se recorta al alto del plot; el tooltip sigue con el valor real.
+        const sePasa = partes.reduce((a, q) => a + q.v, 0) > o.max
+
+        return '<div class="sc-col"><div class="sc-stack sc-a-y" style="--i:' + i + (sePasa ? ';max-height:' + H + 'px;overflow:hidden" data-sc-over' : '"') + '>' +
           (falta ? '<div data-sc-s="gaps" class="sc-hx" style="--c:var(--sc-neutral);height:' + H + 'px"' + tip(d.title || d.label, textos.empty, '', 'neutral') + '><i class="sc-hfill"></i></div>' : '') +
           partes.map((q, k) => {
             const h = q.se.hue

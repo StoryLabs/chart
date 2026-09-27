@@ -77,3 +77,8 @@ m src/charts/range.js "  const min = num(o.min)
 # ribbon: format y unit.
 m src/charts/ribbon.js "typeof o.format === 'function' ? String(o.format(h)) : reloj(h)" "reloj(h)" "ribbon ignora format"
 m src/charts/ribbon.js "const minutos = { s: 1 / 60, min: 1, h: 60, d: 1440 }[o.unit] || 60" "const minutos = 60" "ribbon ignora unit"
+# Recorte fuera de escala.
+m src/charts/line.js "  const fuera = v.some(n => n !== null && (n > o.max || n < 0))" "  const fuera = false" "line sin recorte"
+m src/charts/columns.js "(sePasa(d0) ? recortado(R.k) : '')" "''" "columns sin marcar la columna que se pasa"
+m src/charts/stacked.js "const sePasa = partes.reduce((a, q) => a + q.v, 0) > o.max" "const sePasa = false" "stacked sin recorte"
+m src/charts/stackedLine.js "  const fuera = sePasa.includes(true)" "  const fuera = false" "stackedLine sin recorte"

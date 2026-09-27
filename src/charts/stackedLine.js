@@ -5,7 +5,7 @@ import { headline } from '../core/headline.js'
 import { muestreo } from '../core/muestreo.js'
 import { recursos } from '../core/recursos.js'
 import { requiere, vacio, fallo, conEscala } from '../core/guardas.js'
-import { conBanda, rachasNulas, franja, itemHueco } from '../core/huecos.js'
+import { conBanda, rachasNulas, franja, itemHueco, recorte, recortado } from '../core/huecos.js'
 
 /**
  * Líneas apiladas: cada serie se dibuja ENCIMA de la suma de las anteriores, así que la línea de
@@ -64,7 +64,10 @@ export const stackedLine = entrada => {
   const R = recursos(id => vivas.map((se, k) =>
     '<linearGradient id="scgs' + id + '_' + k + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:' + col(se.hue) + ';stop-opacity:' + FUERTE / 100 + '"></stop><stop offset="1" style="stop-color:' + col(se.hue) + ';stop-opacity:' + SUAVE / 100 + '"></stop></linearGradient>'
   ).join(''))
-  let s = '<svg viewBox="0 0 ' + VB + ' 236" role="img" aria-label="' + esc(o.label || 'Series apiladas') + '">' + R.defs
+  // Qué series se pasan de la escala: su techo sobre max, o su piso bajo cero.
+  const sePasa = vivas.map((_, k) => acum[k].some((t, i) => t !== null && (t > o.max || piso(k, i) > T + H || t < 0)))
+  const fuera = sePasa.includes(true)
+  let s = '<svg viewBox="0 0 ' + VB + ' 236" role="img" aria-label="' + esc(o.label || 'Series apiladas') + '">' + R.defs + (fuera ? recorte(R.k, L, T, W, H) : '')
 
   for (const t of o.yTicks || [0, o.max]) {
     s += '<line x1="' + L + '" x2="' + (L + W) + '" y1="' + y(t) + '" y2="' + y(t) + '" style="stroke:var(--sc-line)"></line>'
@@ -86,7 +89,7 @@ export const stackedLine = entrada => {
   }
 
   vivas.forEach((se, k) => {
-    s += '<g data-sc-s="' + esc(se.key) + '" style="--c:' + col(se.hue) + '">'
+    s += '<g data-sc-s="' + esc(se.key) + '" style="--c:' + col(se.hue) + '"' + (sePasa[k] ? recortado(R.k) : fuera ? ' clip-path="url(#sccp' + R.k + ')"' : '') + '>'
     for (const [a, b] of rachas) s += '<path class="sc-a-in" style="--i:' + k + '" d="' + banda(k, a, b) + '" fill="url(#scgs' + R.k + '_' + k + ')"></path>'
 
     // Buffer: el último tramo todavía está en curso. Banda rayada y línea punteada.

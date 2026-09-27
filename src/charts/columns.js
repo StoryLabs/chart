@@ -3,7 +3,7 @@ import { n1, esc, col, tinte, cuenta, tip, valor } from '../core/format.js'
 import { recursos } from '../core/recursos.js'
 import { requiere, vacio, conEscala } from '../core/guardas.js'
 import { textos } from '../core/textos.js'
-import { conBanda, franja, itemHueco } from '../core/huecos.js'
+import { conBanda, franja, itemHueco, recorte, recortado } from '../core/huecos.js'
 
 export const columns = o => {
   const malo = requiere('columns', o, ['data'])
@@ -23,7 +23,9 @@ export const columns = o => {
   // Columna con SOLO las esquinas de arriba redondeadas; xa y xb permiten dibujar media columna.
   const forma = (xa, xb, yb, yt, ra, rb) =>
     'M ' + xa + ' ' + yb + ' V ' + (yt + ra) + ' Q ' + xa + ' ' + yt + ' ' + (xa + ra) + ' ' + yt + ' H ' + (xb - rb) + ' Q ' + xb + ' ' + yt + ' ' + xb + ' ' + (yt + rb) + ' V ' + yb + ' Z'
-  let s = '<svg viewBox="0 0 520 214" role="img" aria-label="' + esc(o.label || 'Columnas') + '">' + R.defs
+  const sePasa = d => [d.value, d.projected].some(n => valor(n) !== null && (valor(n) > o.max || valor(n) < 0))
+  const fuera = o.data.some(sePasa)
+  let s = '<svg viewBox="0 0 520 214" role="img" aria-label="' + esc(o.label || 'Columnas') + '">' + R.defs + (fuera ? recorte(R.k, L, T, W, H) : '')
 
   for (const t of o.yTicks || [0, o.max]) {
     s += '<line x1="' + L + '" x2="' + (L + W) + '" y1="' + y(t) + '" y2="' + y(t) + '" style="stroke:var(--sc-line)"></line>'
@@ -63,7 +65,7 @@ export const columns = o => {
       dibujo = '<path d="' + entera(y(d.value)) + '" style="fill:' + col(hue) + '"></path>'
     }
 
-    s += '<g class="sc-a-y" data-sc-s="c' + i + '" style="--i:' + i + '"' +
+    s += '<g class="sc-a-y" data-sc-s="c' + i + '" style="--i:' + i + '"' + (sePasa(d0) ? recortado(R.k) : '') +
       tip(d.title || d.label, val === null ? textos.empty : o.unit ? cuenta(d.value, o.unit) : d.value, enCurso ? 'En curso. Proyección al cierre: ' + d.projected : 'Completo', hue) + '>' + dibujo +
       '<rect x="' + n1(cx - paso / 2) + '" y="' + T + '" width="' + n1(paso) + '" height="' + H + '" fill="transparent"></rect></g>'
     s += '<text x="' + n1(cx) + '" y="' + (base + 17) + '" text-anchor="middle"' + (enCurso ? ' class="sc-strong"' : '') + '>' + esc(d.label) + '</text>'

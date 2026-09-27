@@ -24,3 +24,8 @@ export const franja = (caja, R) =>
   '<rect ' + caja + ' style="fill:var(--sc-surface)"></rect><rect ' + caja + ' style="fill:' + tinte('neutral', 'var(--sc-track)') + '"></rect><rect ' + caja + ' mask="' + R.d + '" class="sc-hatch" style="fill:var(--sc-neutral)"></rect>'
 
 export const itemHueco = () => ({ key: 'gaps', label: textos.empty, hue: 'neutral', hatched: true })
+
+// Recorte fuera de escala: se recorta el DIBUJO contra el área del gráfico, no el dato (el tooltip
+// muestra el valor real). Sólo se emite cuando algo se pasa: sin valores afuera, la salida no cambia.
+export const recorte = (k, x, y, w, h) => '<defs><clipPath id="sccp' + k + '"><rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '"></rect></clipPath></defs>'
+export const recortado = k => ' clip-path="url(#sccp' + k + ')" data-sc-over'
