@@ -27,5 +27,8 @@ export const itemHueco = () => ({ key: 'gaps', label: textos.empty, hue: 'neutra
 
 // Recorte fuera de escala: se recorta el DIBUJO contra el área del gráfico, no el dato (el tooltip
 // muestra el valor real). Sólo se emite cuando algo se pasa: sin valores afuera, la salida no cambia.
-export const recorte = (k, x, y, w, h) => '<defs><clipPath id="sccp' + k + '"><rect x="' + x + '" y="' + y + '" width="' + w + '" height="' + h + '"></rect></clipPath></defs>'
+// Lo que se recorta es lo que PASA del techo (y del piso, si hay negativos): a los costados y abajo
+// quedan 8 de margen, para que el punto final, un punto en el borde y el trazo sobre el cero se
+// vean enteros.
+export const recorte = (k, x, y, w, h, piso) => '<defs><clipPath id="sccp' + k + '"><rect x="' + (x - 8) + '" y="' + y + '" width="' + (w + 16) + '" height="' + (h + (piso ? 0 : 8)) + '"></rect></clipPath></defs>'
 export const recortado = k => ' clip-path="url(#sccp' + k + ')" data-sc-over'

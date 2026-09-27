@@ -94,3 +94,10 @@ m src/charts/range.js ".filter(t => valor(t) !== null && valor(t) >= min && valo
 m src/charts/diverging.js "  const pos = v => n1(entre(0.5 + v / (2 * o.max)) * 100)" "  const pos = v => n1(entre(v / o.max) * 100)" "diverging sin el cero al medio"
 m src/charts/diverging.js "  const signo = v => (v > 0 ? '+' + v : String(v))" "  const signo = v => String(v)" "diverging sin signo"
 m src/charts/diverging.js "(v !== null && Math.abs(v) > o.max ? ' data-sc-over' : '')" "''" "diverging sin data-sc-over"
+# Hallazgos del monitor H1-H7.
+m src/core/huecos.js "'\" width=\"' + (w + 16) + '\"" "'\" width=\"' + w + '\"" "H1: el recorte corta los costados"
+m src/charts/columns.js "(valor(d.projected) > d.value ? rayada(y(d.projected)) : '')" "rayada(y(d.projected))" "H2: proyección en cero dibuja debajo del eje"
+m src/charts/bullet.js "(min ? 'Escala de ' + min + ' a ' + conUnidad(o.max, o.unit) + ' · ' : '')" "''" "H4: bullet no dice la escala"
+m src/charts/bullet.js "(val === null ? '' : '<span class=\"sc-unit\">' + esc(o.unit) + '</span>')" "'<span class=\"sc-unit\">' + esc(o.unit) + '</span>'" "H5: unidad después del guion"
+m src/charts/columns.js "[{ label: 'Medido', hue }].concat(o.data.some(d => d.projected !== undefined && d.projected !== null) ? [{ label: 'En curso', hue, hatched: true }] : [])" "[{ label: 'Medido', hue }, { label: 'En curso', hue, hatched: true }]" "H6: En curso siempre"
+m src/charts/line.js ";paint-order:stroke;stroke:var(--sc-surface);stroke-width:4px;stroke-linejoin:round" "" "H7: rótulo del umbral sin trazo"

@@ -354,3 +354,13 @@ test('render con id: la segunda vez no toca el DOM y la leyenda apagada sobreviv
 
   expect(r).toEqual([true, false, 'false'])
 })
+
+test('H3: --sc-label-w ensancha la columna del rótulo en range y diverging', async ({ page }) => {
+  const ancho = () => page.locator('#c-range-demo .sc-nm').first().evaluate(e => e.getBoundingClientRect().width)
+  const antes = await ancho()
+
+  await page.addStyleTag({ content: '.sc-chart { --sc-label-w: 190px }' })
+  expect(antes).toBeLessThanOrEqual(120)
+  expect(await ancho()).toBeGreaterThan(160)
+  expect(await page.locator('#c-diverging-residuo .sc-nm').first().evaluate(e => e.getBoundingClientRect().width)).toBeGreaterThan(160)
+})

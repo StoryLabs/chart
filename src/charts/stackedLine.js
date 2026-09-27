@@ -67,7 +67,7 @@ export const stackedLine = entrada => {
   // Qué series se pasan de la escala: su techo sobre max, o su piso bajo cero.
   const sePasa = vivas.map((_, k) => acum[k].some((t, i) => t !== null && (t > o.max || piso(k, i) > T + H || t < 0)))
   const fuera = sePasa.includes(true)
-  let s = '<svg viewBox="0 0 ' + VB + ' 236" role="img" aria-label="' + esc(o.label || 'Series apiladas') + '">' + R.defs + (fuera ? recorte(R.k, L, T, W, H) : '')
+  let s = '<svg viewBox="0 0 ' + VB + ' 236" role="img" aria-label="' + esc(o.label || 'Series apiladas') + '">' + R.defs + (fuera ? recorte(R.k, L, T, W, H, acum.some(a => a.some(t => t !== null && t < 0))) : '')
 
   for (const t of o.yTicks || [0, o.max]) {
     s += '<line x1="' + L + '" x2="' + (L + W) + '" y1="' + y(t) + '" y2="' + y(t) + '" style="stroke:var(--sc-line)"></line>'

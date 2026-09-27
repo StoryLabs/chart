@@ -25,7 +25,7 @@ export const columns = o => {
     'M ' + xa + ' ' + yb + ' V ' + (yt + ra) + ' Q ' + xa + ' ' + yt + ' ' + (xa + ra) + ' ' + yt + ' H ' + (xb - rb) + ' Q ' + xb + ' ' + yt + ' ' + xb + ' ' + (yt + rb) + ' V ' + yb + ' Z'
   const sePasa = d => [d.value, d.projected].some(n => valor(n) !== null && (valor(n) > o.max || valor(n) < 0))
   const fuera = o.data.some(sePasa)
-  let s = '<svg viewBox="0 0 520 214" role="img" aria-label="' + esc(o.label || 'Columnas') + '">' + R.defs + (fuera ? recorte(R.k, L, T, W, H) : '')
+  let s = '<svg viewBox="0 0 520 214" role="img" aria-label="' + esc(o.label || 'Columnas') + '">' + R.defs + (fuera ? recorte(R.k, L, T, W, H, o.data.some(d => valor(d.value) < 0)) : '')
 
   for (const t of o.yTicks || [0, o.max]) {
     s += '<line x1="' + L + '" x2="' + (L + W) + '" y1="' + y(t) + '" y2="' + y(t) + '" style="stroke:var(--sc-line)"></line>'
@@ -52,7 +52,9 @@ export const columns = o => {
       // Un cero es un valor medido: no hay cuerpo ni tapa que dibujar, pero el hover y el tooltip siguen.
       dibujo = ''
     } else if (enCurso) {
-      dibujo = rayada(y(d.projected)) + '<rect x="' + xa + '" y="' + y(d.value) + '" width="' + n1(xb - xa) + '" height="' + n1(base - y(d.value)) + '" style="fill:' + col(hue) + '"></rect>'
+      // Lo medido, sólido, y la proyección rayada sólo si la supera: con 0 y 0 no se dibuja nada
+      // debajo del eje, y queda el hover y el rótulo en negrita.
+      dibujo = (valor(d.projected) > d.value ? rayada(y(d.projected)) : '') + (d.value > 0 ? '<rect x="' + xa + '" y="' + y(d.value) + '" width="' + n1(xb - xa) + '" height="' + n1(base - y(d.value)) + '" style="fill:' + col(hue) + '"></rect>' : '')
     } else if (variante === 'stripped') {
       dibujo = '<path d="' + entera(y(d.value)) + '" style="fill:' + tinte(hue, '24%') + '"></path><path d="' + forma(xa, xb, y(d.value) + 5, y(d.value), 5, 5) + '" style="fill:' + col(hue) + '"></path>'
     } else if (variante === 'gradient') {
@@ -72,5 +74,5 @@ export const columns = o => {
   })
 
   return '<div class="sc-chart sc-columns"><div class="sc-scroll">' + s + '</svg></div>' +
-    legend([{ label: 'Medido', hue }, { label: 'En curso', hue, hatched: true }].concat(conBanda(o) && o.data.some(d => valor(d.value) === null && d.projected == null) ? [itemHueco()] : []), false) + '</div>'
+    legend([{ label: 'Medido', hue }].concat(o.data.some(d => d.projected !== undefined && d.projected !== null) ? [{ label: 'En curso', hue, hatched: true }] : []).concat(conBanda(o) && o.data.some(d => valor(d.value) === null && d.projected == null) ? [itemHueco()] : []), false) + '</div>'
 }

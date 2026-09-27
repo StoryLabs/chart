@@ -175,7 +175,7 @@
 
 
   .sc-range { --c: var(--sc-sky); --c2: var(--sc-violet); font-size: 13.5px; }
-  .sc-range-row, .sc-axis { display: grid; grid-template-columns: minmax(84px, 120px) minmax(0, 1fr) auto; gap: 12px; align-items: center; }
+  .sc-range-row, .sc-axis { display: grid; grid-template-columns: minmax(84px, var(--sc-label-w, 120px)) minmax(0, 1fr) auto; gap: 12px; align-items: center; }
   .sc-range-row .sc-nm { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .sc-range .sc-bar { height: 12px; margin-block: 3px; border-radius: 4px; }
   .sc-range .sc-ref { top: -3px; bottom: -3px; }
@@ -190,7 +190,7 @@
   .sc-diverging .sc-val { border-radius: 4px; }
   .sc-cero { position: absolute; left: 50%; top: -5px; bottom: -5px; width: 2px; margin-left: -1px; border-radius: 1px; background: var(--sc-muted); z-index: 2; }
   /* La columna del valor tiene ancho fijo: si no, cada fila se arma su pista y el cero no se alinea. */
-  .sc-diverging .sc-range-row, .sc-diverging .sc-axis { grid-template-columns: minmax(84px, 120px) minmax(0, 1fr) 76px; }
+  .sc-diverging .sc-range-row, .sc-diverging .sc-axis { grid-template-columns: minmax(84px, var(--sc-label-w, 120px)) minmax(0, 1fr) 76px; }
   .sc-diverging .sc-v { color: var(--sc-muted); white-space: nowrap; text-align: right; }
   .sc-diverging .sc-v b { color: var(--sc-text); font-weight: 600; }
   .sc-axis { font: 11px/1 var(--sc-mono); color: var(--sc-muted); }

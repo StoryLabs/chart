@@ -50,7 +50,7 @@ export const line = o => {
   }
 
   const fuera = v.some(n => n !== null && (n > o.max || n < 0))
-  let s = '<svg viewBox="0 0 640 236" role="img" aria-label="' + esc(o.label || 'Serie en el tiempo') + '">' + R.defs + (fuera ? recorte(R.k, L, T, W, H) : '')
+  let s = '<svg viewBox="0 0 640 236" role="img" aria-label="' + esc(o.label || 'Serie en el tiempo') + '">' + R.defs + (fuera ? recorte(R.k, L, T, W, H, v.some(n => n !== null && n < 0)) : '')
 
   for (const t of o.yTicks || [0, o.max]) {
     s += '<line x1="' + L + '" x2="' + (L + W) + '" y1="' + y(t) + '" y2="' + y(t) + '" style="stroke:var(--sc-line)"></line>'
@@ -65,7 +65,7 @@ export const line = o => {
 
   if (thr !== null) {
     s += '<g data-sc-s="threshold" class="sc-a-in"><line x1="' + L + '" x2="' + (L + W) + '" y1="' + y(thr) + '" y2="' + y(thr) + '" stroke-width="1.5" stroke-dasharray="5 5" style="stroke:' + col(alerta) + '"></line>' +
-      '<text x="' + (L + 6) + '" y="' + (y(thr) - 7) + '" style="fill:' + col(alerta) + '">' + esc(o.threshold.label || 'umbral ' + conUnidad(thr, o.unit)) + '</text></g>'
+      '<text x="' + (L + 6) + '" y="' + (y(thr) - 7) + '" style="fill:' + col(alerta) + ';paint-order:stroke;stroke:var(--sc-surface);stroke-width:4px;stroke-linejoin:round">' + esc(o.threshold.label || 'umbral ' + conUnidad(thr, o.unit)) + '</text></g>'
   }
 
   // El hueco: encima de la referencia y del umbral, debajo de la línea. De la última medición antes

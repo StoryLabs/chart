@@ -7,13 +7,14 @@ import { datos, tooltips } from './ayuda.js'
 
 beforeEach(resetIds)
 
-const clip = html => html.match(/<clipPath id="(sccp\d+)"><rect x="([\d.]+)" y="([\d.]+)" width="([\d.]+)" height="([\d.]+)"><\/rect><\/clipPath>/)
+const clip = html => html.match(/<clipPath id="(sccp[\w-]+)"><rect x="([\d.]+)" y="([\d.]+)" width="([\d.]+)" height="([\d.]+)"><\/rect><\/clipPath>/)
 
 test('line: un pico sobre max se recorta contra el plot, lleva data-sc-over y el dato viaja entero', () => {
   const html = SC.line({ values: [70, 72, 3000, 71], max: 400, unit: 'ms' })
   const c = clip(html)
 
-  expect(c.slice(2).map(Number)).toEqual([44, 14, 580, 190])
+  // Recorta lo que pasa del techo; a los costados y abajo deja 8 de margen para puntos y trazos.
+  expect(c.slice(2).map(Number)).toEqual([36, 14, 596, 198])
   expect(html).toMatch(new RegExp('<g data-sc-s="series" clip-path="url\\(#' + c[1] + '\\)" data-sc-over>'))
   expect(datos(html, 'data-sc-line').v).toContain(3000)
 })
@@ -55,4 +56,20 @@ test('stacked: la pila que se pasa se recorta al alto del plot y lleva data-sc-o
   expect(pilas[1]).toContain('data-sc-over')
   expect(pilas[1]).toContain('overflow:hidden')
   expect(tooltips(html)[1].v).toBe('300')
+})
+
+test('H1: el punto final y un punto en el primer índice entran enteros en el recorte', () => {
+  for (const html of [SC.stackedLine({ id: 'x', max: 100, series: [{ key: 'a', label: 'A', hue: 'blue', values: [50, 300, 50, null, null, 60] }] }), SC.line({ id: 'y', values: [5, null, 300, 50, 60], max: 100, buffer: true })]) {
+    const [, , x, , w] = clip(html).map(Number)
+    const glow = html.match(/class="sc-glow[^"]*" cx="([\d.]+)" cy="[\d.]+" r="([\d.]+)"/)
+
+    expect(x + w).toBeGreaterThanOrEqual(Number(glow[1]) + Number(glow[2]) + 1.5)
+    expect(x).toBeLessThanOrEqual(44 - 5)
+  }
+})
+
+test('H1: con negativos, el piso también se recorta exacto', () => {
+  const c = clip(SC.line({ values: [5, -20, 6], max: 10 })).slice(2).map(Number)
+
+  expect(c[1] + c[3]).toBe(204)
 })

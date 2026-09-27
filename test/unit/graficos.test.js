@@ -86,6 +86,19 @@ test('bullet sin min es igual que con min 0', () => {
   expect(SC.bullet({ ...o, min: 0 })).toBe(SC.bullet(o))
 })
 
+test('H4: bullet con min distinto de 0 dice la escala en la línea de referencia', () => {
+  const html = SC.bullet({ label: 'Uptime 30d', value: 99.8, unit: '%', min: 99, max: 100, reference: [99.5, 100] })
+
+  expect(html).toContain('>Escala de 99 a 100% · Referencia: 99.5 a 100%</div>')
+})
+
+test('H5: bullet sin valor no escribe la unidad después del guion', () => {
+  const html = SC.bullet({ label: 'Arranque', value: null, unit: '%', max: 100, reference: [25, 100] })
+
+  expect(html).toContain('<b>—</b>')
+  expect(html).not.toContain('<span class="sc-unit">%</span>')
+})
+
 describe('rings', () => {
   const arco = html => html.match(/d="M 130 24 A 106 106 0 (\d) 1 ([\d.]+) ([\d.]+)"/)
 
@@ -220,6 +233,10 @@ describe('ribbon: dominio que no son las horas del día', () => {
   })
 })
 
+test('H7: el rótulo del umbral lleva un trazo del color de la superficie detrás', () => {
+  expect(SC.line({ values: [1, 9], max: 10, threshold: { value: 5 } })).toMatch(/<text[^>]*paint-order:stroke[^>]*stroke:var\(--sc-surface\)[^>]*>umbral/)
+})
+
 describe('line', () => {
   const base = o => SC.line({ values: [0, 50, 100], max: 100, ...o })
 
@@ -352,6 +369,23 @@ test('columns: un valor en cero no dibuja cuerpo ni tapa en ninguna variante, y 
     expect(g).toContain('fill="transparent"')
     expect(tooltips(html)[0].v).toBe('0 pings')
   }
+})
+
+test('H2: columns en curso con valor 0 y proyección que no lo supera no dibuja debajo del eje', () => {
+  for (const projected of [0, -1]) {
+    const html = SC.columns({ max: 5, data: [{ label: '1', value: 2 }, { label: '2', value: 0, projected }] })
+    const g = html.split('data-sc-s="c1"')[1].split('</g>')[0]
+
+    expect(g).not.toContain('<path')
+    expect(g).not.toContain('<rect x="3')
+    expect(tooltips(html)[1].d).toContain('En curso')
+    expect(html).toContain('class="sc-strong">2</text>')
+  }
+})
+
+test('H6: columns lista «En curso» sólo si alguna columna tiene projected', () => {
+  expect(SC.columns({ max: 5, data: [{ label: '1', value: 2 }] })).not.toContain('En curso')
+  expect(SC.columns({ max: 5, data: [{ label: '1', value: 2, projected: 3 }] })).toContain('En curso')
 })
 
 describe('stacked', () => {
