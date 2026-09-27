@@ -364,3 +364,23 @@ test('H3: --sc-label-w ensancha la columna del rótulo en range y diverging', as
   expect(await ancho()).toBeGreaterThan(160)
   expect(await page.locator('#c-diverging-residuo .sc-nm').first().evaluate(e => e.getBoundingClientRect().width)).toBeGreaterThan(160)
 })
+
+test('bullet compacto: alto ≤ 30 px, barra de 5 a 6 px, y se acomoda desde 60 px', async ({ page }) => {
+  const r = await page.evaluate(() => {
+    const el = document.getElementById('c-state-empty')
+
+    el.style.width = '60px'
+    el.style.padding = '0'
+    window.SC.render(el, window.SC.bullet({ compact: true, label: 'Latency', value: 85, max: 100, reference: [80, 100], hue: 'green' }))
+    const c = el.querySelector('.sc-compact').getBoundingClientRect()
+    const b = el.querySelector('.sc-bar').getBoundingClientRect()
+
+    return { alto: c.height, barra: b.height, ancho: c.width, barraAncho: b.width, sobra: el.scrollWidth - el.clientWidth }
+  })
+
+  expect(r.alto).toBeLessThanOrEqual(30)
+  expect(r.barra).toBeGreaterThanOrEqual(5)
+  expect(r.barra).toBeLessThanOrEqual(6)
+  expect(r.barraAncho).toBeGreaterThan(20)
+  expect(r.sobra).toBe(0)
+})

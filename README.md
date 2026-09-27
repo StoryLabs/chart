@@ -220,6 +220,7 @@ dentro de un `<div class="sc-group">` comparten el hover.
 | `side` | string | Texto a la derecha. |
 | `hue`, `hue2` | tono | `'blue'`, igual a `hue` |
 | `key` | string | `label` |
+| `compact` | boolean | `false`. Una sola línea, el número y la barra, para una celda de tabla (desde 60 px de ancho, menos de 30 de alto). El label va al tooltip; `reference` pasa a ser opcional. |
 
 </details>
 

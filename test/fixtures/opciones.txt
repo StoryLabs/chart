@@ -2,7 +2,7 @@
 # #1 es el segundo argumento posicional. Una opción que termina en () es una función: no cabe en
 # un caso canónico (JSON) y se prueba en graficos.test.js. La usa test/unit/opciones.test.js en las dos direcciones:
 # toda opción de acá aparece en algún caso canónico, y toda hoja de un caso canónico está acá.
-bullet       label value unit min max reference[] side hue hue2 key
+bullet       label value unit min max compact reference[] side hue hue2 key
 rings        center.value center.label rings[].key rings[].label rings[].value rings[].max rings[].hue id
 segmented    segments[].key segments[].label segments[].value segments[].detail segments[].hue segments[].hatched
 ribbon       label headline.parts[][] headline.chip states.*.label states.*.hue states.*.lane states.*.hatched id

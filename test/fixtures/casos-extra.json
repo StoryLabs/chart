@@ -1745,6 +1745,23 @@
   ]
  },
  {
+  "id": "bullet-compacto",
+  "fn": "bullet",
+  "args": [
+   {
+    "compact": true,
+    "label": "Latency",
+    "value": 85,
+    "max": 100,
+    "reference": [
+     80,
+     100
+    ],
+    "hue": "green"
+   }
+  ]
+ },
+ {
   "id": "rings-cinco",
   "fn": "rings",
   "args": [

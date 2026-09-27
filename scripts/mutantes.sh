@@ -101,3 +101,6 @@ m src/charts/bullet.js "(min ? 'Escala de ' + min + ' a ' + conUnidad(o.max, o.u
 m src/charts/bullet.js "(val === null ? '' : '<span class=\"sc-unit\">' + esc(o.unit) + '</span>')" "'<span class=\"sc-unit\">' + esc(o.unit) + '</span>'" "H5: unidad después del guion"
 m src/charts/columns.js "[{ label: 'Medido', hue }].concat(o.data.some(d => d.projected !== undefined && d.projected !== null) ? [{ label: 'En curso', hue, hatched: true }] : [])" "[{ label: 'Medido', hue }, { label: 'En curso', hue, hatched: true }]" "H6: En curso siempre"
 m src/charts/line.js ";paint-order:stroke;stroke:var(--sc-surface);stroke-width:4px;stroke-linejoin:round" "" "H7: rótulo del umbral sin trazo"
+# bullet compacto.
+m src/charts/bullet.js "  if (o.compact) return" "  if (false) return" "bullet compacto ignorado"
+m src/charts/bullet.js "o && o.compact && !o.reference ? [] : ['reference']" "['reference']" "compacto exige reference"

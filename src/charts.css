@@ -136,6 +136,13 @@
   .sc-ref::before { left: 0; } .sc-ref::after { right: 0; }
   .sc-val { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 6px; background: var(--c); z-index: 1; }
   .sc-bullet-ref { color: var(--sc-muted); font-size: 12.5px; }
+  .sc-compact { grid-template-columns: max-content minmax(0, 1fr); align-items: center; gap: 6px; min-width: 60px; }
+  /* Ancho mínimo para 3 cifras: en una columna de tabla, las barras arrancan todas en el mismo x. */
+  .sc-compact b { min-width: 3ch; text-align: right; font-size: 13px; font-weight: 600; }
+  .sc-compact .sc-bar { height: 6px; margin: 0; border-radius: 3px; }
+  .sc-compact .sc-ref { top: -3px; bottom: -3px; }
+  .sc-compact .sc-ref::before, .sc-compact .sc-ref::after { top: -2px; bottom: -2px; width: 2px; }
+  .sc-compact .sc-val { border-radius: 3px; }
 
   .sc-comp { display: flex; height: 26px; border-radius: 8px; overflow: hidden; gap: 2px; }
   .sc-comp > div { background: var(--c); min-width: 3px; }

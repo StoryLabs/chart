@@ -99,6 +99,37 @@ test('H5: bullet sin valor no escribe la unidad después del guion', () => {
   expect(html).not.toContain('<span class="sc-unit">%</span>')
 })
 
+describe('bullet compacto', () => {
+  const o = { compact: true, label: 'Latency', value: 85, max: 100, reference: [80, 100], hue: 'green' }
+
+  test('una sola línea: número y barra, sin cabecera ni referencia escrita; label en tooltip y aria-label', () => {
+    const html = SC.bullet(o)
+
+    expect(html).toContain('sc-compact')
+    expect(html).toContain('aria-label="Latency"')
+    expect(html).toContain('<b>85</b>')
+    expect(html).not.toContain('sc-bullet-head')
+    expect(html).not.toContain('sc-bullet-ref')
+    expect(tooltips(html)[0]).toEqual(tooltips(SC.bullet({ ...o, compact: false }))[0])
+  })
+
+  test('la referencia rayada sigue si viene; sin reference no es un error', () => {
+    expect(SC.bullet(o)).toContain('class="sc-ref" style="left:80%;width:20%"')
+    const sin = SC.bullet({ compact: true, label: 'L', value: 40, max: 100 })
+
+    expect(sin).not.toContain('data-sc-error')
+    expect(sin).not.toContain('sc-ref')
+    expect(sin).toContain('sc-val')
+  })
+
+  test('sin valor: — y la pista sola', () => {
+    const html = SC.bullet({ ...o, value: null })
+
+    expect(html).toContain('<b>—</b>')
+    expect(html).not.toContain('sc-val')
+  })
+})
+
 describe('rings', () => {
   const arco = html => html.match(/d="M 130 24 A 106 106 0 (\d) 1 ([\d.]+) ([\d.]+)"/)
 

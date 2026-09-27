@@ -41,6 +41,7 @@ const EXTRA = [
   ['pie-id', 'pie', [{ id: 'torta', slices: [{ key: 'a', label: 'A', value: 2, hue: 'blue' }, { key: 'b', label: 'B', value: 1, hue: 'sky' }] }]],
   ['heatmap-id', 'heatmap', [{ id: 'horas', rows: ['a'], values: [[1, 'x']] }]],
   ['diverging-residuo', 'diverging', [{ unit: 'ms', max: 60, sides: ['más rápida', 'más lenta'], reference: [-12, 12], hue: 'blue', negativeHue: 'green', rows: [{ key: 'a', label: 'checkout-api', value: 38, hue: 'orange' }, { key: 'b', label: 'search-api', value: 14, hue: 'amber' }, { key: 'c', label: 'auth-api', value: 3 }, { key: 'd', label: 'catalog-api', value: -2 }, { key: 'e', label: 'billing-api', value: -9 }, { key: 'f', label: 'reports-api', value: null }, { key: 'g', label: 'export-api', value: 240 }] }]],
+  ['bullet-compacto', 'bullet', [{ compact: true, label: 'Latency', value: 85, max: 100, reference: [80, 100], hue: 'green' }]],
   ['rings-cinco', 'rings', [{ id: 'cinco', center: { value: 91, label: 'score' }, rings: [{ key: 'availability', label: 'Availability', value: 100, hue: 'blue' }, { key: 'latency', label: 'Latency', value: 92, hue: 'sky' }, { key: 'slo', label: 'SLO', value: null, hue: 'violet' }, { key: 'coldStart', label: 'Cold start', value: 100, hue: 'indigo' }, { key: 'stability', label: 'Stability', value: 88, hue: 'green' }] }]]
 ]
 
