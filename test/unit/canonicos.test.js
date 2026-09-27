@@ -13,9 +13,12 @@ beforeAll(() => {
   for (const c of casos) obtenidas.push(SC[c.fn](...structuredClone(c.args)))
 })
 
-test('47 casos del prototipo primero, los extra detrás, en el mismo orden que sus salidas', () => {
-  expect(casos.filter(c => c.clase === 'prototipo').length).toBe(47)
-  expect(casos.findIndex(c => c.clase === 'extra')).toBe(47)
+// Salieron del juego: stacked-blend y stacked-blend-sin-cold. Carlos eliminó la variante blend de
+// stacked() el 2026-09-26; stacked es HTML y no consume el contador de ids, así que los demás no
+// se corrieron.
+test('45 casos del prototipo primero, los extra detrás, en el mismo orden que sus salidas', () => {
+  expect(casos.filter(c => c.clase === 'prototipo').length).toBe(45)
+  expect(casos.findIndex(c => c.clase === 'extra')).toBe(45)
   expect(casos.map(c => c.id)).toEqual(salidas.map(s => s.id))
 })
 

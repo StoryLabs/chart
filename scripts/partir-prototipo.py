@@ -10,7 +10,7 @@ MODS = {
   'core/muestreo.js': ['muestreo'],
   'core/recursos.js': ['recursos'],
   'core/headline.js': ['headline'],
-  'core/color.js': ['mezcla', 'FUERTE', 'SUAVE', 'velo'],
+  'core/color.js': ['mezcla', 'FUERTE', 'SUAVE', 'velo'],  # mezcla salió después, con blend
   'charts/legend.js': ['legend'],
   'charts/bullet.js': ['bullet'],
   'charts/rings.js': ['rings'],

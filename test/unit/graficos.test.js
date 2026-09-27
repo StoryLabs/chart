@@ -281,6 +281,12 @@ describe('stacked', () => {
   })
 })
 
+test('stacked: blend ya no existe; se dibuja como el default', () => {
+  const o = { max: 4, series: [{ key: 'a', label: 'A', hue: 'blue' }, { key: 'b', label: 'B', hue: 'sky' }], data: [{ label: 'd', values: { a: 1, b: 2 } }] }
+
+  expect(SC.stacked({ ...o, variant: 'blend' }).replace(',&quot;variant&quot;:&quot;blend&quot;', '')).toBe(SC.stacked(o))
+})
+
 describe('pie', () => {
   const o = { unit: ['ping', 'pings'], slices: [{ key: 'a', label: 'A', value: 3, hue: 'blue' }, { key: 'b', label: 'B', value: 1, hue: 'sky' }, { key: 'n', label: 'N', value: 4, hue: 'neutral', hatched: true }] }
   const filas = html => [...html.matchAll(/data-sc-leg="(\w+)" aria-pressed="(\w+)".*?<b>([^<]*)<\/b>/g)].map(m => [m[1], m[2], m[3]])

@@ -189,7 +189,7 @@ columns({ variant: 'stripped', max: 6, unit: ['cold start', 'cold starts'], data
 `{ series: [{ key, label, hue, hatched? }], data: [{ label, title?, current?, values: { clave: n } }],
 variant = 'line', max, yTicks, height = 190, unit, hidden? }`
 
-`variant`: `line` | `solid` | `blend`. Se redibuja al apagar una serie.
+`variant`: `line` | `solid`. Se redibuja al apagar una serie.
 
 ```js
 stacked({ max: 144, unit: ['ping', 'pings'], series: [{ key: 'warm', label: 'Warm', hue: 'blue' }, { key: 'none', label: 'Sin pings', hue: 'neutral', hatched: true }], data: [{ label: 'lun', values: { warm: 131, none: 0 } }] })

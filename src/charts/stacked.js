@@ -1,5 +1,5 @@
 import { legend } from './legend.js'
-import { mezcla, FUERTE, SUAVE, velo } from '../core/color.js'
+import { FUERTE, SUAVE, velo } from '../core/color.js'
 import { n1, esc, col, cuenta, tip, num, valor } from '../core/format.js'
 import { requiere, vacio, conEscala } from '../core/guardas.js'
 import { conBanda, itemHueco } from '../core/huecos.js'
@@ -17,7 +17,7 @@ export const stacked = o => {
   const pos = t => n1((t / o.max) * 100)
   const ocultas = o.hidden || []
   const vivas = o.series.filter(se => !ocultas.includes(se.key))
-  const variante = ['line', 'solid', 'blend'].includes(o.variant) ? o.variant : 'line'
+  const variante = o.variant === 'solid' ? 'solid' : 'line'
 
   return '<div class="sc-chart sc-stacked" data-sc-chart="stacked" data-sc-opts="' + esc(JSON.stringify(o)) + '" style="--h:' + H + 'px">' +
     legend(o.series.map(se => ({ key: se.key, label: se.label, hue: se.hue, hatched: se.hatched, off: ocultas.includes(se.key) })).concat(conBanda(o) && o.data.some(d => o.series.every(se => valor((d.values || {})[se.key]) === null)) ? [itemHueco()] : [])) +
@@ -46,19 +46,6 @@ export const stacked = o => {
               estilo = 'box-sizing:border-box;height:' + n1(Math.max(3, exacto)) + 'px;border-top:2.5px ' + (q.se.hatched ? 'dashed ' : 'solid ') + col(h) + ';' +
                 (q.se.hatched ? '' : 'background:linear-gradient(to bottom,' + velo(h, FUERTE) + ',' + velo(h, SUAVE) + ');') +
                 (cima ? 'border-radius:4px 4px 0 0;' : '')
-            } else if (variante === 'blend') {
-              const abajo = partes[k - 1]
-              const arriba = partes[k + 1]
-              const pegaAbajo = Boolean(abajo && !abajo.se.hatched && !q.se.hatched)
-              const pegaArriba = Boolean(arriba && !arriba.se.hatched && !q.se.hatched)
-              const alto = Math.max(2, exacto - (k && !pegaAbajo ? 2 : 0))
-              const b = n1(Math.min(5, alto / 2))
-
-              estilo = 'height:' + n1(alto) + 'px;' + (k && !pegaAbajo ? 'margin-bottom:2px;' : '') + (cima ? 'border-radius:6px 6px 0 0;' : '') +
-                (q.se.hatched || !(pegaAbajo || pegaArriba) ? '' :
-                  'background:linear-gradient(to top,' +
-                    (pegaAbajo ? mezcla(h, abajo.se.hue) + ' 0,' + col(h) + ' ' + b + 'px,' : col(h) + ' 0,') +
-                    (pegaArriba ? col(h) + ' calc(100% - ' + b + 'px),' + mezcla(h, arriba.se.hue) + ' 100%' : col(h) + ' 100%') + ');')
             } else {
               estilo = 'height:' + n1(Math.max(2, exacto - (k ? 2 : 0))) + 'px;' + (k ? 'margin-bottom:2px;' : '') + (cima ? 'border-radius:6px 6px 0 0;' : '')
             }

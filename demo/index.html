@@ -169,7 +169,6 @@
         <div class="seg" id="segJoint">
           <button type="button" id="jnLine" data-joint="line">line</button>
           <button type="button" id="jnSolid" data-joint="solid">solid</button>
-          <button type="button" id="jnBlend" data-joint="blend">blend</button>
         </div>
         <div class="slot" id="sStacked"></div><details class="api"><summary>API</summary><pre><code id="cStacked"></code></pre></details></article>
       <article class="card c3"><div class="card-head"><div class="kind">pie()</div><h3>Pings de hoy</h3></div>
@@ -469,7 +468,7 @@ import * as StorylabsCharts from '../src/index.js'
     ['jue 24', 135, 9, 0, 0], ['vie 25', 133, 10, 1, 0], ['sáb 26', 102, 12, 3, 27]
   ]
 
-  let union = ['line', 'solid', 'blend'].includes(leer('sc-stk')) ? leer('sc-stk') : 'line'
+  let union = ['line', 'solid'].includes(leer('sc-stk')) ? leer('sc-stk') : 'line'
 
   const pintarApiladas = () => {
   pintar('stacked', {
@@ -485,7 +484,7 @@ import * as StorylabsCharts from '../src/index.js'
       { key: 'none', label: 'Sin pings', hue: 'neutral', hatched: true }
     ],
     data: SEMANA.map((d, i) => ({ label: d[0], current: i === 6, values: { warm: d[1], cold: d[2], failed: d[3], none: d[4] } }))
-  }, 'sStacked', 'cStacked', '// variant: line (relleno translúcido y línea de borde), solid o blend.')
+  }, 'sStacked', 'cStacked', '// variant: line (relleno translúcido y línea de borde), o solid.')
 
     for (const b of document.querySelectorAll('[data-joint]')) b.setAttribute('aria-pressed', String(b.dataset.joint === union))
     aplicar()
