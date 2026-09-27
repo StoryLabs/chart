@@ -144,6 +144,42 @@ describe('ribbon', () => {
   })
 })
 
+describe('ribbon: dominio que no son las horas del día', () => {
+  const ESTADOS = { w: { label: 'W', hue: 'blue', lane: 0 }, c: { label: 'C', hue: 'sky', lane: 1 } }
+  const reloj = h => { const m = Math.round((h % 24) * 60); return String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0') }
+
+  test('format escribe los extremos del tramo', () => {
+    const html = SC.ribbon({ states: ESTADOS, rest: 'w', domain: [18.2, 42.2], format: reloj, segments: [[18.2, 30, 'w'], [30, 42.2, 'c']] })
+
+    expect(tooltips(html).map(t => t.d)).toEqual(['18:12 a 06:00', '06:00 a 18:12'])
+    expect(html).not.toContain('42:12')
+  })
+
+  test('unit: la duración se calcula en la unidad del dominio', () => {
+    const html = SC.ribbon({ states: ESTADOS, rest: 'w', domain: [0, 120], unit: 'min', format: m => m + ' min', segments: [[0, 90, 'w'], [90, 120, 'c']] })
+
+    expect(tooltips(html).map(t => t.v)).toEqual(['1 h 30 min', '30 min'])
+    expect(SC.ribbon({ states: ESTADOS, rest: 'w', domain: [0, 3], unit: 'd', format: String, segments: [[0, 2, 'w'], [2, 3, 'c']] })).toContain('data-sc-v="48 h 0 min"')
+  })
+
+  test('sin format ni unit, igual que antes: horas del día', () => {
+    const o = { states: ESTADOS, rest: 'w', segments: [[0, 1.5, 'w'], [1.5, 24, 'c']] }
+
+    const conUnit = SC.ribbon({ ...o, unit: 'h' })
+
+    resetIds()
+    expect(conUnit).toBe(SC.ribbon(o))
+    expect(tooltips(SC.ribbon(o))[0]).toEqual({ t: 'W', v: '1 h 30 min', d: '00:00 a 01:30' })
+  })
+
+  test('un format que lanza o no es función usa el default, sin lanzar', () => {
+    const o = { states: ESTADOS, rest: 'w', segments: [[0, 1.5, 'w'], [1.5, 24, 'c']] }
+
+    expect(tooltips(SC.ribbon({ ...o, format: 'x' }))[0].d).toBe('00:00 a 01:30')
+    expect(tooltips(SC.ribbon({ ...o, format: () => { throw new Error('x') } }))[0].d).toBe('00:00 a 01:30')
+  })
+})
+
 describe('line', () => {
   const base = o => SC.line({ values: [0, 50, 100], max: 100, ...o })
 

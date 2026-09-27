@@ -419,6 +419,8 @@ con un color por carril. Un tramo `hatched` corta la cinta.
 | `segments` ★ | `[[desde, hasta, clave]]` | Contiguos y en orden. |
 | `rest` | clave | El estado de reposo. |
 | `domain` | `[desde, hasta]` | `[0, 24]`, en horas. |
+| `unit` | `'s'` \| `'min'` \| `'h'` \| `'d'` | `'h'`. En qué unidad está el dominio, para la duración de cada tramo. |
+| `format` | función | La hora del día. Escribe un valor del dominio en el tooltip: `domain: [18.2, 42.2]` con `format: h => …` para «las últimas 24 h». |
 | `ticks` | `[{ at, label, sub }]` | |
 | `label`, `headline` | | |
 

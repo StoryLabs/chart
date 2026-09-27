@@ -1455,6 +1455,54 @@
   ]
  },
  {
+  "id": "ribbon-minutos",
+  "fn": "ribbon",
+  "args": [
+   {
+    "rest": "w",
+    "unit": "min",
+    "domain": [
+     0,
+     120
+    ],
+    "states": {
+     "w": {
+      "label": "Warm",
+      "hue": "blue",
+      "lane": 0
+     },
+     "c": {
+      "label": "Cold start",
+      "hue": "sky",
+      "lane": 1
+     }
+    },
+    "segments": [
+     [
+      0,
+      90,
+      "w"
+     ],
+     [
+      90,
+      120,
+      "c"
+     ]
+    ],
+    "ticks": [
+     {
+      "at": 0,
+      "label": "-2 h"
+     },
+     {
+      "at": 120,
+      "label": "ahora"
+     }
+    ]
+   }
+  ]
+ },
+ {
   "id": "bullet-min",
   "fn": "bullet",
   "args": [

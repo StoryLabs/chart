@@ -29,6 +29,7 @@ const EXTRA = [
     states: { warm: { label: 'Warm', hue: 'blue', lane: 1 }, cold: { label: 'Cold start', hue: 'sky', lane: 0 } },
     segments: [[0, 4, 'warm'], [4, 7.33, 'cold'], [7.33, 12, 'warm']], ticks: [{ at: 0, label: '00:00' }, { at: 12, label: '12:00' }]
   }]],
+  ['ribbon-minutos', 'ribbon', [{ rest: 'w', unit: 'min', domain: [0, 120], states: { w: { label: 'Warm', hue: 'blue', lane: 0 }, c: { label: 'Cold start', hue: 'sky', lane: 1 } }, segments: [[0, 90, 'w'], [90, 120, 'c']], ticks: [{ at: 0, label: '-2 h' }, { at: 120, label: 'ahora' }] }]],
   ['bullet-min', 'bullet', [{ label: 'Uptime 30d', value: 99.95, unit: '%', min: 99, max: 100, reference: [99.5, 100], side: 'objetivo 99.5%' }]],
   ['range-min', 'range', [{ unit: 'ms', min: 100, max: 300, ticks: [100, 200, 300], rows: [{ label: 'checkout-api', from: 68, to: 257 }, { label: 'search-api', from: 30, to: 320 }] }]]
 ]

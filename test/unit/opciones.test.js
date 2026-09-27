@@ -12,7 +12,7 @@ for (const linea of readFileSync(new URL('../fixtures/opciones.txt', import.meta
   const partes = linea.trim().split(/\s+/)
 
   if (!linea.startsWith(' ')) actual = partes.shift()
-  lista[actual] = (lista[actual] || []).concat(partes)
+  lista[actual] = (lista[actual] || []).concat(partes.filter(p => !p.endsWith('()')))
 }
 
 /** La ruta de una hoja en notación de la lista: índices como [], el segundo argumento como #1. */

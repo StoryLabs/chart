@@ -79,8 +79,12 @@ export const ribbon = o => {
   const yTop = 46 - alto / 2
   const yBot = 46 + (carriles - 1) * paso + alto / 2
   const x = h => n1(x0 + ((h - d0) / (d1 - d0)) * ancho)
-  const hora = h => { const m = Math.round(h * 60); return pad(Math.floor(m / 60)) + ':' + pad(m % 60) }
-  const dura = h => { const m = Math.round(h * 60); return m >= 60 ? Math.floor(m / 60) + ' h ' + (m % 60) + ' min' : m + ' min' }
+  // format escribe un valor del dominio (por defecto, la hora del día); unit dice en qué unidad está
+  // el dominio, para calcular la duración de un tramo. Un format que no sirve usa el default.
+  const reloj = h => { const m = Math.round(h * 60); return pad(Math.floor(m / 60)) + ':' + pad(m % 60) }
+  const hora = h => { try { return typeof o.format === 'function' ? String(o.format(h)) : reloj(h) } catch { return reloj(h) } }
+  const minutos = { s: 1 / 60, min: 1, h: 60, d: 1440 }[o.unit] || 60
+  const dura = h => { const m = Math.round(h * minutos); return m >= 60 ? Math.floor(m / 60) + ' h ' + (m % 60) + ' min' : m + ' min' }
   // El color de un carril es el del estado medido que vive en él.
   const tonoDe = l => { const k = claves.find(c => o.states[c].lane === l && !o.states[c].hatched); return k ? o.states[k].hue : 'neutral' }
 

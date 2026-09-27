@@ -74,3 +74,6 @@ m src/charts/bullet.js "  const min = num(o.min)
 m src/charts/range.js "  const min = num(o.min)
 " "  const min = 0
 " "range ignora min"
+# ribbon: format y unit.
+m src/charts/ribbon.js "typeof o.format === 'function' ? String(o.format(h)) : reloj(h)" "reloj(h)" "ribbon ignora format"
+m src/charts/ribbon.js "const minutos = { s: 1 / 60, min: 1, h: 60, d: 1440 }[o.unit] || 60" "const minutos = 60" "ribbon ignora unit"
