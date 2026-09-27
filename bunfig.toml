@@ -1,0 +1,3 @@
+# bun test sólo corre las funciones puras; los .spec.js del navegador son de Playwright (bun run test:browser).
+[test]
+root = "test/unit"

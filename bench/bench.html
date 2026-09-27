@@ -1,0 +1,134 @@
+<!doctype html><html data-theme="dark"><head><meta charset="utf-8"><link rel="stylesheet" href="../dist/charts.css">
+<style>body{margin:0;background:var(--sc-bg);padding:20px} #host{width:560px} #ancho{width:1140px} #movil{width:350px}</style></head>
+<body><div id="host"></div><div id="ancho"></div><div id="movil"></div><pre id="out"></pre>
+<script src="../dist/storylabs-charts.iife.js"></script>
+<script>
+const SC = StorylabsCharts
+const pad = n => String(n).padStart(2, '0')
+let semilla = 5
+const azar = () => { semilla = (semilla * 16807) % 2147483647; return semilla / 2147483647 }
+const lista = (n, f) => Array.from({ length: n }, (_, i) => f(i))
+const mediana = xs => xs.slice().sort((a, b) => a - b)[xs.length >> 1]
+
+/** ms por llamada: mediana de 7 tandas de n repeticiones. */
+const medir = (fn, n) => {
+  const ts = []
+  for (let r = 0; r < 7; r++) { const t0 = performance.now(); for (let i = 0; i < n; i++) fn(); ts.push((performance.now() - t0) / n) }
+  return mediana(ts)
+}
+
+const linea = n => ({ label: 'Base', values: lista(n, i => (i < n * 0.78 ? 62 + azar() * 12 : 244 + azar() * 16)), labels: lista(n, i => 'p' + i), unit: 'ms', max: 300, yTicks: [0, 100, 200, 300], xLabels: ['a', 'b'], band: [40, 120], threshold: { value: 218 }, buffer: true })
+const apiladas = n => ({ wide: true, unit: 'ms', max: 160, buffer: true, labels: lista(n, i => 'p' + i), series: [{ key: 'a', label: 'Shared path', hue: 'blue', values: lista(n, () => 62 + azar() * 9) }, { key: 'b', label: 'Aporte propio', hue: 'violet', values: lista(n, () => 5 + azar() * 6) }] })
+const calor = filas => ({ rows: lista(filas, i => 'f' + i), values: lista(filas, () => lista(24, () => { const r = azar(); return r > 0.95 ? 'pausa' : r > 0.9 ? 3 : r > 0.8 ? 2 : r > 0.6 ? 1 : 0 })), steps: 3, unit: ['cold start', 'cold starts'], colTicks: [0, 12, 23] })
+const pilas = n => ({ unit: ['ping', 'pings'], max: 144, yTicks: [0, 72, 144], series: [{ key: 'w', label: 'Warm', hue: 'blue' }, { key: 'c', label: 'Cold', hue: 'sky' }, { key: 'f', label: 'Fail', hue: 'orange' }, { key: 'n', label: 'Sin', hue: 'neutral', hatched: true }], data: lista(n, i => ({ label: 'd' + i, values: { w: 100 + Math.round(azar() * 20), c: 8 + Math.round(azar() * 6), f: Math.round(azar() * 3), n: i % 5 ? 0 : 12 } })) })
+const cinta = n => { const segs = []; let t = 0; const paso = 24 / n; const ks = ['warm', 'cold', 'warm', 'down', 'warm', 'none']; for (let i = 0; i < n; i++) { segs.push([t, t + paso, ks[i % ks.length]]); t += paso } return { states: { cold: { label: 'Cold', hue: 'sky', lane: 0 }, warm: { label: 'Warm', hue: 'blue', lane: 1 }, down: { label: 'Down', hue: 'orange', lane: 2 }, none: { label: 'Sin', hue: 'neutral', lane: 1, hatched: true } }, rest: 'warm', domain: [0, 24], segments: segs, ticks: [{ at: 0, label: '0' }, { at: 24, label: '24' }] } }
+
+const CASOS = [
+  ['bullet', 'demo', () => ({ label: 'Warm p50', value: 69, unit: 'ms', max: 500, reference: [0, 250], hue: 'blue' })],
+  ['rings', 'demo · 3 anillos', () => ({ center: { value: 84, label: 'score' }, rings: [{ key: 'a', label: 'A', value: 96, hue: 'blue' }, { key: 'b', label: 'B', value: 82, hue: 'sky' }, { key: 'c', label: 'C', value: 71, hue: 'violet' }] })],
+  ['segmented', 'demo · 4 tramos', () => ({ segments: [{ key: 'w', label: 'Warm', value: 84, hue: 'blue' }, { key: 'c', label: 'Cold', value: 11, hue: 'sky' }, { key: 'd', label: 'Down', value: 2, hue: 'orange' }, { key: 'n', label: 'Sin', value: 3, hue: 'neutral', hatched: true }] })],
+  ['ribbon', 'demo · 11 tramos', () => cinta(11)],
+  ['ribbon', 'carga · 144 tramos', () => cinta(144)],
+  ['line', 'demo · 58 puntos', () => linea(58)],
+  ['line', 'carga · 1 000 puntos', () => linea(1000)],
+  ['line', 'carga · 10 000 puntos', () => linea(10000)],
+  ['stackedLine', 'demo · 2 × 49', () => apiladas(49)],
+  ['stackedLine', 'carga · 2 × 1 000', () => apiladas(1000)],
+  ['columns', 'demo · 10 columnas', () => ({ variant: 'stripped', unit: ['c', 'cs'], max: 6, yTicks: [0, 3, 6], data: lista(10, i => ({ label: String(i), value: 1 + (i % 5) })) })],
+  ['stacked', 'demo · 7 × 4', () => pilas(7)],
+  ['stacked', 'carga · 90 × 4', () => pilas(90)],
+  ['pie', 'demo · 4 porciones', () => ({ variant: 'pie', fill: 'line', unit: ['p', 'ps'], slices: [{ key: 'w', label: 'W', value: 102, hue: 'blue' }, { key: 'c', label: 'C', value: 12, hue: 'sky' }, { key: 'f', label: 'F', value: 3, hue: 'orange' }, { key: 'n', label: 'N', value: 27, hue: 'neutral', hatched: true }] })],
+  ['heatmap', 'demo · 7 × 24', () => calor(7)],
+  ['heatmap', 'carga · 52 × 24', () => calor(52)],
+  ['range', 'demo · 5 filas', () => ({ unit: 'ms', max: 400, ticks: [0, 200, 400], rows: lista(5, i => ({ label: 'api-' + i, from: 66 + i, to: 246 + i })) })],
+  ['range', 'carga · 50 filas', () => ({ unit: 'ms', max: 400, ticks: [0, 200, 400], rows: lista(50, i => ({ label: 'api-' + i, from: 66 + i, to: 246 + i })) })]
+]
+
+const host = document.getElementById('host')
+const r = { maquina: navigator.userAgent.replace(/.*(Chrome\/[\d.]+).*/, '$1') + ' · ' + navigator.hardwareConcurrency + ' núcleos', casos: [] }
+
+SC.mount()
+
+for (const [nombre, etiqueta, datos] of CASOS) {
+  const o = datos()
+  const fn = SC[nombre]
+  const html = fn(o)
+  const pesado = html.length > 200000
+  const texto = medir(() => fn(o), pesado ? 5 : html.length > 20000 ? 30 : 200)
+  const dom = medir(() => { host.innerHTML = html; SC.setHatch(); void host.offsetHeight }, pesado ? 3 : html.length > 20000 ? 15 : 60)
+
+  r.casos.push({ grafico: nombre + '()', caso: etiqueta, html_kb: +(html.length / 1024).toFixed(1), nodos: host.querySelectorAll('*').length, texto_ms: +texto.toFixed(3), dom_ms: +dom.toFixed(3), total_ms: +(texto + dom).toFixed(3) })
+}
+
+// ---- Interacción: el cursor sobre una línea ----
+const cursor = n => {
+  host.innerHTML = SC.line(linea(n)); SC.setHatch(); void host.offsetHeight
+  const cap = host.querySelector('[data-sc-line]')
+  const caja = cap.getBoundingClientRect()
+  let k = 0
+  const mover = () => { k = (k + 37) % 500; cap.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, clientX: caja.left + (k / 500) * caja.width, clientY: caja.top + 40 })); void document.body.offsetHeight }
+  mover()
+  return +medir(mover, 300).toFixed(3)
+}
+r.cursor = { 'line 58 puntos': cursor(58), 'line 1 000 puntos': cursor(1000), 'line 10 000 puntos': cursor(10000) }
+host.innerHTML = SC.heatmap(calor(52)); SC.setHatch(); void host.offsetHeight
+{ const cap = host.querySelector('[data-sc-heat]'); const caja = cap.getBoundingClientRect(); let k = 0
+  const mover = () => { k = (k + 37) % 500; cap.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, clientX: caja.left + (k / 500) * caja.width, clientY: caja.top + ((k * 7) % 500) / 500 * caja.height })); void document.body.offsetHeight }
+  mover(); r.cursor['heatmap 52 × 24'] = +medir(mover, 300).toFixed(3) }
+
+// ---- Interacción: tooltip y atenuado sobre una pila de 90 columnas ----
+host.innerHTML = SC.stacked(pilas(90)); void host.offsetHeight
+const tramos = [...host.querySelectorAll('[data-sc-s]')]
+let j = 0
+r.hover = {
+  'stacked 90 × 4: pasar a otra serie': +medir(() => {
+    const el = tramos[(j += 7) % tramos.length]
+    const c = el.getBoundingClientRect()
+    el.dispatchEvent(new PointerEvent('pointerover', { bubbles: true, clientX: c.left + 2, clientY: c.top + 2 }))
+    el.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, clientX: c.left + 2, clientY: c.top + 2 }))
+    void getComputedStyle(tramos[0]).opacity
+    void document.body.offsetHeight
+  }, 200).toFixed(3)
+}
+
+// ---- Experimento: el mismo hover, sin la transición de opacidad ----
+{ const st = document.createElement('style'); st.textContent = '[data-sc-s]{transition:none!important}'; document.head.appendChild(st)
+  host.innerHTML = SC.stacked(pilas(90)); void host.offsetHeight
+  const ts = [...host.querySelectorAll('[data-sc-s]')]; let q = 0
+  r.hover['sin transición'] = +medir(() => { const el = ts[(q += 7) % ts.length]; const c = el.getBoundingClientRect()
+    el.dispatchEvent(new PointerEvent('pointerover', { bubbles: true, clientX: c.left + 2, clientY: c.top + 2 }))
+    el.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, clientX: c.left + 2, clientY: c.top + 2 }))
+    void getComputedStyle(ts[0]).opacity; void document.body.offsetHeight }, 200).toFixed(3)
+  r.hover['sólo el script, sin forzar estilo'] = +medir(() => { const el = ts[(q += 7) % ts.length]
+    el.dispatchEvent(new PointerEvent('pointerover', { bubbles: true, clientX: 5, clientY: 5 })) }, 200).toFixed(3)
+  host.innerHTML = SC.stacked(pilas(7)); void host.offsetHeight
+  const t7 = [...host.querySelectorAll('[data-sc-s]')]
+  r.hover['stacked 7 × 4 (demo), sin transición'] = +medir(() => { const el = t7[(q += 3) % t7.length]; const c = el.getBoundingClientRect()
+    el.dispatchEvent(new PointerEvent('pointerover', { bubbles: true, clientX: c.left + 2, clientY: c.top + 2 }))
+    el.dispatchEvent(new PointerEvent('pointermove', { bubbles: true, clientX: c.left + 2, clientY: c.top + 2 }))
+    void getComputedStyle(t7[0]).opacity; void document.body.offsetHeight }, 200).toFixed(3)
+  st.remove() }
+
+// ---- El caso del monitor: 11 APIs, todo repintado de una vez cada 3 s ----
+const ancho = document.getElementById('ancho')
+const tablero = () => lista(11, i =>
+  '<section style="margin-bottom:18px"><div class="sc-group">' +
+    SC.bullet({ label: 'Warm p50', value: 60 + i, unit: 'ms', max: 500, reference: [0, 250], hue: 'blue' }) +
+    SC.bullet({ label: 'Cold rate', value: i, unit: '%', max: 30, reference: [0, 2], hue: 'sky' }) +
+    SC.bullet({ label: 'Error budget', value: 90, unit: '%', max: 100, reference: [50, 100], hue: 'violet' }) +
+  '</div>' + SC.line(linea(144)) + SC.heatmap(calor(7)) + '</section>'
+).join('')
+const htmlTablero = tablero()
+ancho.innerHTML = htmlTablero
+r.monitor = {
+  graficos: 11 * 5,
+  html_kb: +(htmlTablero.length / 1024).toFixed(1),
+  nodos: ancho.querySelectorAll('*').length,
+  texto_ms: +medir(tablero, 10).toFixed(2),
+  dom_ms: +medir(() => { ancho.innerHTML = htmlTablero; SC.setHatch(); void ancho.offsetHeight }, 8).toFixed(2)
+}
+r.monitor['con render() y sin cambios: armar y comparar'] = +medir(() => { semilla = 5; SC.render(ancho, tablero()) }, 10).toFixed(2)
+r.setHatch_ms_con_tablero = +medir(() => { SC.setHatch(); void ancho.offsetHeight }, 20).toFixed(3)
+
+document.getElementById('out').textContent = JSON.stringify(r)
+</script></body></html>

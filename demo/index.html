@@ -1,0 +1,596 @@
+<!doctype html>
+<html data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- La base que agrega el publicador de artefactos: la demo aprobada se vio con ella. -->
+<style>:root{color-scheme:light}body{margin:0;font:14px system-ui}[hidden]{display:none!important}img{max-width:100%}</style>
+<title>storylabs-charts</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<!-- La librería: la hoja de src/, sin copiar. -->
+<link rel="stylesheet" href="../src/charts.css">
+<style>
+  /* ==========================================================================================
+     Estilos de esta página: la vitrina, no la librería.
+     ========================================================================================== */
+  * { box-sizing: border-box; }
+  body { background: var(--sc-bg); color: var(--sc-text); font: 15px/1.55 var(--sc-font); padding-inline: 20px; padding-block: 28px 56px; }
+  .page { max-width: 1180px; margin-inline: auto; display: grid; gap: 30px; }
+
+  header.top { display: flex; flex-wrap: wrap; gap: 18px 28px; align-items: flex-end; justify-content: space-between; }
+  .eyebrow { font: 500 11px/1 var(--sc-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--sc-muted); }
+  h1 { font-family: var(--sc-mono); font-size: clamp(26px, 4.6vw, 40px); line-height: 1.1; font-weight: 500; letter-spacing: -.03em; margin: 10px 0 0; overflow-wrap: anywhere; }
+  h1 span { color: var(--sc-blue); }
+  h2 { font-size: 19px; font-weight: 600; margin: 0; letter-spacing: -.005em; }
+  h3 { font-size: 15px; font-weight: 600; margin: 0; }
+  p { margin: 0; }
+  .lede { color: var(--sc-muted); max-width: 62ch; margin-top: 10px; }
+
+  .controls { display: flex; flex-wrap: wrap; gap: 12px 18px; align-items: flex-end; }
+  .ctl { display: grid; gap: 6px; }
+  .ctl > span { font: 500 10px/1 var(--sc-mono); letter-spacing: .08em; text-transform: uppercase; color: var(--sc-muted); }
+  .seg { display: inline-flex; flex-wrap: wrap; background: var(--sc-inset); border: 1px solid var(--sc-line); border-radius: 10px; padding: 3px; gap: 2px; }
+  .seg button { font: 500 13px/1 var(--sc-font); color: var(--sc-muted); background: none; border: 0; border-radius: 7px; padding: 8px 12px; cursor: pointer; }
+  .seg button:hover { color: var(--sc-text); }
+  .seg button[aria-pressed="true"] { background: var(--sc-surface); color: var(--sc-text); box-shadow: 0 0 0 1px var(--sc-line); }
+  .accion { font: 600 13px/1 var(--sc-font); color: var(--sc-surface); background: var(--sc-text); border: 0; border-radius: 10px; padding: 12px 16px; cursor: pointer; }
+  .accion:hover { opacity: .88; }
+  button:focus-visible, summary:focus-visible { outline: 2px solid var(--sc-blue); outline-offset: 2px; }
+
+  .bloque { display: grid; gap: 16px; border-top: 1px solid var(--sc-line); padding-top: 24px; }
+  .bloque > p { color: var(--sc-muted); max-width: 66ch; }
+  .intro { display: grid; gap: 24px 40px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); }
+  .intro > div { display: grid; gap: 12px; align-content: start; min-width: 0; }
+  .gram { display: grid; grid-template-columns: 92px 1fr; gap: 14px; align-items: center; }
+  .gram .sw { height: 22px; border-radius: 6px; --c: var(--sc-blue); }
+  .gram b { font-weight: 600; }
+  .gram span { color: var(--sc-muted); display: block; font-size: 13.5px; }
+  .hechos { display: grid; gap: 6px; margin: 0; padding: 0; list-style: none; color: var(--sc-muted); font-size: 13.5px; }
+  .hechos b { color: var(--sc-text); font-weight: 600; }
+
+  pre { margin: 0; overflow-x: auto; background: var(--sc-inset); border: 1px solid var(--sc-line); border-radius: 12px; padding: 14px 16px; font: 12.5px/1.6 var(--sc-mono); color: var(--sc-text); tab-size: 2; }
+  code { font-family: var(--sc-mono); }
+
+  .grid { display: grid; gap: 18px; grid-template-columns: repeat(6, minmax(0, 1fr)); align-items: stretch; }
+  .card { background: var(--sc-surface); border: 1px solid var(--sc-line); border-radius: 18px; padding: 20px; display: grid; gap: 16px; align-content: start; min-width: 0; grid-column: span 6; }
+  .c2 { grid-column: span 2; } .c3 { grid-column: span 3; }
+  .r2 { grid-row: span 2; }
+  @media (max-width: 900px) {
+    .grid { grid-template-columns: minmax(0, 1fr); }
+    .card, .c2, .c3 { grid-column: auto; }
+    .r2 { grid-row: auto; }
+  }
+  .card-head { display: grid; gap: 3px; }
+  .card-head .kind { font: 500 12px/1.3 var(--sc-mono); color: var(--sc-blue); }
+  .slot { display: grid; gap: 16px; min-width: 0; }
+  details.api { border-top: 1px dashed var(--sc-line); padding-top: 10px; min-width: 0; }
+  details.api summary { cursor: pointer; font: 500 11px/1.4 var(--sc-mono); letter-spacing: .07em; text-transform: uppercase; color: var(--sc-muted); border-radius: 6px; width: fit-content; }
+  details.api summary:hover { color: var(--sc-text); }
+  details.api pre { margin-top: 10px; }
+
+  .tokens { display: grid; gap: 10px 28px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr)); }
+  .tok { display: grid; grid-template-columns: 34px 34px 34px minmax(0, 1fr); gap: 6px; align-items: center; font-size: 13.5px; }
+  .tok i { height: 22px; border-radius: 6px; }
+  .tok i.s { background: var(--c); }
+  .tok i.t { background: color-mix(in srgb, var(--c) var(--sc-track), transparent); }
+  .tok div { padding-left: 8px; min-width: 0; }
+  .tok code { font-size: 12px; color: var(--sc-text); }
+  .tok span { color: var(--sc-muted); display: block; font-size: 12.5px; }
+  .vars { display: flex; flex-wrap: wrap; gap: 8px 22px; font: 12px/1.5 var(--sc-mono); color: var(--sc-muted); }
+  .vars b { color: var(--sc-text); font-weight: 500; }
+
+  .estados { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); }
+  .estados > div { display: grid; gap: 8px; align-content: start; min-width: 0; }
+  .estados .cap { font: 500 12px/1.3 var(--sc-mono); color: var(--sc-blue); }
+
+  footer { color: var(--sc-muted); font-size: 13px; border-top: 1px solid var(--sc-line); padding-top: 18px; max-width: 70ch; }
+</style>
+</head>
+<body>
+
+<div class="page">
+  <header class="top">
+    <div>
+      <div class="eyebrow">Design spec · v0.1 · borrador</div>
+      <h1>storylabs<span>-</span>charts</h1>
+      <p class="lede">La librería de gráficos de StoryLabs: SVG y CSS hechos a mano, sin dependencias. Esta página es el muestrario y el borrador de la API; cada gráfico de abajo lo dibuja la misma función que después se publicaría.</p>
+    </div>
+    <div class="controls">
+      <div class="ctl"><span>Tema</span>
+        <div class="seg">
+          <button type="button" id="thDark" data-theme-set="dark">Dark</button>
+          <button type="button" id="thLight" data-theme-set="light">Light</button>
+        </div>
+      </div>
+      <div class="ctl"><span>Rayado</span>
+        <div class="seg">
+          <button type="button" id="lkRef" data-look="ref">Referencia</button>
+          <button type="button" id="lkDiag" data-look="diag">Diagonal</button>
+          <button type="button" id="lkVert" data-look="vert">Vertical</button>
+        </div>
+      </div>
+      <div class="ctl"><span>Densidad</span>
+        <div class="seg">
+          <button type="button" id="dnFina" data-density="fina">Fina</button>
+          <button type="button" id="dnMedia" data-density="media">Media</button>
+          <button type="button" id="dnGruesa" data-density="gruesa">Gruesa</button>
+        </div>
+      </div>
+      <div class="ctl"><span>Opacidad</span>
+        <div class="seg">
+          <button type="button" id="opSuave" data-op="suave">Suave</button>
+          <button type="button" id="opMedia" data-op="media">Media</button>
+          <button type="button" id="opFuerte" data-op="fuerte">Fuerte</button>
+        </div>
+      </div>
+      <button type="button" class="accion" id="btnCarga">Reproducir carga</button>
+    </div>
+  </header>
+
+  <section class="bloque intro">
+    <div>
+      <h2>La gramática</h2>
+      <div class="gram"><div class="sw" style="background:var(--c)"></div><div><b>Sólido</b><span>Lo que se midió.</span></div></div>
+      <div class="gram"><div class="sw sc-hx"><i class="sc-hfill"></i></div><div><b>Rayado</b><span>Lo que no es una medición: referencia, rango, proyección o falta de datos.</span></div></div>
+      <div class="gram"><div class="sw" style="background:color-mix(in srgb, var(--c) var(--sc-track), transparent)"></div><div><b>Tinte</b><span>La escala completa, el fondo de la barra.</span></div></div>
+    </div>
+    <div>
+      <h2>Cómo se usaría</h2>
+      <pre><code id="cUso"></code></pre>
+      <ul class="hechos">
+        <li><b>Cada gráfico es una función que devuelve HTML.</b> Sirve igual en el navegador, en un template del servidor o dentro de un componente de Vue.</li>
+        <li><b>mount() se llama una vez</b> y atiende tooltip, hover y leyenda de todos los gráficos, también de los que se pintan después.</li>
+        <li><b>render() pinta sólo si cambió.</b> Un tablero que se refresca cada 3 segundos no vuelve a armar lo que sigue igual.</li>
+        <li><b>Colores y rayado son variables CSS.</b> El tema se cambia sin volver a dibujar.</li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="bloque">
+    <h2>Catálogo</h2>
+    <p>Once gráficos. Pasá el cursor por cualquiera, hacé click en las leyendas y abrí «API» para ver la llamada que lo dibuja.</p>
+    <div class="grid" id="grid">
+      <article class="card c3 r2"><div class="card-head"><div class="kind">bullet()</div><h3>Valor contra su rango de referencia</h3></div><div class="slot" id="sBullet"></div><details class="api"><summary>API</summary><pre><code id="cBullet"></code></pre></details></article>
+      <article class="card c3"><div class="card-head"><div class="kind">rings()</div><h3>Score por dimensión</h3></div><div class="slot" id="sRings"></div><details class="api"><summary>API</summary><pre><code id="cRings"></code></pre></details></article>
+      <article class="card c3"><div class="card-head"><div class="kind">segmented()</div><h3>Reparto del tiempo en 24 h</h3></div><div class="slot" id="sSegmented"></div><details class="api"><summary>API</summary><pre><code id="cSegmented"></code></pre></details></article>
+      <article class="card"><div class="card-head"><div class="kind">ribbon()</div><h3>Estado de una API en 24 h</h3></div><div class="slot" id="sRibbon"></div><details class="api"><summary>API</summary><pre><code id="cRibbon"></code></pre></details></article>
+      <article class="card c3"><div class="card-head"><div class="kind">line()</div><h3>Base del shared path</h3></div><div class="slot" id="sLine"></div><details class="api"><summary>API</summary><pre><code id="cLine"></code></pre></details></article>
+      <article class="card c3"><div class="card-head"><div class="kind">columns()</div><h3>Cold starts por día</h3></div>
+        <div class="seg" id="segVar">
+          <button type="button" id="vrSolid" data-var="solid">solid</button>
+          <button type="button" id="vrStripped" data-var="stripped">stripped</button>
+          <button type="button" id="vrGradient" data-var="gradient">gradient</button>
+          <button type="button" id="vrDuotone" data-var="duotone">duotone</button>
+          <button type="button" id="vrHatched" data-var="hatched">hatched</button>
+        </div>
+        <div class="slot" id="sColumns"></div><details class="api"><summary>API</summary><pre><code id="cColumns"></code></pre></details></article>
+      <article class="card"><div class="card-head"><div class="kind">stackedLine()</div><h3>De qué está hecho el TTFB</h3></div><div class="slot" id="sStackedLine"></div><details class="api"><summary>API</summary><pre><code id="cStackedLine"></code></pre></details></article>
+      <article class="card c3"><div class="card-head"><div class="kind">stacked()</div><h3>Pings por día según resultado</h3></div>
+        <div class="seg" id="segJoint">
+          <button type="button" id="jnLine" data-joint="line">line</button>
+          <button type="button" id="jnSolid" data-joint="solid">solid</button>
+          <button type="button" id="jnBlend" data-joint="blend">blend</button>
+        </div>
+        <div class="slot" id="sStacked"></div><details class="api"><summary>API</summary><pre><code id="cStacked"></code></pre></details></article>
+      <article class="card c3"><div class="card-head"><div class="kind">pie()</div><h3>Pings de hoy</h3></div>
+        <div class="controls">
+          <div class="seg" id="segPie">
+            <button type="button" id="piPie" data-pie="pie">pie</button>
+            <button type="button" id="piDonut" data-pie="donut">donut</button>
+          </div>
+          <div class="seg" id="segPieFill">
+            <button type="button" id="pfLine" data-piefill="line">line</button>
+            <button type="button" id="pfSolid" data-piefill="solid">solid</button>
+          </div>
+        </div>
+        <div class="slot" id="sPie"></div><details class="api"><summary>API</summary><pre><code id="cPie"></code></pre></details></article>
+      <article class="card c3"><div class="card-head"><div class="kind">heatmap()</div><h3>Cold starts por hora, última semana</h3></div><div class="slot" id="sHeatmap"></div><details class="api"><summary>API</summary><pre><code id="cHeatmap"></code></pre></details></article>
+      <article class="card c3"><div class="card-head"><div class="kind">range()</div><h3>Warm p50 a p95 por API</h3></div><div class="slot" id="sRange"></div><details class="api"><summary>API</summary><pre><code id="cRange"></code></pre></details></article>
+      <article class="card c3"><div class="card-head"><div class="kind">line() · con huecos</div><h3>Pings que no llegaron</h3></div>
+        <div class="seg" id="segGaps">
+          <button type="button" id="gpHatched" data-gaps="hatched">hatched</button>
+          <button type="button" id="gpEmpty" data-gaps="empty">empty</button>
+        </div>
+        <div class="slot" id="sLineHuecos"></div><details class="api"><summary>API</summary><pre><code id="cLineHuecos"></code></pre></details></article>
+      <article class="card c3"><div class="card-head"><div class="kind">columns() · sin datos y en cero</div><h3>El 22 no llegó ningún ping; el 23 hubo cero cold starts</h3></div><div class="slot" id="sColHuecos"></div><details class="api"><summary>API</summary><pre><code id="cColHuecos"></code></pre></details></article>
+    </div>
+  </section>
+
+  <section class="bloque">
+    <h2>Estados</h2>
+    <p>Todo gráfico tiene que saber decir tres cosas además de sus datos.</p>
+    <div class="estados">
+      <div><div class="cap">.sc-loading</div><div class="sc-loading" id="sLoading"></div></div>
+      <div><div class="cap">state({ kind: 'empty' })</div><div id="sEmpty"></div></div>
+      <div><div class="cap">state({ kind: 'error' })</div><div id="sError"></div></div>
+    </div>
+  </section>
+
+  <section class="bloque">
+    <h2>Tokens</h2>
+    <p>Cada tono se muestra sólido, rayado y en tinte. Los azules y violetas informan; verde, ámbar y naranja quedan reservados para decir cómo está algo.</p>
+    <div class="tokens" id="tokens"></div>
+    <div class="vars" id="vars"></div>
+  </section>
+
+  <footer>Los números son de ejemplo, tomados del monitor de APIs el 26 de septiembre de 2026. El rayado por máscara, el buffer, las variantes de columna y las interacciones vienen de EvilCharts, que es MIT; acá están rehechos sin React.</footer>
+</div>
+
+<script type="module">
+// La librería se importa de src/, tal cual: la demo es también la prueba de que los módulos andan.
+import * as StorylabsCharts from '../src/index.js'
+
+/* ============================================================================================
+   Esta página: los datos de ejemplo, los controles y el texto de cada llamada.
+   ============================================================================================ */
+;(() => {
+  const SC = StorylabsCharts
+  const root = document.documentElement
+  const $ = id => document.getElementById(id)
+  const guardar = (k, v) => { try { localStorage.setItem(k, v) } catch (e) { /* sin persistencia */ } }
+  const leer = k => { try { return localStorage.getItem(k) } catch (e) { return null } }
+  const pad = n => String(n).padStart(2, '0')
+
+  /** Escribe un objeto como se escribiría a mano en el código. Las listas largas se abrevian. */
+  const fmt = (v, n = 0) => {
+    const sp = '  '.repeat(n)
+
+    if (Array.isArray(v)) {
+      if (v.every(x => x === null || typeof x !== 'object')) {
+        return '[' + (v.length > 8 ? v.slice(0, 4).map(x => fmt(x)).join(', ') + ', … ' + v.length + ' en total' : v.map(x => fmt(x)).join(', ')) + ']'
+      }
+
+      const filas = v.length > 4 ? v.slice(0, 3) : v
+
+      return '[\n' + filas.map(x => sp + '  ' + fmt(x, n + 1)).join(',\n') + (v.length > 4 ? ',\n' + sp + '  // … ' + v.length + ' en total' : '') + '\n' + sp + ']'
+    }
+
+    if (v && typeof v === 'object') {
+      const ks = Object.keys(v)
+      const corta = '{ ' + ks.map(k => k + ': ' + fmt(v[k], n + 1)).join(', ') + ' }'
+
+      return corta.length < 76 && !corta.includes('\n') ? corta : '{\n' + ks.map(k => sp + '  ' + k + ': ' + fmt(v[k], n + 1)).join(',\n') + '\n' + sp + '}'
+    }
+
+    return typeof v === 'string' ? "'" + v + "'" : typeof v === 'number' ? String(Math.round(v * 10) / 10) : String(v)
+  }
+
+  const pintar = (nombre, opciones, slot, codigo, nota) => {
+    SC.render($(slot), SC[nombre](opciones))
+    $(codigo).textContent = 'render(el, ' + nombre + '(' + fmt(opciones) + '))' + (nota ? '\n\n' + nota : '')
+  }
+
+  $('cUso').textContent =
+    "import { bullet, mount, render } from 'storylabs-charts'\n" +
+    "import 'storylabs-charts/charts.css'\n\n" +
+    'mount()   // una sola vez\n\n' +
+    '// render() pinta sólo si el HTML cambió\n' +
+    'render(el, bullet({\n' +
+    "  label: 'Warm p50', value: 69, unit: 'ms',\n" +
+    '  max: 500, reference: [0, 250]\n' +
+    '}))'
+
+  // ---- Datos de ejemplo ----
+  const BULLETS = [
+    { label: 'Warm p50', value: 69, unit: 'ms', max: 500, reference: [0, 250], side: 'p95 247 ms', hue: 'blue', hue2: 'sky' },
+    { label: 'Cold rate 24h', value: 11.7, unit: '%', max: 30, reference: [0, 2], side: '17 en 24 h', hue: 'sky', hue2: 'violet' },
+    { label: 'Error budget', value: 91.9, unit: '%', max: 100, reference: [50, 100], side: 'Latencia p50 bajo 250 ms', hue: 'violet', hue2: 'blue' },
+    { label: 'Failures 24h', value: 0, unit: 'fallos', max: 10, reference: [0, 2], side: '0 consecutivos', hue: 'orange', hue2: 'amber' }
+  ]
+
+  $('sBullet').innerHTML = '<div class="sc-group">' + BULLETS.map(SC.bullet).join('') + '</div>'
+  $('cBullet').textContent = 'render(el, bullet(' + fmt(BULLETS[0]) + '))\n\n// Varios bullets dentro de <div class="sc-group"> comparten el hover:\n// al pasar por uno, los demás se atenúan.'
+
+  pintar('rings', {
+    center: { value: 84, label: 'score' },
+    rings: [
+      { key: 'availability', label: 'Availability', value: 96, hue: 'blue' },
+      { key: 'latency', label: 'Latency', value: 82, hue: 'sky' },
+      { key: 'coldstart', label: 'Cold start', value: 71, hue: 'violet' }
+    ]
+  }, 'sRings', 'cRings')
+
+  pintar('segmented', {
+    segments: [
+      { key: 'warm', label: 'Warm', value: 84, detail: '20 h 10 min', hue: 'blue' },
+      { key: 'cold', label: 'Cold start', value: 11, detail: '2 h 38 min', hue: 'sky' },
+      { key: 'down', label: 'Down', value: 2, detail: '29 min', hue: 'orange' },
+      { key: 'none', label: 'Sin datos', value: 3, detail: '43 min', hue: 'neutral', hatched: true }
+    ]
+  }, 'sSegmented', 'cSegmented')
+
+  pintar('ribbon', {
+    label: 'Estado de la API hora por hora',
+    headline: { parts: [[20, 'h'], [10, 'min warm']] },
+    states: {
+      cold: { label: 'Cold start', hue: 'sky', lane: 0 },
+      warm: { label: 'Warm', hue: 'blue', lane: 1 },
+      down: { label: 'Down', hue: 'orange', lane: 2 },
+      none: { label: 'Sin datos', hue: 'neutral', lane: 1, hatched: true }
+    },
+    rest: 'warm',
+    domain: [0, 24],
+    segments: [
+      [0, 2.2, 'warm'], [2.2, 2.9, 'cold'], [2.9, 7.5, 'warm'], [7.5, 8.1, 'cold'], [8.1, 11, 'warm'], [11, 11.48, 'down'], [11.48, 12.18, 'cold'],
+      [12.18, 16, 'warm'], [16, 16.72, 'none'], [16.72, 17.36, 'cold'], [17.36, 24, 'warm']
+    ],
+    ticks: [{ at: 0, label: '00:00', sub: 'inicio' }, { at: 6, label: '06:00' }, { at: 12, label: '12:00' }, { at: 18, label: '18:00' }, { at: 24, label: '24:00', sub: 'ahora' }]
+  }, 'sRibbon', 'cRibbon')
+
+  ;(() => {
+    // Generador con semilla: la curva sale igual en cada carga.
+    let semilla = 7
+    const azar = () => { semilla = (semilla * 16807) % 2147483647; return semilla / 2147483647 }
+    const values = []
+
+    for (let i = 0; i < 58; i++) values.push(i < 45 ? 62 + azar() * 12 : 244 + azar() * 16)
+    values[57] = 252
+
+    pintar('line', {
+      label: 'Base del sweep',
+      headline: { parts: [[252, 'ms en el último sweep']], chip: 'degradado' },
+      values,
+      labels: values.map((_, i) => { const m = Math.round(125 + (i / 57) * 968); return 'Sweep de las ' + pad(Math.floor(m / 60)) + ':' + pad(m % 60) }),
+      unit: 'ms',
+      max: 300,
+      yTicks: [0, 100, 200, 300],
+      xLabels: ['02:05', '18:13'],
+      band: [40, 120],
+      threshold: { value: 218, label: 'umbral 218 ms' },
+      buffer: true,
+      bufferLabel: 'Sweep en curso',
+      hue: 'blue',
+      alertHue: 'amber'
+    }, 'sLine', 'cLine')
+  })()
+
+  // Un dato que falta no es un cero: null, undefined o un texto cortan la línea. Tres huecos: uno
+  // largo, uno corto y un punto aislado entre dos huecos. gaps: hatched (default) o empty.
+  let modoHuecos = ['hatched', 'empty'].includes(leer('sc-gaps')) ? leer('sc-gaps') : 'hatched'
+  const pintarHuecos = () => {
+    let semilla = 11
+    const azar = () => { semilla = (semilla * 16807) % 2147483647; return semilla / 2147483647 }
+    const values = []
+
+    for (let i = 0; i < 58; i++) values.push(64 + azar() * 14)
+    for (let i = 14; i < 21; i++) values[i] = null
+    values[33] = null
+    values[40] = null
+    values[42] = null
+
+    pintar('line', {
+      label: 'Base del sweep, con pings perdidos',
+      values,
+      labels: values.map((_, i) => { const m = Math.round(125 + (i / 57) * 968); return 'Sweep de las ' + pad(Math.floor(m / 60)) + ':' + pad(m % 60) }),
+      unit: 'ms',
+      max: 120,
+      yTicks: [0, 40, 80, 120],
+      xLabels: ['02:05', '18:13'],
+      band: [40, 90],
+      gaps: modoHuecos,
+      hue: 'blue'
+    }, 'sLineHuecos', 'cLineHuecos')
+    for (const b of document.querySelectorAll('[data-gaps]')) b.setAttribute('aria-pressed', String(b.dataset.gaps === modoHuecos))
+  }
+
+  pintarHuecos()
+
+  // Una columna que falta y una en cero, una al lado de la otra: con gaps por defecto no se confunden.
+  pintar('columns', {
+    label: 'Cold starts por día, con un día sin datos',
+    variant: 'stripped',
+    unit: ['cold start', 'cold starts'],
+    max: 6,
+    yTicks: [0, 2, 4, 6],
+    hue: 'sky',
+    data: [[19, 4], [20, 1], [21, 2], [22, null], [23, 0], [24, 3], [25, 2]].map(d => ({ label: String(d[0]), title: d[0] + ' de septiembre', value: d[1] }))
+  }, 'sColHuecos', 'cColHuecos')
+
+  const VARIANTES = ['solid', 'stripped', 'gradient', 'duotone', 'hatched']
+  let variante = VARIANTES.includes(leer('sc-var')) ? leer('sc-var') : 'stripped'
+
+  const pintarColumnas = () => {
+    pintar('columns', {
+      label: 'Cold starts por día, del 17 al 26 de septiembre',
+      variant: variante,
+      unit: ['cold start', 'cold starts'],
+      max: 6,
+      yTicks: [0, 2, 4, 6],
+      hue: 'sky',
+      data: [[17, 3], [18, 2], [19, 4], [20, 1], [21, 2], [22, 6], [23, 2], [24, 3], [25, 2]]
+        .map(d => ({ label: String(d[0]), title: d[0] + ' de septiembre', value: d[1] }))
+        .concat([{ label: '26', title: '26 de septiembre', value: 1, projected: 2 }])
+    }, 'sColumns', 'cColumns', '// projected marca el día en curso: esa columna siempre va rayada.')
+
+    for (const b of document.querySelectorAll('[data-var]')) b.setAttribute('aria-pressed', String(b.dataset.var === variante))
+    aplicar()
+  }
+
+  ;(() => {
+    let semilla = 23
+    const azar = () => { semilla = (semilla * 16807) % 2147483647; return semilla / 2147483647 }
+    const rows = ['dom 20', 'lun 21', 'mar 22', 'mié 23', 'jue 24', 'vie 25', 'sáb 26']
+
+    pintar('heatmap', {
+      label: 'Cold starts por hora en los últimos siete días',
+      rows,
+      values: rows.map((_, f) => Array.from({ length: 24 }, (_, h) => {
+        const r = azar()
+
+        if (f === 3 && h >= 13 && h <= 17) return 'La API estaba pausada'
+        if (f === 6 && h >= 19) return 'La hora todavía no llegó'
+
+        return r > 0.93 ? 3 : r > 0.84 ? 2 : r > 0.66 ? 1 : 0
+      })),
+      steps: 3,
+      unit: ['cold start', 'cold starts'],
+      emptyLabel: 'Sin pings',
+      colTicks: [0, 6, 12, 18, 23],
+      hue: 'sky'
+    }, 'sHeatmap', 'cHeatmap', '// Un texto en lugar de un número es una celda sin datos; el texto dice por qué.')
+  })()
+
+  ;(() => {
+    // Un punto cada 30 minutos. Dos bultos a propósito: a las 09:00 crece el aporte propio —fue
+    // la API— y a las 16:00 crece el shared path —fue el camino—.
+    let semilla = 11
+    const azar = () => { semilla = (semilla * 16807) % 2147483647; return semilla / 2147483647 }
+    const campana = (i, centro, ancho) => Math.exp(-((i - centro) ** 2) / (2 * ancho * ancho))
+    const N = 49
+    const shared = Array.from({ length: N }, (_, i) => 62 + azar() * 9 + 58 * campana(i, 32, 2.2))
+    const own = Array.from({ length: N }, (_, i) => 5 + azar() * 6 + 64 * campana(i, 18, 1.6))
+
+    shared[N - 1] = 66
+    own[N - 1] = 7
+
+    pintar('stackedLine', {
+      label: 'TTFB partido en shared path y aporte propio',
+      headline: { parts: [[73, 'ms de TTFB ahora']] },
+      wide: true,
+      unit: 'ms',
+      max: 160,
+      yTicks: [0, 40, 80, 120, 160],
+      totalLabel: 'TTFB',
+      buffer: true,
+      bufferLabel: 'Sweep en curso',
+      labels: Array.from({ length: N }, (_, i) => pad(Math.floor(i / 2)) + ':' + (i % 2 ? '30' : '00')),
+      xTicks: [{ at: 0, label: '00:00' }, { at: 12, label: '06:00' }, { at: 24, label: '12:00' }, { at: 36, label: '18:00' }, { at: 48, label: '24:00' }],
+      series: [
+        { key: 'shared', label: 'Shared path', hue: 'blue', values: shared },
+        { key: 'own', label: 'Aporte propio', hue: 'violet', values: own }
+      ]
+    }, 'sStackedLine', 'cStackedLine', '// Las series se apilan en el orden en que vienen: la primera va abajo.')
+  })()
+
+  // Pings por día. Cada API hace 144 al día; «sin pings» son los que no se hicieron: horas en
+  // pausa el miércoles, y lo que falta del día de hoy.
+  const SEMANA = [
+    ['dom 20', 131, 11, 2, 0], ['lun 21', 136, 8, 0, 0], ['mar 22', 118, 22, 4, 0], ['mié 23', 101, 12, 1, 30],
+    ['jue 24', 135, 9, 0, 0], ['vie 25', 133, 10, 1, 0], ['sáb 26', 102, 12, 3, 27]
+  ]
+
+  let union = ['line', 'solid', 'blend'].includes(leer('sc-stk')) ? leer('sc-stk') : 'line'
+
+  const pintarApiladas = () => {
+  pintar('stacked', {
+    label: 'Pings por día según resultado',
+    variant: union,
+    unit: ['ping', 'pings'],
+    max: 144,
+    yTicks: [0, 48, 96, 144],
+    series: [
+      { key: 'warm', label: 'Warm', hue: 'blue' },
+      { key: 'cold', label: 'Cold start', hue: 'sky' },
+      { key: 'failed', label: 'Fallidos', hue: 'orange' },
+      { key: 'none', label: 'Sin pings', hue: 'neutral', hatched: true }
+    ],
+    data: SEMANA.map((d, i) => ({ label: d[0], current: i === 6, values: { warm: d[1], cold: d[2], failed: d[3], none: d[4] } }))
+  }, 'sStacked', 'cStacked', '// variant: line (relleno translúcido y línea de borde), solid o blend.')
+
+    for (const b of document.querySelectorAll('[data-joint]')) b.setAttribute('aria-pressed', String(b.dataset.joint === union))
+    aplicar()
+  }
+
+  let formaPie = ['pie', 'donut'].includes(leer('sc-pie')) ? leer('sc-pie') : 'pie'
+  let rellenoPie = ['line', 'solid'].includes(leer('sc-piefill')) ? leer('sc-piefill') : 'line'
+
+  const pintarPie = () => {
+    pintar('pie', {
+      label: 'Pings de hoy según resultado',
+      variant: formaPie,
+      fill: rellenoPie,
+      unit: ['ping', 'pings'],
+      center: { value: 144, label: 'pings' },
+      slices: [
+        { key: 'warm', label: 'Warm', value: 102, hue: 'blue' },
+        { key: 'cold', label: 'Cold start', value: 12, hue: 'sky' },
+        { key: 'failed', label: 'Fallidos', value: 3, hue: 'orange' },
+        { key: 'none', label: 'Pendientes', value: 27, hue: 'neutral', hatched: true }
+      ]
+    }, 'sPie', 'cPie', '// Es la columna de hoy del gráfico de al lado, vista como reparto.')
+
+    for (const b of document.querySelectorAll('[data-pie]')) b.setAttribute('aria-pressed', String(b.dataset.pie === formaPie))
+    for (const b of document.querySelectorAll('[data-piefill]')) b.setAttribute('aria-pressed', String(b.dataset.piefill === rellenoPie))
+    aplicar()
+  }
+
+  pintar('range', {
+    unit: 'ms',
+    max: 400,
+    ticks: [0, 100, 200, 300, 400],
+    hue: 'sky',
+    hue2: 'violet',
+    rows: [
+      { label: 'search-api', from: 69, to: 247 },
+      { label: 'checkout-api', from: 68, to: 257 },
+      { label: 'billing-api', from: 67, to: 254 },
+      { label: 'catalog-api', from: 67, to: 253 },
+      { label: 'auth-api', from: 66, to: 246 }
+    ]
+  }, 'sRange', 'cRange')
+
+  // ---- Estados ----
+  $('sLoading').innerHTML = '<div class="sc-group">' + SC.bullet(BULLETS[0]) + SC.bullet(BULLETS[2]) + '</div>'
+  $('sEmpty').innerHTML = SC.state({ kind: 'empty', title: 'Sin datos en este período', detail: 'La API no recibió pings en las últimas 24 h.' })
+  $('sError').innerHTML = SC.state({ kind: 'error', title: 'No se pudo leer la serie', detail: 'El servicio de métricas no respondió. Se reintenta en 5 min.' })
+
+  // ---- Tokens ----
+  const TONOS = [
+    ['blue', 'Serie principal'], ['sky', 'Serie secundaria'], ['violet', 'Tercera serie'], ['indigo', 'Cuarta serie'],
+    ['green', 'En objetivo'], ['amber', 'Aviso'], ['orange', 'Fallo'], ['neutral', 'Sin datos']
+  ]
+
+  $('tokens').innerHTML = TONOS.map(t =>
+    '<div class="tok" style="--c:var(--sc-' + t[0] + ')"><i class="s"></i><i class="sc-hx"><i class="sc-hfill" style="display:block"></i></i><i class="t"></i><div><code>--sc-' + t[0] + '</code><span>' + t[1] + '</span></div></div>'
+  ).join('')
+
+  // ---- Controles ----
+  const rayado = {
+    look: ['ref', 'diag', 'vert'].includes(leer('sc-look')) ? leer('sc-look') : 'ref',
+    density: ['fina', 'media', 'gruesa'].includes(leer('sc-density')) ? leer('sc-density') : 'media',
+    opacity: ['suave', 'media', 'fuerte'].includes(leer('sc-op')) ? leer('sc-op') : 'media'
+  }
+
+  function aplicar() {
+    const r = SC.setHatch(rayado)
+
+    for (const b of document.querySelectorAll('[data-look]')) b.setAttribute('aria-pressed', String(b.dataset.look === rayado.look))
+    for (const b of document.querySelectorAll('[data-density]')) b.setAttribute('aria-pressed', String(b.dataset.density === rayado.density))
+    for (const b of document.querySelectorAll('[data-op]')) b.setAttribute('aria-pressed', String(b.dataset.op === rayado.opacity))
+    $('vars').innerHTML = '<span>--sc-hatch-gap <b>' + r.gap + 'px</b></span><span>--sc-hatch-w <b>' + r.width + 'px</b></span><span>--sc-hatch-angle <b>' + (r.angle + 90) + 'deg</b></span><span>--sc-hatch-op <b>' + r.op + '</b></span><span>--sc-track <b>13% light · 17% dark</b></span>'
+  }
+
+  const temaActual = () => root.getAttribute('data-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+  const marcarTema = () => {
+    for (const b of document.querySelectorAll('[data-theme-set]')) b.setAttribute('aria-pressed', String(b.dataset.themeSet === temaActual()))
+  }
+
+  document.addEventListener('click', ev => {
+    const b = ev.target.closest ? ev.target.closest('button') : null
+
+    if (!b) return
+    if (b.dataset.themeSet) { root.setAttribute('data-theme', b.dataset.themeSet); marcarTema() }
+    if (b.dataset.look) { rayado.look = b.dataset.look; guardar('sc-look', rayado.look); aplicar() }
+    if (b.dataset.density) { rayado.density = b.dataset.density; guardar('sc-density', rayado.density); aplicar() }
+    if (b.dataset.op) { rayado.opacity = b.dataset.op; guardar('sc-op', rayado.opacity); aplicar() }
+    if (b.dataset.gaps) { modoHuecos = b.dataset.gaps; guardar('sc-gaps', modoHuecos); pintarHuecos() }
+    if (b.dataset.var) { variante = b.dataset.var; guardar('sc-var', variante); pintarColumnas() }
+    if (b.dataset.pie) { formaPie = b.dataset.pie; guardar('sc-pie', formaPie); pintarPie() }
+    if (b.dataset.joint) { union = b.dataset.joint; guardar('sc-stk', union); pintarApiladas() }
+    if (b.dataset.piefill) { rellenoPie = b.dataset.piefill; guardar('sc-piefill', rellenoPie); pintarPie() }
+    if (b.id === 'btnCarga') SC.play($('grid'))
+  })
+
+  new MutationObserver(marcarTema).observe(root, { attributes: true, attributeFilter: ['data-theme'] })
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', marcarTema)
+
+  SC.mount()
+  pintarColumnas()
+  pintarApiladas()
+  pintarPie()
+  aplicar()
+  marcarTema()
+})()
+</script>
+</body>
+</html>

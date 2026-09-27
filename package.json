@@ -1,0 +1,69 @@
+{
+  "name": "@storylabs/charts",
+  "version": "0.1.0",
+  "description": "Gráficos en SVG y CSS hechos a mano. Funciones puras que devuelven HTML, sin dependencias.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/StoryLabs/chart.git"
+  },
+  "homepage": "https://github.com/StoryLabs/chart#readme",
+  "bugs": {
+    "url": "https://github.com/StoryLabs/chart/issues"
+  },
+  "type": "module",
+  "sideEffects": [
+    "./src/global.js",
+    "*.css"
+  ],
+  "exports": {
+    ".": "./src/index.js",
+    "./charts.css": "./src/charts.css",
+    "./bullet": "./src/charts/bullet.js",
+    "./rings": "./src/charts/rings.js",
+    "./segmented": "./src/charts/segmented.js",
+    "./ribbon": "./src/charts/ribbon.js",
+    "./line": "./src/charts/line.js",
+    "./stackedLine": "./src/charts/stackedLine.js",
+    "./columns": "./src/charts/columns.js",
+    "./stacked": "./src/charts/stacked.js",
+    "./pie": "./src/charts/pie.js",
+    "./heatmap": "./src/charts/heatmap.js",
+    "./range": "./src/charts/range.js",
+    "./state": "./src/charts/state.js",
+    "./legend": "./src/charts/legend.js",
+    "./runtime": "./src/runtime/index.js"
+  },
+  "files": [
+    "src",
+    "dist"
+  ],
+  "scripts": {
+    "test": "bun test",
+    "lint": "eslint src test",
+    "lint:fix": "eslint src test --fix",
+    "test:browser": "playwright test",
+    "build": "bun scripts/build.js",
+    "bench": "bun run build && bun bench/correr.js",
+    "bench:paint": "bun run build && bun bench/pintado.js"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.18.0",
+    "@playwright/test": "^1.60.0",
+    "eslint": "^9.18.0",
+    "eslint-config-prettier": "^10.0.1",
+    "globals": "^15.14.0",
+    "prettier": "^3.4.2"
+  },
+  "prettier": {
+    "trailingComma": "none",
+    "bracketSpacing": true,
+    "endOfLine": "lf",
+    "arrowParens": "avoid",
+    "semi": false,
+    "singleQuote": true,
+    "tabWidth": 2,
+    "useTabs": false,
+    "printWidth": 150
+  }
+}

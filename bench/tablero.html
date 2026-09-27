@@ -1,0 +1,39 @@
+<!doctype html><html data-theme="dark"><head><meta charset="utf-8"><link rel="stylesheet" href="../dist/charts.css">
+<style>body{margin:0;background:var(--sc-bg);padding:20px} #ancho{width:1100px}</style></head>
+<body><div id="ancho"></div><script src="../dist/storylabs-charts.iife.js"></script><script>
+const SC = StorylabsCharts
+const pad = n => String(n).padStart(2, '0')
+let semilla = 5
+const azar = () => { semilla = (semilla * 16807) % 2147483647; return semilla / 2147483647 }
+const lista = (n, f) => Array.from({ length: n }, (_, i) => f(i))
+const mediana = xs => xs.slice().sort((a, b) => a - b)[xs.length >> 1]
+
+/** ms por llamada: mediana de 7 tandas de n repeticiones. */
+const medir = (fn, n) => {
+  const ts = []
+  for (let r = 0; r < 7; r++) { const t0 = performance.now(); for (let i = 0; i < n; i++) fn(); ts.push((performance.now() - t0) / n) }
+  return mediana(ts)
+}
+
+const linea = n => ({ label: 'Base', values: lista(n, i => (i < n * 0.78 ? 62 + azar() * 12 : 244 + azar() * 16)), labels: lista(n, i => 'p' + i), unit: 'ms', max: 300, yTicks: [0, 100, 200, 300], xLabels: ['a', 'b'], band: [40, 120], threshold: { value: 218 }, buffer: true })
+const apiladas = n => ({ wide: true, unit: 'ms', max: 160, buffer: true, labels: lista(n, i => 'p' + i), series: [{ key: 'a', label: 'Shared path', hue: 'blue', values: lista(n, () => 62 + azar() * 9) }, { key: 'b', label: 'Aporte propio', hue: 'violet', values: lista(n, () => 5 + azar() * 6) }] })
+const calor = filas => ({ rows: lista(filas, i => 'f' + i), values: lista(filas, () => lista(24, () => { const r = azar(); return r > 0.95 ? 'pausa' : r > 0.9 ? 3 : r > 0.8 ? 2 : r > 0.6 ? 1 : 0 })), steps: 3, unit: ['cold start', 'cold starts'], colTicks: [0, 12, 23] })
+const pilas = n => ({ unit: ['ping', 'pings'], max: 144, yTicks: [0, 72, 144], series: [{ key: 'w', label: 'Warm', hue: 'blue' }, { key: 'c', label: 'Cold', hue: 'sky' }, { key: 'f', label: 'Fail', hue: 'orange' }, { key: 'n', label: 'Sin', hue: 'neutral', hatched: true }], data: lista(n, i => ({ label: 'd' + i, values: { w: 100 + Math.round(azar() * 20), c: 8 + Math.round(azar() * 6), f: Math.round(azar() * 3), n: i % 5 ? 0 : 12 } })) })
+const cinta = n => { const segs = []; let t = 0; const paso = 24 / n; const ks = ['warm', 'cold', 'warm', 'down', 'warm', 'none']; for (let i = 0; i < n; i++) { segs.push([t, t + paso, ks[i % ks.length]]); t += paso } return { states: { cold: { label: 'Cold', hue: 'sky', lane: 0 }, warm: { label: 'Warm', hue: 'blue', lane: 1 }, down: { label: 'Down', hue: 'orange', lane: 2 }, none: { label: 'Sin', hue: 'neutral', lane: 1, hatched: true } }, rest: 'warm', domain: [0, 24], segments: segs, ticks: [{ at: 0, label: '0' }, { at: 24, label: '24' }] } }
+
+const tablero = () => lista(11, i =>
+  '<section style="margin-bottom:18px"><div class="sc-group">' +
+    SC.bullet({ label: 'Warm p50', value: 60 + i, unit: 'ms', max: 500, reference: [0, 250], hue: 'blue' }) +
+    SC.bullet({ label: 'Cold rate', value: i, unit: '%', max: 30, reference: [0, 2], hue: 'sky' }) +
+    SC.bullet({ label: 'Error budget', value: 90, unit: '%', max: 100, reference: [50, 100], hue: 'violet' }) +
+  '</div>' + SC.line(linea(144)) + SC.heatmap(calor(7)) + '</section>'
+).join('')
+
+SC.mount()
+const ancho = document.getElementById('ancho')
+let n = 0
+window.repintar = () => { semilla = 5 + (n++ % 7); ancho.innerHTML = tablero(); SC.setHatch() }
+window.repintarSiCambio = () => SC.render(ancho, tablero.igual || (tablero.igual = (semilla = 5, tablero())))
+window.armar = () => { semilla = 5; return tablero().length }
+window.repintar()
+</script></body></html>

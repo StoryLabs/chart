@@ -1,0 +1,43 @@
+<!doctype html>
+<html data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="/src/charts.css">
+<style>
+  body { margin: 0; padding: 16px; background: var(--sc-bg); }
+  .caso { max-width: 720px; margin: 0 0 24px; padding: 16px; background: var(--sc-surface); border-radius: 12px; }
+</style>
+</head>
+<body>
+<main id="casos"></main>
+<script type="module">
+  // Pinta cada caso canónico en su propia sección, en orden y con el contador en cero:
+  // lo que se ve es exactamente lo que fija el byte por byte.
+  import * as SC from '/src/index.js'
+
+  const leer = async f => (await fetch('/test/fixtures/' + f)).json()
+  // Los 47 del prototipo y, detrás, los extra: el contador de ids sigue el mismo orden que en los tests.
+  const casos = [...(await leer('casos-canonicos.json')), ...(await leer('casos-extra.json'))]
+  const main = document.getElementById('casos')
+  const grupo = document.createElement('section')
+
+  grupo.id = 'c-bullets'
+  grupo.className = 'caso sc-group'
+  main.appendChild(grupo)
+
+  for (const c of casos) {
+    const el = document.createElement('section')
+
+    el.id = 'c-' + c.id
+    el.className = 'caso'
+    ;(c.id.startsWith('bullet-demo-') ? grupo : main).appendChild(el)
+    SC.render(el, SC[c.fn](...c.args))
+  }
+
+  SC.mount()
+  window.SC = SC
+  document.body.dataset.listo = '1'
+</script>
+</body>
+</html>
