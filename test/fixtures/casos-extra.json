@@ -1453,5 +1453,51 @@
     ]
    }
   ]
+ },
+ {
+  "id": "bullet-min",
+  "fn": "bullet",
+  "args": [
+   {
+    "label": "Uptime 30d",
+    "value": 99.95,
+    "unit": "%",
+    "min": 99,
+    "max": 100,
+    "reference": [
+     99.5,
+     100
+    ],
+    "side": "objetivo 99.5%"
+   }
+  ]
+ },
+ {
+  "id": "range-min",
+  "fn": "range",
+  "args": [
+   {
+    "unit": "ms",
+    "min": 100,
+    "max": 300,
+    "ticks": [
+     100,
+     200,
+     300
+    ],
+    "rows": [
+     {
+      "label": "checkout-api",
+      "from": 68,
+      "to": 257
+     },
+     {
+      "label": "search-api",
+      "from": 30,
+      "to": 320
+     }
+    ]
+   }
+  ]
  }
 ]

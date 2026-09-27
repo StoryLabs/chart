@@ -1,4 +1,4 @@
-import { n1, entre, esc, col, conUnidad, tip, valor } from '../core/format.js'
+import { n1, entre, esc, col, conUnidad, tip, valor, num } from '../core/format.js'
 import { requiere, vacio, conEscala } from '../core/guardas.js'
 import { textos } from '../core/textos.js'
 
@@ -10,7 +10,8 @@ export const range = o => {
   o = conEscala(o)
 
   const u = o.unit || ''
-  const pos = v => n1(entre(v / o.max) * 100)
+  const min = num(o.min)
+  const pos = v => n1(entre((v - min) / (o.max - min)) * 100)
 
   return '<div class="sc-chart sc-range" style="' + (o.hue ? '--c:' + col(o.hue) + ';' : '') + (o.hue2 ? '--c2:' + col(o.hue2) : '') + '">' +
     o.rows.map((r, i) => (valor(r.from) === null || valor(r.to) === null)
@@ -21,6 +22,6 @@ export const range = o => {
         '<div class="sc-bar"><div class="sc-ref sc-a-x" style="left:' + pos(r.from) + '%;width:' + n1(pos(r.to) - pos(r.from)) + '%"><i class="sc-hfill"></i></div><div class="sc-dot" style="left:' + pos(r.from) + '%"></div></div>' +
         '<span class="sc-v"><b>' + esc(r.from) + '</b> / ' + esc(conUnidad(r.to, u)) + '</span></div>'
     ).join('') +
-    '<div class="sc-axis"><span></span><div>' + (o.ticks || [0, o.max]).map((t, i, todos) => '<span>' + esc(i === todos.length - 1 ? conUnidad(t, u) : t) + '</span>').join('') + '</div><span class="sc-v"><b>000</b> / ' + esc(conUnidad('000', u)) + '</span></div>' +
+    '<div class="sc-axis"><span></span><div>' + (o.ticks || [min, o.max]).map((t, i, todos) => '<span>' + esc(i === todos.length - 1 ? conUnidad(t, u) : t) + '</span>').join('') + '</div><span class="sc-v"><b>000</b> / ' + esc(conUnidad('000', u)) + '</span></div>' +
   '</div>'
 }

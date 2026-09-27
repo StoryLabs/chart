@@ -67,3 +67,10 @@ m src/charts/stacked.js "o.series.every(se => valor((d.values || {})[se.key]) ==
 " "!d.values
 " "stacked: una fila con todos los valores nulos no cuenta como hueco"
 m src/charts/columns.js "    } else if (val === 0 && !enCurso) {" "    } else if (false) {" "columns: el cero vuelve a dibujar tapa"
+# min en bullet y range.
+m src/charts/bullet.js "  const min = num(o.min)
+" "  const min = 0
+" "bullet ignora min"
+m src/charts/range.js "  const min = num(o.min)
+" "  const min = 0
+" "range ignora min"

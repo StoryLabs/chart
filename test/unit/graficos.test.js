@@ -66,6 +66,26 @@ describe('bullet', () => {
   })
 })
 
+test('bullet con min: la escala va de min a max', () => {
+  const html = SC.bullet({ label: 'Uptime 30d', value: 99.95, unit: '%', min: 99, max: 100, reference: [99.5, 100] })
+
+  expect(html).toContain('class="sc-ref" style="left:50%;width:50%"')
+  expect(html).toContain('sc-val sc-a-x" style="width:95%"')
+})
+
+test('bullet con min: un valor debajo de min se dibuja en min y el tooltip muestra el real', () => {
+  const html = SC.bullet({ label: 'u', value: 97.2, unit: '%', min: 99, max: 100, reference: [99.5, 100] })
+
+  expect(html).not.toContain('sc-val')
+  expect(tooltips(html)[0].v).toBe('97.2%')
+})
+
+test('bullet sin min es igual que con min 0', () => {
+  const o = { label: 'b', value: 3, max: 10, reference: [2, 4] }
+
+  expect(SC.bullet({ ...o, min: 0 })).toBe(SC.bullet(o))
+})
+
 describe('rings', () => {
   const arco = html => html.match(/d="M 130 24 A 106 106 0 (\d) 1 ([\d.]+) ([\d.]+)"/)
 
@@ -367,6 +387,14 @@ describe('range', () => {
     expect(html).toContain('left:25%;width:50%')
     expect(html).toContain('left:0%;width:100%')
   })
+})
+
+test('range con min: la escala y el eje van de min a max', () => {
+  const html = SC.range({ min: 100, max: 300, rows: [{ label: 'a', from: 150, to: 250 }, { label: 'b', from: 50, to: 400 }] })
+
+  expect(html).toContain('left:25%;width:50%')
+  expect(html).toContain('left:0%;width:100%')
+  expect(html).toContain('<span>100</span>')
 })
 
 describe('state y legend', () => {

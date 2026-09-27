@@ -212,7 +212,8 @@ dentro de un `<div class="sc-group">` comparten el hover.
 |---|---|---|
 | `label` ★ | string | |
 | `value` ★ | number | |
-| `max` ★ | number | La escala va de 0 a `max`. |
+| `max` ★ | number | La escala va de `min` a `max`. |
+| `min` | number | `0`. Para que un valor alto se lea, como un uptime de 99.95 con `min: 99`. Lo que queda debajo se dibuja en `min`; el tooltip muestra el valor real. |
 | `reference` ★ | `[desde, hasta]` | La banda rayada. |
 | `unit` | string | `''` |
 | `side` | string | Texto a la derecha. |
@@ -638,7 +639,8 @@ range({
 |---|---|---|
 | `rows` ★ | `[{ label, from, to }]` | |
 | `max` ★ | number | |
-| `ticks` | number[] | `[0, max]` |
+| `min` | number | `0`. La escala va de `min` a `max`. |
+| `ticks` | number[] | `[min, max]` |
 | `unit` | string | |
 | `hue`, `hue2` | tono | `'sky'`, `'violet'` |
 

@@ -1,4 +1,4 @@
-import { n1, entre, esc, col, conUnidad, tip, valor } from '../core/format.js'
+import { n1, entre, esc, col, conUnidad, tip, valor, num } from '../core/format.js'
 import { requiere, conEscala } from '../core/guardas.js'
 import { textos } from '../core/textos.js'
 
@@ -12,9 +12,12 @@ export const bullet = o => {
   const [a, b] = o.reference
   // Sin valor: la escala y la referencia quedan, sin barra; el número sale con el guion largo.
   const val = valor(o.value)
-  const pv = entre((val ?? 0) / o.max) * 100
-  const p0 = entre(a / o.max) * 100
-  const p1 = entre(b / o.max) * 100
+  // La escala va de min (0 por defecto) a max; lo que queda afuera se recorta en el dibujo.
+  const min = num(o.min)
+  const escala = v => entre((v - min) / (o.max - min)) * 100
+  const pv = val === null ? 0 : escala(val)
+  const p0 = escala(a)
+  const p1 = escala(b)
   const fuera = val !== null && (val < a || val > b)
   const ref = 'Referencia: ' + a + ' a ' + conUnidad(b, o.unit)
 

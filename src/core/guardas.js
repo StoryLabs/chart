@@ -20,5 +20,5 @@ export const requiere = (fn, o, listas) => {
   return k ? fallo(fn, 'falta ' + k + ', una lista') : ''
 }
 
-/** Un max que no es un número positivo vale 1. */
-export const conEscala = o => (num(o.max) > 0 ? o : { ...o, max: 1 })
+/** Un max que no pasa de min (0 por defecto) vale min + 1. */
+export const conEscala = o => (num(o.max) > num(o.min) ? o : { ...o, max: num(o.min) + 1 })
