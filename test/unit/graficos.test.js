@@ -108,6 +108,46 @@ describe('rings', () => {
   })
 })
 
+describe('rings con más de 4 anillos', () => {
+  const CINCO = [
+    { key: 'availability', label: 'Availability', value: 100, hue: 'blue' },
+    { key: 'latency', label: 'Latency', value: 92, hue: 'sky' },
+    { key: 'slo', label: 'SLO', value: null, hue: 'violet' },
+    { key: 'coldStart', label: 'Cold start', value: 100, hue: 'indigo' },
+    { key: 'stability', label: 'Stability', value: 88, hue: 'green' }
+  ]
+  const aros = html => [...html.matchAll(/<circle cx="130" cy="130" r="([\d.]+)" fill="none" stroke-width="([\d.]+)" style/g)].map(m => [Number(m[1]), Number(m[2])])
+
+  for (const n of [5, 6]) {
+    test(n + ' anillos: entran todos, ningún radio menor que el grosor, y queda hueco para el centro', () => {
+      const lista = CINCO.concat([{ key: 'x', label: 'X', value: 50, hue: 'orange' }]).slice(0, n)
+      const html = SC.rings({ center: { value: 91, label: 'score' }, rings: lista })
+      // Un aro de pista por anillo (el rayado lleva mask antes de style y no entra en la cuenta).
+      const r = aros(html)
+
+      expect(r.length).toBe(n)
+      for (const [radio, grosor] of r) expect(radio).toBeGreaterThanOrEqual(grosor)
+      // El borde de adentro del último anillo deja lugar al número del centro.
+      expect(r.at(-1)[0] - r.at(-1)[1] / 2).toBeGreaterThanOrEqual(30)
+      expect(html).not.toContain('data-sc-error')
+    })
+  }
+
+  test('el anillo sin valor entra con su pista, sin arco', () => {
+    const html = SC.rings({ rings: CINCO })
+
+    expect(grupos(html, 'slo').join('')).not.toContain('sc-a-draw')
+    expect(aros(html).length).toBe(5)
+  })
+
+  test('pasado el tope, el estado de error y no un gráfico roto', () => {
+    const muchos = Array.from({ length: 7 }, (_, i) => ({ key: 'k' + i, label: 'K', value: 50, hue: 'blue' }))
+    const html = SC.rings({ rings: muchos })
+
+    expect(html).toContain('data-sc-error="rings"')
+  })
+})
+
 describe('segmented', () => {
   test('cada tramo mide su porcentaje del total, y el hatched lleva sc-hx', () => {
     const html = SC.segmented({ segments: [{ key: 'a', label: 'A', value: 3, hue: 'blue' }, { key: 'b', label: 'B', value: 1, hue: 'neutral', hatched: true }] })

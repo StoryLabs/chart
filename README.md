@@ -250,7 +250,7 @@ El tramo rayado de cada anillo es lo que falta para llegar al máximo.
 
 | Opción | Tipo | Default |
 |---|---|---|
-| `rings` ★ | `[{ key, label, value, max, hue }]` | `max` vale 100. |
+| `rings` ★ | `[{ key, label, value, max, hue }]` | `max` vale 100. Hasta 6 anillos: con 5 o 6 se hacen más finos para que entren y el centro se lea; con más, el estado de error. |
 | `center` | `{ value, label }` | El número del medio. |
 
 </details>

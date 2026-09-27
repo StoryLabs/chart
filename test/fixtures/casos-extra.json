@@ -1684,5 +1684,50 @@
     ]
    }
   ]
+ },
+ {
+  "id": "rings-cinco",
+  "fn": "rings",
+  "args": [
+   {
+    "id": "cinco",
+    "center": {
+     "value": 91,
+     "label": "score"
+    },
+    "rings": [
+     {
+      "key": "availability",
+      "label": "Availability",
+      "value": 100,
+      "hue": "blue"
+     },
+     {
+      "key": "latency",
+      "label": "Latency",
+      "value": 92,
+      "hue": "sky"
+     },
+     {
+      "key": "slo",
+      "label": "SLO",
+      "value": null,
+      "hue": "violet"
+     },
+     {
+      "key": "coldStart",
+      "label": "Cold start",
+      "value": 100,
+      "hue": "indigo"
+     },
+     {
+      "key": "stability",
+      "label": "Stability",
+      "value": 88,
+      "hue": "green"
+     }
+    ]
+   }
+  ]
  }
 ]

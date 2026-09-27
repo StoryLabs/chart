@@ -1,6 +1,6 @@
 import { n1, entre, esc, col, tinte, tip, valor } from '../core/format.js'
 import { recursos } from '../core/recursos.js'
-import { requiere, vacio } from '../core/guardas.js'
+import { requiere, vacio, fallo } from '../core/guardas.js'
 import { textos } from '../core/textos.js'
 
 export const rings = o => {
@@ -8,10 +8,16 @@ export const rings = o => {
 
   if (malo) return malo
   if (!o.rings.length) return vacio()
+  if (o.rings.length > 6) return fallo('rings', 'entran hasta 6 anillos y vinieron ' + o.rings.length)
 
   const R = recursos(null, o.id)
   const c = 130
-  const sw = 22
+  // Hasta 4 anillos, paso 27 y grosor 22. Con 5 o 6 se achican para que el último quede en radio 40
+  // y el número del centro no quede tapado.
+  const n = o.rings.length
+  const paso = n > 4 ? n1(66 / (n - 1)) : 27
+  const sw = n > 4 ? n1((paso * 22) / 27) : 22
+  const punto = n > 4 ? n1(sw / 5) : 4.5
   let s = '<svg viewBox="0 0 260 260" role="img" aria-label="' + esc(o.rings.map(r => r.label + ' ' + r.value).join(', ')) + '">' + R.defs
 
   o.rings.forEach((it0, k) => {
@@ -19,7 +25,7 @@ export const rings = o => {
     const val = valor(it0.value)
     const it = { ...it0, value: val === null ? 0 : val }
     const frac = entre(it.value / (it.max || 100))
-    const r = 106 - k * 27
+    const r = n1(106 - k * paso)
     const a = Math.min(frac, 0.9999) * Math.PI * 2 - Math.PI / 2
     const ex = n1(c + r * Math.cos(a))
     const ey = n1(c + r * Math.sin(a))
@@ -29,7 +35,7 @@ export const rings = o => {
     s += '<circle ' + aro + ' style="stroke:' + tinte(it.hue, 'var(--sc-track)') + '"></circle>'
     s += '<circle ' + aro + ' mask="' + R.v + '" class="sc-hatch" style="stroke:' + col(it.hue) + '"></circle>'
     if (val !== null) s += '<path class="sc-a-draw" pathLength="100" d="M ' + c + ' ' + (c - r) + ' A ' + r + ' ' + r + ' 0 ' + (frac > 0.5 ? 1 : 0) + ' 1 ' + ex + ' ' + ey + '" fill="none" stroke-width="' + sw + '" stroke-linecap="round" style="stroke:' + col(it.hue) + '"></path>'
-    if (val !== null) s += '<circle class="sc-a-in" cx="' + ex + '" cy="' + ey + '" r="4.5" style="fill:var(--sc-surface)"></circle>'
+    if (val !== null) s += '<circle class="sc-a-in" cx="' + ex + '" cy="' + ey + '" r="' + punto + '" style="fill:var(--sc-surface)"></circle>'
     s += '</g>'
   })
 

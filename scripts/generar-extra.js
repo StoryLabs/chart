@@ -39,7 +39,8 @@ const EXTRA = [
   ['stackedLine-id', 'stackedLine', [{ id: 'partes', max: 100, series: [{ key: 'a', label: 'A', hue: 'blue', values: [1, 2, 3] }] }]],
   ['columns-id', 'columns', [{ id: 'dias', max: 4, data: [{ label: 'a', value: 2 }] }]],
   ['pie-id', 'pie', [{ id: 'torta', slices: [{ key: 'a', label: 'A', value: 2, hue: 'blue' }, { key: 'b', label: 'B', value: 1, hue: 'sky' }] }]],
-  ['heatmap-id', 'heatmap', [{ id: 'horas', rows: ['a'], values: [[1, 'x']] }]]
+  ['heatmap-id', 'heatmap', [{ id: 'horas', rows: ['a'], values: [[1, 'x']] }]],
+  ['rings-cinco', 'rings', [{ id: 'cinco', center: { value: 91, label: 'score' }, rings: [{ key: 'availability', label: 'Availability', value: 100, hue: 'blue' }, { key: 'latency', label: 'Latency', value: 92, hue: 'sky' }, { key: 'slo', label: 'SLO', value: null, hue: 'violet' }, { key: 'coldStart', label: 'Cold start', value: 100, hue: 'indigo' }, { key: 'stability', label: 'Stability', value: 88, hue: 'green' }] }]]
 ]
 
 resetIds()

@@ -84,3 +84,7 @@ m src/charts/stacked.js "const sePasa = partes.reduce((a, q) => a + q.v, 0) > o.
 m src/charts/stackedLine.js "  const fuera = sePasa.includes(true)" "  const fuera = false" "stackedLine sin recorte"
 # id: salida estable.
 m src/core/recursos.js "const k = propio ? '-' + propio : nextId()" "const k = nextId()" "recursos ignora id"
+# rings con 5 y 6 anillos.
+m src/charts/rings.js "  const paso = n > 4 ? n1(66 / (n - 1)) : 27" "  const paso = 27" "rings: paso fijo con 5 o más"
+m src/charts/rings.js "  if (o.rings.length > 6) return fallo('rings', 'entran hasta 6 anillos y vinieron ' + o.rings.length)
+" "" "rings sin tope"
