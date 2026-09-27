@@ -88,3 +88,5 @@ m src/core/recursos.js "const k = propio ? '-' + propio : nextId()" "const k = n
 m src/charts/rings.js "  const paso = n > 4 ? n1(66 / (n - 1)) : 27" "  const paso = 27" "rings: paso fijo con 5 o más"
 m src/charts/rings.js "  if (o.rings.length > 6) return fallo('rings', 'entran hasta 6 anillos y vinieron ' + o.rings.length)
 " "" "rings sin tope"
+# range: marcas del eje.
+m src/charts/range.js ".filter(t => valor(t) !== null && valor(t) >= min && valor(t) <= o.max)" "" "range dibuja marcas fuera de escala"

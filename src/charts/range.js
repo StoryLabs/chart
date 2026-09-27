@@ -12,6 +12,8 @@ export const range = o => {
   const u = o.unit || ''
   const min = num(o.min)
   const pos = v => n1(entre((v - min) / (o.max - min)) * 100)
+  // Una marca fuera de [min, max] no se dibuja: estaría mintiendo sobre dónde cae ese valor.
+  const marcas = (o.ticks || [min, o.max]).filter(t => valor(t) !== null && valor(t) >= min && valor(t) <= o.max)
 
   return '<div class="sc-chart sc-range" style="' + (o.hue ? '--c:' + col(o.hue) + ';' : '') + (o.hue2 ? '--c2:' + col(o.hue2) : '') + '">' +
     o.rows.map((r, i) => (valor(r.from) === null || valor(r.to) === null)
@@ -22,6 +24,12 @@ export const range = o => {
         '<div class="sc-bar"><div class="sc-ref sc-a-x" style="left:' + pos(r.from) + '%;width:' + n1(pos(r.to) - pos(r.from)) + '%"><i class="sc-hfill"></i></div><div class="sc-dot" style="left:' + pos(r.from) + '%"></div></div>' +
         '<span class="sc-v"><b>' + esc(r.from) + '</b> / ' + esc(conUnidad(r.to, u)) + '</span></div>'
     ).join('') +
-    '<div class="sc-axis"><span></span><div>' + (o.ticks || [min, o.max]).map((t, i, todos) => '<span>' + esc(i === todos.length - 1 ? conUnidad(t, u) : t) + '</span>').join('') + '</div><span class="sc-v"><b>000</b> / ' + esc(conUnidad('000', u)) + '</span></div>' +
+    '<div class="sc-axis"><span></span><div>' + marcas.map((t, i, todos) => {
+      // Cada marca en la posición de su valor, con la misma cuenta que las barras. La de un borde
+      // se apoya hacia adentro para no salirse.
+      const p = pos(t)
+
+      return '<span style="left:' + p + '%' + (p === 0 ? '' : p === 100 ? ';translate:-100% 0' : ';translate:-50% 0') + '">' + esc(i === todos.length - 1 ? conUnidad(t, u) : t) + '</span>'
+    }).join('') + '</div><span class="sc-v"><b>000</b> / ' + esc(conUnidad('000', u)) + '</span></div>' +
   '</div>'
 }

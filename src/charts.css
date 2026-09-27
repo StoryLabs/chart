@@ -185,7 +185,8 @@
   .sc-range .sc-v { color: var(--sc-muted); white-space: nowrap; }
   .sc-range .sc-v b { color: var(--sc-text); font-weight: 600; }
   .sc-axis { font: 11px/1 var(--sc-mono); color: var(--sc-muted); }
-  .sc-axis div { display: flex; justify-content: space-between; }
+  .sc-axis div { position: relative; height: 11px; }
+  .sc-axis div span { position: absolute; top: 0; white-space: nowrap; }
   .sc-axis .sc-v { visibility: hidden; font: 13.5px/1 var(--sc-font); }
 
   /* Las reglas por ancho van AL FINAL de la hoja: pesan lo mismo que las reglas base, y entre

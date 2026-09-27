@@ -44,9 +44,9 @@
  {
   "id": "range-min",
   "fn": "range",
-  "bytes": 980,
-  "sha256": "ddea6b4dc8302ecab8596e2f8d1ba4e4a633c171e9312076759c000ebac5e4c2",
-  "html": "<div class=\"sc-chart sc-range\" style=\"\"><div class=\"sc-range-row\" data-sc-s=\"r0\" style=\"--i:0\" data-sc-t=\"checkout-api\" data-sc-v=\"68 / 257 ms\" data-sc-d=\"Dispersión de 189 ms\" data-sc-h=\"sky\"><span class=\"sc-nm\">checkout-api</span><div class=\"sc-bar\"><div class=\"sc-ref sc-a-x\" style=\"left:0%;width:78.5%\"><i class=\"sc-hfill\"></i></div><div class=\"sc-dot\" style=\"left:0%\"></div></div><span class=\"sc-v\"><b>68</b> / 257 ms</span></div><div class=\"sc-range-row\" data-sc-s=\"r1\" style=\"--i:2\" data-sc-t=\"search-api\" data-sc-v=\"30 / 320 ms\" data-sc-d=\"Dispersión de 290 ms\" data-sc-h=\"sky\"><span class=\"sc-nm\">search-api</span><div class=\"sc-bar\"><div class=\"sc-ref sc-a-x\" style=\"left:0%;width:100%\"><i class=\"sc-hfill\"></i></div><div class=\"sc-dot\" style=\"left:0%\"></div></div><span class=\"sc-v\"><b>30</b> / 320 ms</span></div><div class=\"sc-axis\"><span></span><div><span>100</span><span>200</span><span>300 ms</span></div><span class=\"sc-v\"><b>000</b> / 000 ms</span></div></div>"
+  "bytes": 1066,
+  "sha256": "c361357e13ebeb27b7534dd19a2a27d30fa8a89dd3618cadaa01e4781e45c2cd",
+  "html": "<div class=\"sc-chart sc-range\" style=\"\"><div class=\"sc-range-row\" data-sc-s=\"r0\" style=\"--i:0\" data-sc-t=\"checkout-api\" data-sc-v=\"68 / 257 ms\" data-sc-d=\"Dispersión de 189 ms\" data-sc-h=\"sky\"><span class=\"sc-nm\">checkout-api</span><div class=\"sc-bar\"><div class=\"sc-ref sc-a-x\" style=\"left:0%;width:78.5%\"><i class=\"sc-hfill\"></i></div><div class=\"sc-dot\" style=\"left:0%\"></div></div><span class=\"sc-v\"><b>68</b> / 257 ms</span></div><div class=\"sc-range-row\" data-sc-s=\"r1\" style=\"--i:2\" data-sc-t=\"search-api\" data-sc-v=\"30 / 320 ms\" data-sc-d=\"Dispersión de 290 ms\" data-sc-h=\"sky\"><span class=\"sc-nm\">search-api</span><div class=\"sc-bar\"><div class=\"sc-ref sc-a-x\" style=\"left:0%;width:100%\"><i class=\"sc-hfill\"></i></div><div class=\"sc-dot\" style=\"left:0%\"></div></div><span class=\"sc-v\"><b>30</b> / 320 ms</span></div><div class=\"sc-axis\"><span></span><div><span style=\"left:0%\">100</span><span style=\"left:50%;translate:-50% 0\">200</span><span style=\"left:100%;translate:-100% 0\">300 ms</span></div><span class=\"sc-v\"><b>000</b> / 000 ms</span></div></div>"
  },
  {
   "id": "rings-id",

@@ -470,7 +470,15 @@ test('range con min: la escala y el eje van de min a max', () => {
 
   expect(html).toContain('left:25%;width:50%')
   expect(html).toContain('left:0%;width:100%')
-  expect(html).toContain('<span>100</span>')
+  expect(html).toContain('<span style="left:0%">100</span>')
+})
+
+test('range: cada marca del eje va en la posición de su valor; las de afuera no se dibujan', () => {
+  const html = SC.range({ min: 50, max: 300, ticks: [0, 50, 100, 200, 300, 400], unit: 'ms', rows: [{ label: 'a', from: 60, to: 250 }] })
+  const eje = html.split('class="sc-axis"')[1]
+  const marcas = [...eje.matchAll(/<span style="left:([\d.]+)%[^"]*">([^<]*)<\/span>/g)].map(m => [Number(m[1]), m[2]])
+
+  expect(marcas).toEqual([[0, '50'], [20, '100'], [60, '200'], [100, '300 ms']])
 })
 
 describe('state y legend', () => {
