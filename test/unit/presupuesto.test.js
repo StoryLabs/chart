@@ -5,7 +5,7 @@ import * as SC from '../../src/index.js'
 import { resetIds } from '../../src/core/ids.js'
 import { casos, salidas } from './casos.js'
 
-const TOPE_GZIP = 18000
+const TOPE_GZIP = 19500
 const HOLGURA = 1.1
 const raiz = new URL('../../', import.meta.url).pathname
 
@@ -21,7 +21,7 @@ const gzip = async (entrada, extra = {}) => {
   return Bun.gzipSync(new Uint8Array(await r.outputs[0].arrayBuffer()), { level: 9 }).length
 }
 
-test('peso: IIFE completo más charts.css, minificados y con gzip, no pasan de 18 000 bytes', async () => {
+test('peso: IIFE completo más charts.css, minificados y con gzip, no pasan de 19 500 bytes', async () => {
   const js = await gzip('src/global.js', { format: 'iife' })
   const css = await gzip('src/charts.css')
 

@@ -1,6 +1,6 @@
 import { n1, entre, esc, col, conUnidad, tip, valor, num } from '../core/format.js'
 import { requiere, conEscala } from '../core/guardas.js'
-import { textos } from '../core/textos.js'
+import { textos, t } from '../core/textos.js'
 
 export const bullet = o => {
   // En compacto (una celda de tabla) la referencia es opcional.
@@ -21,7 +21,7 @@ export const bullet = o => {
   const p0 = escala(a)
   const p1 = escala(b)
   const fuera = conRef && val !== null && (val < a || val > b)
-  const ref = conRef ? 'Referencia: ' + a + ' a ' + conUnidad(b, o.unit) : ''
+  const ref = conRef ? t('reference', { from: a, to: conUnidad(b, o.unit) }) : ''
   const banda = conRef ? '<div class="sc-ref" style="left:' + n1(p0) + '%;width:' + n1(p1 - p0) + '%"><i class="sc-hfill"></i></div>' : ''
   const barra = '<div class="sc-bar">' + banda + (pv > 0 ? '<div class="sc-val sc-a-x" style="width:' + n1(pv) + '%"></div>' : '') + '</div>'
   const raiz = ' data-sc-s="' + esc(o.key || o.label) + '" style="--c:' + col(hue) + ';--c2:' + col(o.hue2 || hue) + '"' + tip(o.label, val === null ? textos.empty : conUnidad(o.value, o.unit), ref + (fuera ? ' · fuera de rango' : ''), hue)
@@ -34,6 +34,6 @@ export const bullet = o => {
     '<div class="sc-bullet-head"><span class="sc-name">' + esc(o.label) + '</span><b>' + (val === null ? '—' : esc(o.value)) + '</b>' + (val === null ? '' : '<span class="sc-unit">' + esc(o.unit) + '</span>') +
       (fuera ? '<span class="sc-chip">fuera de rango</span>' : '') + (o.side ? '<span class="sc-side">' + esc(o.side) + '</span>' : '') + '</div>' +
     barra +
-    '<div class="sc-bullet-ref" style="' + (p0 >= 50 ? 'text-align:right;padding-right:' + n1(100 - p1) + '%' : 'padding-left:' + n1(p0) + '%') + '">' + esc((min ? 'Escala de ' + min + ' a ' + conUnidad(o.max, o.unit) + ' · ' : '') + ref) + '</div>' +
+    '<div class="sc-bullet-ref" style="' + (p0 >= 50 ? 'text-align:right;padding-right:' + n1(100 - p1) + '%' : 'padding-left:' + n1(p0) + '%') + '">' + esc((min ? t('scale', { from: min, to: conUnidad(o.max, o.unit) }) + ' · ' : '') + ref) + '</div>' +
   '</div>'
 }

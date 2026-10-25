@@ -327,17 +327,20 @@ pierden.
 |---|---|---|
 | `values` ★ | number[] | |
 | `max` ★ | number | |
+| `min` | number | `0`. La escala va de `min` a `max`; con `min` negativo se marca el cero. |
 | `labels` | string[] | El rótulo de cada punto, para el tooltip. |
-| `yTicks` | number[] | `[0, max]` |
+| `yTicks` | number[] | `[min, max]` |
 | `xLabels` | `[primero, último]` | |
 | `band` | `[desde, hasta]` | |
-| `threshold` | `{ value, label }` | |
+| `threshold` | `{ value, label, legend, aboveText }` | `label: ''` oculta el rótulo; `legend` y `aboveText` reemplazan los textos de la leyenda y del tooltip. |
+| `compare` | `{ values, label, hue }` | Una segunda serie punteada, en la misma escala. El tooltip muestra la diferencia. |
+| `events` | `{ at, label, hue }[]` | Marcas sobre la serie (una guía y un punto) en la posición `at` de `values`. `eventsLabel` y `eventsHue` ajustan la leyenda. |
 | `buffer` | boolean | `false` |
 | `bufferLabel` | string | `'En curso'` |
 | `gaps` | `'hatched'` \| `'empty'` | `'hatched'`. Ver [datos que faltan](#datos-que-faltan). |
 | `hue`, `hue2`, `alertHue` | tono | `'blue'`, `'sky'`, `'amber'` |
 | `maxPoints` | number | `600` |
-| `unit`, `label`, `headline` | | |
+| `unit`, `label`, `headline` | | `unit` también acepta una especificación de formato: ver [formato de números](#formato-de-números). |
 
 </details>
 
@@ -695,6 +698,40 @@ barra de +30 mide lo mismo que una de -30. El valor se escribe con signo.
 
 <a id="estados"></a>
 
+## Formato de números
+
+`unit` es un texto (`'ms'`), un par (`['ping', 'pings']`) o una **especificación** de formato:
+
+| Especificación | Se escribe |
+|---|---|
+| `{ currency: 'USD' }` | `$1,234.50`, y en los ejes `$40K` |
+| `{ percent: true }` | `6.40%` |
+| `{ dec: 4 }` | `0.0596` |
+
+```js
+line({ values: [1200, 1350.5, 1280, 1500], max: 2000, unit: { currency: 'USD' } })
+```
+
+Con una especificación el tooltip no redondea (`$680.48`, no `680`), las marcas de los ejes son compactas y
+el margen izquierdo se ajusta a la más ancha. Vale para `line`, `stackedLine`, `columns`, `stacked`, `pie` y
+`diverging`. `locale` (por defecto `'en-US'`) y `dec` (por defecto `2`) se pueden indicar en la misma especificación.
+Sin una especificación nada cambia.
+
+## Textos
+
+Todo lo que la librería escribe (estado vacío, tooltips, leyendas, etiquetas de accesibilidad) sale de un catálogo
+con las claves en inglés y el español como valor por defecto. `setTextos()` cambia cualquiera, por ejemplo al
+cambiar de idioma; un `{nombre}` se reemplaza por su valor:
+
+```js
+import { setTextos } from '@storylabs/charts'
+
+setTextos({ empty: 'No data', inProgress: 'In progress', aboveThreshold: 'Above the threshold of {value}', point: 'Point {n}' })
+```
+
+Las claves están en `src/core/textos.js`. Una opción del gráfico (`label`, `bufferLabel`, `emptyLabel`…) gana sobre el
+catálogo. Los mensajes de error para quien programa siguen en español.
+
 ## Estados
 
 <picture>
@@ -871,7 +908,7 @@ La demo está en `demo/index.html` y consume `src/` directo: serví el repo y ab
 
 - `setTheme()` y un tema por contenedor, no sólo por página.
 - `setHatch()` con los valores en inglés, y el rayado configurable desde CSS.
-- `locale`, para cambiar el idioma de los textos.
+- `locale` con catálogos completos por idioma (hoy se cambian con `setTextos()`).
 - `max` y marcas de eje calculados de los datos.
 - `heatmap()` y `ribbon()` con cualquier unidad de tiempo.
 

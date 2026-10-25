@@ -1,3 +1,4 @@
+import { textos } from '../core/textos.js'
 import { legend } from './legend.js'
 import { pad, n1, esc, col, tinte, tip, num } from '../core/format.js'
 import { headline } from '../core/headline.js'
@@ -128,7 +129,7 @@ export const ribbon = o => {
     })
   })
 
-  let s = '<svg viewBox="0 0 ' + VB + ' ' + (fondo + 38) + '" role="img" aria-label="' + esc(o.label || 'Estados en el tiempo') + '">' + R.defs + '<defs>' + clips + '</defs>'
+  let s = '<svg viewBox="0 0 ' + VB + ' ' + (fondo + 38) + '" role="img" aria-label="' + esc(o.label || textos.ribbonLabel) + '">' + R.defs + '<defs>' + clips + '</defs>'
 
   s += '<rect x="' + x0 + '" y="16" width="' + ancho + '" height="' + (fondo - 16) + '" rx="4" fill="none" stroke-dasharray="3 4" style="stroke:var(--sc-line)"></rect>'
   for (let l = 1; l < carriles; l++) s += '<line x1="' + x0 + '" x2="' + (x0 + ancho) + '" y1="' + (19 + l * paso) + '" y2="' + (19 + l * paso) + '" stroke-dasharray="3 4" style="stroke:var(--sc-line)"></line>'

@@ -1,6 +1,6 @@
 import { legend } from './legend.js'
 import { FUERTE, SUAVE, velo } from '../core/color.js'
-import { n1, esc, col, cuenta, tip, num, valor } from '../core/format.js'
+import { n1, esc, col, cuenta, tip, num, valor, tk } from '../core/format.js'
 import { requiere, vacio, conEscala } from '../core/guardas.js'
 import { conBanda, itemHueco } from '../core/huecos.js'
 import { textos } from '../core/textos.js'
@@ -22,7 +22,7 @@ export const stacked = o => {
   return '<div class="sc-chart sc-stacked" data-sc-chart="stacked" data-sc-opts="' + esc(JSON.stringify(o)) + '" style="--h:' + H + 'px">' +
     legend(o.series.map(se => ({ key: se.key, label: se.label, hue: se.hue, hatched: se.hatched, off: ocultas.includes(se.key) })).concat(conBanda(o) && o.data.some(d => o.series.every(se => valor((d.values || {})[se.key]) === null)) ? [itemHueco()] : [])) +
     '<div class="sc-stacked-plot">' +
-      '<div class="sc-yaxis">' + ticks.map(t => '<span style="bottom:' + pos(t) + '%">' + esc(t) + '</span>').join('') + '</div>' +
+      '<div class="sc-yaxis">' + ticks.map(t => '<span style="bottom:' + pos(t) + '%">' + esc(tk(t, o.unit)) + '</span>').join('') + '</div>' +
       '<div class="sc-area"><div class="sc-lines">' + ticks.map(t => '<i style="bottom:' + pos(t) + '%"></i>').join('') + '</div>' +
       '<div class="sc-cols">' + o.data.map((d, i) => {
         // Una fila sin values es una fila entera sin datos; un valor que falta no entra a la pila.
@@ -54,7 +54,7 @@ export const stacked = o => {
             }
 
             return '<div data-sc-s="' + esc(q.se.key) + '"' + (q.se.hatched ? ' class="sc-hx"' : '') + ' style="--c:' + col(h) + ';' + estilo + '"' +
-              tip((d.title || d.label) + ' · ' + q.se.label, o.unit ? cuenta(q.v, o.unit) : q.v, n1((q.v / total) * 100) + '% del día', h) + '>' + (q.se.hatched ? '<i class="sc-hfill"></i>' : '') + '</div>'
+              tip((d.title || d.label) + ' · ' + q.se.label, o.unit ? cuenta(q.v, o.unit) : q.v, n1((q.v / total) * 100) + '% ' + textos.ofDay, h) + '>' + (q.se.hatched ? '<i class="sc-hfill"></i>' : '') + '</div>'
           }).join('') +
           '</div><span class="sc-xlab' + (d.current ? ' sc-strong' : '') + '">' + esc(d.label) + '</span></div>'
       }).join('') + '</div></div>' +
