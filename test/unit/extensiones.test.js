@@ -95,3 +95,12 @@ describe('line: track', () => {
     expect(SC.line({ ...o, track: [{ from: 2, to: 1 }, null, { from: 'a', to: 3 }] })).not.toContain('height="8" rx="4"')
   })
 })
+
+describe('line: track con shade', () => {
+  test('un tramo con shade tiñe el área a lo alto del gráfico; sin shade no', () => {
+    const t = [{ from: 0, to: 1, hue: 'red', label: 'Down', shade: true }, { from: 1, to: 3, hue: 'green', label: 'Up' }]
+
+    expect(SC.line({ ...o, track: t }).match(/opacity="\.16"/g)?.length).toBe(1)
+    expect(SC.line({ ...o, track: t.map(g => ({ ...g, shade: false })) })).not.toContain('opacity=".16"')
+  })
+})
