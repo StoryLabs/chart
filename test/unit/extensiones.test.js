@@ -104,3 +104,13 @@ describe('line: track con shade', () => {
     expect(SC.line({ ...o, track: t.map(g => ({ ...g, shade: false })) })).not.toContain('opacity=".16"')
   })
 })
+
+describe('line: legendHue', () => {
+  test('la leyenda de la serie usa legendHue; sin él, hue', () => {
+    const con = SC.line({ ...o, hue: 'red', legendHue: 'green' })
+    const sin = SC.line({ ...o, hue: 'red' })
+
+    expect(con.split('data-sc-leg')[1]).toContain('--sc-green')
+    expect(sin.split('data-sc-leg')[1]).toContain('--sc-red')
+  })
+})
