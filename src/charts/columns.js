@@ -1,8 +1,8 @@
 import { legend } from './legend.js'
-import { n1, esc, col, tinte, cuenta, tip, valor } from '../core/format.js'
+import { n1, esc, col, tinte, cuenta, tip, valor, tk } from '../core/format.js'
 import { recursos } from '../core/recursos.js'
 import { requiere, vacio, conEscala } from '../core/guardas.js'
-import { textos } from '../core/textos.js'
+import { textos, t } from '../core/textos.js'
 import { conBanda, franja, itemHueco, recorte, recortado } from '../core/huecos.js'
 
 export const columns = o => {
@@ -25,11 +25,11 @@ export const columns = o => {
     'M ' + xa + ' ' + yb + ' V ' + (yt + ra) + ' Q ' + xa + ' ' + yt + ' ' + (xa + ra) + ' ' + yt + ' H ' + (xb - rb) + ' Q ' + xb + ' ' + yt + ' ' + xb + ' ' + (yt + rb) + ' V ' + yb + ' Z'
   const sePasa = d => [d.value, d.projected].some(n => valor(n) !== null && (valor(n) > o.max || valor(n) < 0))
   const fuera = o.data.some(sePasa)
-  let s = '<svg viewBox="0 0 520 214" role="img" aria-label="' + esc(o.label || 'Columnas') + '">' + R.defs + (fuera ? recorte(R.k, L, T, W, H, o.data.some(d => valor(d.value) < 0)) : '')
+  let s = '<svg viewBox="0 0 520 214" role="img" aria-label="' + esc(o.label || textos.columnsLabel) + '">' + R.defs + (fuera ? recorte(R.k, L, T, W, H, o.data.some(d => valor(d.value) < 0)) : '')
 
   for (const t of o.yTicks || [0, o.max]) {
     s += '<line x1="' + L + '" x2="' + (L + W) + '" y1="' + y(t) + '" y2="' + y(t) + '" style="stroke:var(--sc-line)"></line>'
-    s += '<text x="' + (L - 8) + '" y="' + (y(t) + 4) + '" text-anchor="end">' + esc(t) + '</text>'
+    s += '<text x="' + (L - 8) + '" y="' + (y(t) + 4) + '" text-anchor="end">' + esc(tk(t, o.unit)) + '</text>'
   }
 
   o.data.forEach((d0, i) => {
@@ -68,11 +68,11 @@ export const columns = o => {
     }
 
     s += '<g class="sc-a-y" data-sc-s="c' + i + '" style="--i:' + i + '"' + (sePasa(d0) ? recortado(R.k) : '') +
-      tip(d.title || d.label, val === null ? textos.empty : o.unit ? cuenta(d.value, o.unit) : d.value, enCurso ? 'En curso. Proyección al cierre: ' + d.projected : 'Completo', hue) + '>' + dibujo +
+      tip(d.title || d.label, val === null ? textos.empty : o.unit ? cuenta(d.value, o.unit) : d.value, enCurso ? t('projection', { value: d.projected }) : textos.complete, hue) + '>' + dibujo +
       '<rect x="' + n1(cx - paso / 2) + '" y="' + T + '" width="' + n1(paso) + '" height="' + H + '" fill="transparent"></rect></g>'
     s += '<text x="' + n1(cx) + '" y="' + (base + 17) + '" text-anchor="middle"' + (enCurso ? ' class="sc-strong"' : '') + '>' + esc(d.label) + '</text>'
   })
 
   return '<div class="sc-chart sc-columns"><div class="sc-scroll">' + s + '</svg></div>' +
-    legend([{ label: 'Medido', hue }].concat(o.data.some(d => d.projected !== undefined && d.projected !== null) ? [{ label: 'En curso', hue, hatched: true }] : []).concat(conBanda(o) && o.data.some(d => valor(d.value) === null && d.projected == null) ? [itemHueco()] : []), false) + '</div>'
+    legend([{ label: textos.measured, hue }].concat(o.data.some(d => d.projected !== undefined && d.projected !== null) ? [{ label: textos.inProgress, hue, hatched: true }] : []).concat(conBanda(o) && o.data.some(d => valor(d.value) === null && d.projected == null) ? [itemHueco()] : []), false) + '</div>'
 }

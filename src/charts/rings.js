@@ -1,7 +1,7 @@
 import { n1, entre, esc, col, tinte, tip, valor } from '../core/format.js'
 import { recursos } from '../core/recursos.js'
 import { requiere, vacio, fallo } from '../core/guardas.js'
-import { textos } from '../core/textos.js'
+import { textos, t } from '../core/textos.js'
 
 export const rings = o => {
   const malo = requiere('rings', o, ['rings'])
@@ -31,7 +31,7 @@ export const rings = o => {
     const ey = n1(c + r * Math.sin(a))
     const aro = 'cx="' + c + '" cy="' + c + '" r="' + r + '" fill="none" stroke-width="' + sw + '"'
 
-    s += '<g data-sc-s="' + esc(it.key) + '" style="--c:' + col(it.hue) + ';--i:' + k + '"' + (val === null ? tip(it.label, textos.empty, '', it.hue) : tip(it.label, it.value + ' de ' + (it.max || 100), 'Faltan ' + n1((it.max || 100) - it.value) + ' puntos', it.hue)) + '>'
+    s += '<g data-sc-s="' + esc(it.key) + '" style="--c:' + col(it.hue) + ';--i:' + k + '"' + (val === null ? tip(it.label, textos.empty, '', it.hue) : tip(it.label, t('ringOf', { value: it.value, max: it.max || 100 }), t('ringLeft', { n: n1((it.max || 100) - it.value) }), it.hue)) + '>'
     s += '<circle ' + aro + ' style="stroke:' + tinte(it.hue, 'var(--sc-track)') + '"></circle>'
     s += '<circle ' + aro + ' mask="' + R.v + '" class="sc-hatch" style="stroke:' + col(it.hue) + '"></circle>'
     if (val !== null) s += '<path class="sc-a-draw" pathLength="100" d="M ' + c + ' ' + (c - r) + ' A ' + r + ' ' + r + ' 0 ' + (frac > 0.5 ? 1 : 0) + ' 1 ' + ex + ' ' + ey + '" fill="none" stroke-width="' + sw + '" stroke-linecap="round" style="stroke:' + col(it.hue) + '"></path>'

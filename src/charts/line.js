@@ -1,9 +1,10 @@
 import { legend } from './legend.js'
-import { n1, esc, col, tinte, conUnidad, valor } from '../core/format.js'
+import { n1, esc, col, tinte, conUnidad, valor, num, esFmt, tk } from '../core/format.js'
 import { headline } from '../core/headline.js'
 import { muestreo } from '../core/muestreo.js'
 import { recursos } from '../core/recursos.js'
 import { requiere, vacio, conEscala } from '../core/guardas.js'
+import { textos, t } from '../core/textos.js'
 import { conBanda, rachasNulas, franja, itemHueco, recorte, recortado } from '../core/huecos.js'
 
 export const line = o => {
@@ -21,15 +22,19 @@ export const line = o => {
   const rotulos = o.labels ? (idx ? idx.map(i => o.labels[i]) : o.labels) : null
   const N = v.length
   const N0 = o.values.length
-  const L = 44, T = 14, W = 580, H = 190
+  // El margen izquierdo se ajusta al rótulo más ancho del eje: una marca de moneda ($35.5K) no entra en 44 px.
+  const tickTxt = (o.yTicks || [num(o.min), o.max]).map(t => String(tk(t, o.unit)))
+  const L = esFmt(o.unit) ? Math.max(44, Math.ceil(Math.max(...tickTxt.map(x => x.length), 0) * 6.8 + 14)) : 44, T = 14, W = 580, H = 190
   const hue = o.hue || 'blue'
   const alerta = o.alertHue || 'amber'
   const thr = o.threshold ? o.threshold.value : null
   // Cada punto va en el lugar que le toca por su posición ORIGINAL: los que sobrevivieron al
   // recorte no quedan repartidos parejo, y dibujarlos parejo deformaría el eje del tiempo.
   const x = i => n1(L + ((idx ? idx[i] : i) / (N0 - 1 || 1)) * W)
-  const y = val => n1(T + (1 - val / o.max) * H)
-  const y0 = y(0)
+  // La escala va de `min` (0 por defecto) a `max`. El fondo del área es siempre el borde de abajo del gráfico.
+  const min = num(o.min)
+  const y = val => n1(T + (1 - (val - min) / (o.max - min)) * H)
+  const y0 = n1(T + H)
   const pts = (a, b) => { const p = []; for (let i = a; i <= b; i++) p.push(x(i) + ' ' + y(v[i])); return 'M ' + p.join(' L ') }
   const area = (a, b) => pts(a, b) + ' L ' + x(b) + ' ' + y0 + ' L ' + x(a) + ' ' + y0 + ' Z'
   const grad = (id, h, vertical, fin) => '<linearGradient id="' + id + '" x1="0" y1="0" x2="' + (vertical ? 0 : 1) + '" y2="' + (vertical ? 1 : 0) + '"><stop offset="0" style="stop-color:' + col(h) + (vertical ? ';stop-opacity:.4' : '') + '"></stop><stop offset="1" style="stop-color:' + col(fin || h) + (vertical ? ';stop-opacity:0' : '') + '"></stop></linearGradient>'
@@ -49,13 +54,16 @@ export const line = o => {
     else tramos.push({ a: i, b: i + 1, arriba })
   }
 
-  const fuera = v.some(n => n !== null && (n > o.max || n < 0))
-  let s = '<svg viewBox="0 0 640 236" role="img" aria-label="' + esc(o.label || 'Serie en el tiempo') + '">' + R.defs + (fuera ? recorte(R.k, L, T, W, H, v.some(n => n !== null && n < 0)) : '')
+  const fuera = v.some(n => n !== null && (n > o.max || n < min))
+  let s = '<svg viewBox="0 0 ' + (L + W + 16) + ' 236" role="img" aria-label="' + esc(o.label || textos.lineLabel) + '">' + R.defs + (fuera ? recorte(R.k, L, T, W, H, v.some(n => n !== null && n < min)) : '')
 
-  for (const t of o.yTicks || [0, o.max]) {
+  for (const t of o.yTicks || [min, o.max]) {
     s += '<line x1="' + L + '" x2="' + (L + W) + '" y1="' + y(t) + '" y2="' + y(t) + '" style="stroke:var(--sc-line)"></line>'
-    s += '<text x="' + (L - 8) + '" y="' + (y(t) + 4) + '" text-anchor="end">' + esc(t) + '</text>'
+    s += '<text x="' + (L - 8) + '" y="' + (y(t) + 4) + '" text-anchor="end">' + esc(tk(t, o.unit)) + '</text>'
   }
+
+  // Con una escala que cruza el cero, el cero se marca: es la frontera entre ganar y perder.
+  if (min < 0 && o.max > 0) s += '<line x1="' + L + '" x2="' + (L + W) + '" y1="' + y(0) + '" y2="' + y(0) + '" stroke-dasharray="3 4" opacity=".6" style="stroke:var(--sc-muted)"></line>'
 
   if (o.band) {
     const caja = 'x="' + L + '" y="' + y(o.band[1]) + '" width="' + W + '" height="' + n1(y(o.band[0]) - y(o.band[1])) + '"'
@@ -65,7 +73,7 @@ export const line = o => {
 
   if (thr !== null) {
     s += '<g data-sc-s="threshold" class="sc-a-in"><line x1="' + L + '" x2="' + (L + W) + '" y1="' + y(thr) + '" y2="' + y(thr) + '" stroke-width="1.5" stroke-dasharray="5 5" style="stroke:' + col(alerta) + '"></line>' +
-      '<text x="' + (L + 6) + '" y="' + (y(thr) - 7) + '" style="fill:' + col(alerta) + ';paint-order:stroke;stroke:var(--sc-surface);stroke-width:4px;stroke-linejoin:round">' + esc(o.threshold.label || 'umbral ' + conUnidad(thr, o.unit)) + '</text></g>'
+      (o.threshold.label === '' ? '' : '<text x="' + (L + 6) + '" y="' + (y(thr) - 7) + '" style="fill:' + col(alerta) + ';paint-order:stroke;stroke:var(--sc-surface);stroke-width:4px;stroke-linejoin:round">' + esc(o.threshold.label || t('thresholdLabel', { value: conUnidad(thr, o.unit) })) + '</text>') + '</g>'
   }
 
   // El hueco: encima de la referencia y del umbral, debajo de la línea. De la última medición antes
@@ -92,6 +100,34 @@ export const line = o => {
   }
   s += '</g>'
 
+  // Serie de comparación: la misma escala y el mismo eje, punteada (una referencia, no la medición principal).
+  const cmp = o.compare && Array.isArray(o.compare.values) ? Array.from({ length: N0 }, (_, i) => valor(o.compare.values[i])) : null
+  const c = cmp ? (idx ? idx.map(i => cmp[i]) : cmp) : null
+
+  if (c && c.some(n => n !== null)) {
+    let d = ''
+
+    c.forEach((n, i) => {
+      if (n !== null) d += (i && c[i - 1] !== null ? ' L ' : ' M ') + x(i) + ' ' + y(n)
+    })
+    s += '<g data-sc-s="compare" class="sc-a-in"' + (fuera ? recortado(R.k) : '') + '><path d="' + d + '" fill="none" stroke-width="1.8" stroke-dasharray="5 4" stroke-linecap="round" stroke-linejoin="round" style="stroke:' + col(o.compare.hue || 'neutral') + '"></path></g>'
+  }
+
+  // Movimientos (depósitos, retiros, dividendos): una guía vertical y un punto sobre la serie, en la posición ORIGINAL.
+  const evs = (o.events || []).filter(e => e && Number.isInteger(e.at) && e.at >= 0 && e.at < N0 && vs[e.at] !== null)
+
+  if (evs.length) {
+    s += '<g data-sc-s="events" class="sc-a-in">'
+    for (const e of evs) {
+      const ex = n1(L + (e.at / (N0 - 1 || 1)) * W)
+      const eh = col(e.hue || 'violet')
+
+      s += '<line x1="' + ex + '" x2="' + ex + '" y1="' + T + '" y2="' + y0 + '" stroke-width="1" stroke-dasharray="2 4" opacity=".55" style="stroke:' + eh + '"></line>' +
+        '<circle cx="' + ex + '" cy="' + y(vs[e.at]) + '" r="3.5" stroke-width="2" style="fill:' + eh + ';stroke:var(--sc-surface)"></circle>'
+    }
+    s += '</g>'
+  }
+
   const finHue = thr !== null && v[N - 1] >= thr ? alerta : hue
 
   // Buffer: el último punto todavía está en curso. Su tramo va punteado y el área, rayada.
@@ -104,21 +140,28 @@ export const line = o => {
   if (v[N - 1] !== null) s += '<circle class="sc-glow" cx="' + x(N - 1) + '" cy="' + y(v[N - 1]) + '" r="5.5" stroke-width="3" style="fill:' + col(finHue) + ';stroke:var(--sc-surface)"></circle>'
   s += '</g>'
 
-  const datos = { v: v.map(n => (n === null ? null : n1(n))), l: rotulos, p: idx, n0: N0, max: o.max, thr, band: o.band || null, L, T, W, H, u: o.unit || '', hue, alerta, buf: Boolean(o.buffer) }
+  // Con una especificación de formato (moneda, %) los valores viajan con centavos; si no, con un decimal.
+  const r = esFmt(o.unit) ? n => Math.round(n * 100) / 100 : n1
+  const datos = { v: v.map(n => (n === null ? null : r(n))), l: rotulos, p: idx, n0: N0, ...(min ? { min } : {}), max: o.max, thr, band: o.band || null, L, T, W, H, u: o.unit || '', hue, alerta, buf: Boolean(o.buffer) }
+  if (o.threshold && o.threshold.aboveText) datos.ta = String(o.threshold.aboveText)
+  if (c && c.some(n => n !== null)) Object.assign(datos, { c: c.map(n => (n === null ? null : r(n))), cn: o.compare.label || textos.compare })
+  if (evs.length) datos.ev = evs.map(e => ({ a: e.at, t: e.label || '', h: e.hue || 'violet' }))
 
   s += '<line class="sc-guia" x1="0" x2="0" y1="' + T + '" y2="' + y0 + '" visibility="hidden" opacity=".5" style="stroke:var(--sc-muted)"></line>'
   s += '<circle class="sc-pto" cx="0" cy="0" r="5" stroke-width="2.5" visibility="hidden" style="stroke:var(--sc-surface)"></circle>'
   s += '<rect data-sc-line="' + esc(JSON.stringify(datos)) + '" x="' + L + '" y="' + T + '" width="' + W + '" height="' + H + '" fill="transparent" style="cursor:crosshair"></rect>'
 
   if (o.xLabels) s += '<text x="' + L + '" y="226">' + esc(o.xLabels[0]) + '</text><text x="' + (L + W) + '" y="226" text-anchor="end">' + esc(o.xLabels[1]) + '</text>'
-  if (o.unit) s += '<text x="' + (L - 8) + '" y="226" text-anchor="end" style="fill:var(--sc-faint)">' + esc(o.unit) + '</text>'
+  if (o.unit && !esFmt(o.unit)) s += '<text x="' + (L - 8) + '" y="226" text-anchor="end" style="fill:var(--sc-faint)">' + esc(o.unit) + '</text>'
 
-  const items = [{ key: 'series', label: o.label || 'Serie', hue }]
+  const items = [{ key: 'series', label: o.label || textos.series, hue }]
 
-  if (o.band) items.push({ key: 'band', label: 'Rango normal, ' + o.band[0] + ' a ' + conUnidad(o.band[1], o.unit), hue, hatched: true })
-  if (thr !== null) items.push({ key: 'threshold', label: 'Umbral de ' + conUnidad(thr, o.unit), hue: alerta })
+  if (o.band) items.push({ key: 'band', label: t('band', { from: o.band[0], to: conUnidad(o.band[1], o.unit) }), hue, hatched: true })
+  if (thr !== null) items.push({ key: 'threshold', label: o.threshold.legend || t('thresholdLegend', { value: conUnidad(thr, o.unit) }), hue: alerta })
+  if (c && c.some(n => n !== null)) items.push({ key: 'compare', label: o.compare.label || textos.compare, hue: o.compare.hue || 'neutral' })
+  if (evs.length) items.push({ key: 'events', label: o.eventsLabel || textos.events, hue: o.eventsHue || (evs[0] && evs[0].hue) || 'violet' })
   if (huecos.length) items.push(itemHueco())
-  if (o.buffer) items.push({ key: 'buffer', label: o.bufferLabel || 'En curso', hue: finHue, hatched: true })
+  if (o.buffer) items.push({ key: 'buffer', label: o.bufferLabel || textos.inProgress, hue: finHue, hatched: true })
 
   return '<div class="sc-chart sc-line">' + headline(o.headline) + legend(items) + '<div class="sc-scroll">' + s + '</svg></div></div>'
 }

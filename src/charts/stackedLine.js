@@ -1,10 +1,11 @@
 import { legend } from './legend.js'
 import { FUERTE, SUAVE } from '../core/color.js'
-import { n1, esc, col, tinte, valor, n1v } from '../core/format.js'
+import { n1, esc, col, tinte, valor, n1v, tk, esFmt } from '../core/format.js'
 import { headline } from '../core/headline.js'
 import { muestreo } from '../core/muestreo.js'
 import { recursos } from '../core/recursos.js'
 import { requiere, vacio, fallo, conEscala } from '../core/guardas.js'
+import { textos } from '../core/textos.js'
 import { conBanda, rachasNulas, franja, itemHueco, recorte, recortado } from '../core/huecos.js'
 
 /**
@@ -67,11 +68,11 @@ export const stackedLine = entrada => {
   // Qué series se pasan de la escala: su techo sobre max, o su piso bajo cero.
   const sePasa = vivas.map((_, k) => acum[k].some((t, i) => t !== null && (t > o.max || piso(k, i) > T + H || t < 0)))
   const fuera = sePasa.includes(true)
-  let s = '<svg viewBox="0 0 ' + VB + ' 236" role="img" aria-label="' + esc(o.label || 'Series apiladas') + '">' + R.defs + (fuera ? recorte(R.k, L, T, W, H, acum.some(a => a.some(t => t !== null && t < 0))) : '')
+  let s = '<svg viewBox="0 0 ' + VB + ' 236" role="img" aria-label="' + esc(o.label || textos.stackedLineLabel) + '">' + R.defs + (fuera ? recorte(R.k, L, T, W, H, acum.some(a => a.some(t => t !== null && t < 0))) : '')
 
   for (const t of o.yTicks || [0, o.max]) {
     s += '<line x1="' + L + '" x2="' + (L + W) + '" y1="' + y(t) + '" y2="' + y(t) + '" style="stroke:var(--sc-line)"></line>'
-    s += '<text x="' + (L - 8) + '" y="' + (y(t) + 4) + '" text-anchor="end">' + esc(t) + '</text>'
+    s += '<text x="' + (L - 8) + '" y="' + (y(t) + 4) + '" text-anchor="end">' + esc(tk(t, o.unit)) + '</text>'
   }
 
   // El hueco del total, debajo de las bandas: de la última medición antes a la primera después.
@@ -104,7 +105,7 @@ export const stackedLine = entrada => {
     s += '</g>'
   })
 
-  const datos = { s: vivas.map(se => ({ n: se.label, h: se.hue, v: se.values.map(n1v) })), l: o.labels || null, p: o.puntos || null, n0: o.total || N, max: o.max, L, T, W, H, u: o.unit || '', buf: Boolean(o.buffer), tot: o.totalLabel || 'Total' }
+  const datos = { s: vivas.map(se => ({ n: se.label, h: se.hue, v: se.values.map(n1v) })), l: o.labels || null, p: o.puntos || null, n0: o.total || N, max: o.max, L, T, W, H, u: o.unit || '', buf: Boolean(o.buffer), tot: o.totalLabel || textos.total }
 
   s += '<line class="sc-guia" x1="0" x2="0" y1="' + T + '" y2="' + y(0) + '" visibility="hidden" opacity=".5" style="stroke:var(--sc-muted)"></line>'
   for (const se of vivas) s += '<circle class="sc-pto" cx="0" cy="0" r="4.5" stroke-width="2.5" visibility="hidden" style="fill:' + col(se.hue) + ';stroke:var(--sc-surface)"></circle>'
@@ -113,12 +114,12 @@ export const stackedLine = entrada => {
   ;(o.xTicks || []).forEach((t, i, todos) => {
     s += '<text x="' + n1(L + (t.at / ((o.total || N) - 1 || 1)) * W) + '" y="226" text-anchor="' + (i === 0 ? 'start' : i === todos.length - 1 ? 'end' : 'middle') + '">' + esc(t.label) + '</text>'
   })
-  if (o.unit) s += '<text x="' + (L - 8) + '" y="226" text-anchor="end" style="fill:var(--sc-faint)">' + esc(o.unit) + '</text>'
+  if (o.unit && !esFmt(o.unit)) s += '<text x="' + (L - 8) + '" y="226" text-anchor="end" style="fill:var(--sc-faint)">' + esc(o.unit) + '</text>'
 
   const items = o.series.map(se => ({ key: se.key, label: se.label, hue: se.hue, off: ocultas.includes(se.key) }))
 
   if (huecos.length) items.push(itemHueco())
-  if (o.buffer) items.push({ label: o.bufferLabel || 'En curso', hue: 'neutral', hatched: true })
+  if (o.buffer) items.push({ label: o.bufferLabel || textos.inProgress, hue: 'neutral', hatched: true })
 
   // Las opciones viajan con el gráfico: apagar una serie cambia la suma de las de arriba.
   return '<div class="sc-chart sc-stackedline" data-sc-chart="stackedLine" data-sc-opts="' + esc(JSON.stringify(o)) + '">' + headline(o.headline) + legend(items) +

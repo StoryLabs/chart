@@ -1,3 +1,4 @@
+import { textos, t } from '../core/textos.js'
 import { legend } from './legend.js'
 import { pad, esc, col, num, valor } from '../core/format.js'
 import { recursos } from '../core/recursos.js'
@@ -47,7 +48,7 @@ export const heatmap = o => {
 
     return String(motivos.indexOf(n || ''))
   }))
-  let s = '<svg viewBox="0 0 640 ' + (T + o.rows.length * salto + 22) + '" role="img" aria-label="' + esc(o.label || 'Mapa de calor') + '">' + R.defs
+  let s = '<svg viewBox="0 0 640 ' + (T + o.rows.length * salto + 22) + '" role="img" aria-label="' + esc(o.label || textos.heatmapLabel) + '">' + R.defs
 
   for (let f = 0; f < o.rows.length; f++) s += '<text x="' + (L - 10) + '" y="' + (T + f * salto + 15) + '" text-anchor="end">' + esc(o.rows[f]) + '</text>'
 
@@ -62,15 +63,15 @@ export const heatmap = o => {
 
   for (const h of o.colTicks || [0, cols - 1]) s += '<text x="' + (L + h * salto + celda / 2) + '" y="' + (T + o.rows.length * salto + 14) + '" text-anchor="middle">' + esc(pad(h)) + '</text>'
 
-  const datos = { v: compacto, w: motivos, r: o.rows, L, T, s: salto, c: celda, u: o.unit || null, e: o.emptyLabel || 'Sin datos', hue }
+  const datos = { v: compacto, w: motivos, r: o.rows, L, T, s: salto, c: celda, u: o.unit || null, e: o.emptyLabel || textos.empty, hue }
 
   s += '<rect class="sc-celda" x="0" y="0" width="' + (celda + 4) + '" height="' + (celda + 4) + '" rx="7" fill="none" stroke-width="2" visibility="hidden" style="stroke:var(--sc-text)"></rect>'
   s += '<rect data-sc-heat="' + esc(JSON.stringify(datos)) + '" x="' + L + '" y="' + T + '" width="' + cols * salto + '" height="' + o.rows.length * salto + '" fill="transparent"></rect>'
 
   const escala = []
 
-  for (let n = 1; n <= tope; n++) escala.push({ label: n === tope ? n + ' o más' : String(n), color: tono(n) })
-  escala.push({ label: o.emptyLabel || 'Sin datos', hue: 'neutral', hatched: true })
+  for (let n = 1; n <= tope; n++) escala.push({ label: n === tope ? t('more', { n }) : String(n), color: tono(n) })
+  escala.push({ label: o.emptyLabel || textos.empty, hue: 'neutral', hatched: true })
 
   return '<div class="sc-chart sc-heatmap"><div class="sc-scroll">' + s + '</svg></div>' + legend(escala, false) + '</div>'
 }

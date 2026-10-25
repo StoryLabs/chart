@@ -1,5 +1,6 @@
 import { FUERTE, SUAVE } from '../core/color.js'
-import { n1, esc, col, tinte, cuenta, tip, valor } from '../core/format.js'
+import { n1, esc, col, tinte, cuenta, tip, valor, esFmt, fmtNum } from '../core/format.js'
+import { textos } from '../core/textos.js'
 import { recursos } from '../core/recursos.js'
 import { requiere, vacio } from '../core/guardas.js'
 
@@ -34,7 +35,7 @@ export const pie = o => {
     const d = ri
       ? 'M ' + punto(ro, a0) + ' A ' + ro + ' ' + ro + ' 0 ' + largo + ' 1 ' + punto(ro, a1) + ' L ' + punto(ri, a1) + ' A ' + ri + ' ' + ri + ' 0 ' + largo + ' 0 ' + punto(ri, a0) + ' Z'
       : 'M ' + c + ' ' + c + ' L ' + punto(ro, a0) + ' A ' + ro + ' ' + ro + ' 0 ' + largo + ' 1 ' + punto(ro, a1) + ' Z'
-    const datos = ' data-sc-s="' + esc(sl.key) + '"' + tip(sl.label, o.unit ? cuenta(sl.value, o.unit) : sl.value, pct(sl) + ' del total', sl.hue)
+    const datos = ' data-sc-s="' + esc(sl.key) + '"' + tip(sl.label, o.unit ? cuenta(sl.value, o.unit) : sl.value, pct(sl) + ' ' + textos.ofTotal, sl.hue)
 
     if (linea) {
       // Igual que una banda de las líneas apiladas, pero enrollada: relleno translúcido que se
@@ -60,7 +61,7 @@ export const pie = o => {
     a0 = a1
   })
 
-  let s = '<svg viewBox="0 0 260 260" role="img" aria-label="' + esc(o.label || 'Reparto') + '">' + R.defs + '<g class="sc-a-pie">'
+  let s = '<svg viewBox="0 0 260 260" role="img" aria-label="' + esc(o.label || textos.pieLabel) + '">' + R.defs + '<g class="sc-a-pie">'
 
   if (!vivos.length) s += '<circle cx="' + c + '" cy="' + c + '" r="' + (ro + ri) / 2 + '" fill="none" stroke-width="' + (ro - ri) + '" style="stroke:' + tinte('neutral', 'var(--sc-track)') + '"></circle>'
   // Todos los rellenos primero y todas las líneas después: así ningún relleno tapa una línea.
@@ -74,6 +75,6 @@ export const pie = o => {
   // Las opciones viajan con el gráfico: al apagar una porción hay que volver a repartir el
   // círculo, y eso es redibujar, no esconder.
   return '<div class="sc-chart sc-pie" data-sc-chart="pie" data-sc-opts="' + esc(JSON.stringify(o)) + '"><div class="sc-split"><div>' + s + '</svg></div><div class="sc-rows">' +
-    o.slices.map(sl => '<button type="button" class="sc-row" data-sc-leg="' + esc(sl.key) + '" aria-pressed="' + !ocultas.includes(sl.key) + '"><i class="sc-sq' + (sl.hatched ? ' sc-h' : '') + '" style="--c:' + col(sl.hue) + '"></i><span>' + esc(sl.label) + '</span><span class="sc-t">' + esc(sl.value) + '</span><b>' + pct(sl) + '</b></button>').join('') +
+    o.slices.map(sl => '<button type="button" class="sc-row" data-sc-leg="' + esc(sl.key) + '" aria-pressed="' + !ocultas.includes(sl.key) + '"><i class="sc-sq' + (sl.hatched ? ' sc-h' : '') + '" style="--c:' + col(sl.hue) + '"></i><span>' + esc(sl.label) + '</span><span class="sc-t">' + esc(esFmt(o.unit) ? fmtNum(sl.value, o.unit) : sl.value) + '</span><b>' + pct(sl) + '</b></button>').join('') +
   '</div></div></div>'
 }

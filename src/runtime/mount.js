@@ -1,9 +1,9 @@
 import { pie } from '../charts/pie.js'
 import { stacked } from '../charts/stacked.js'
 import { stackedLine } from '../charts/stackedLine.js'
-import { pad, entre, col, conUnidad, cuenta } from '../core/format.js'
+import { pad, entre, col, conUnidad, cuenta, esFmt } from '../core/format.js'
 import { setHatch } from './hatch.js'
-import { textos } from '../core/textos.js'
+import { textos, t } from '../core/textos.js'
 
 // Los gráficos que se REDIBUJAN al tocar su leyenda: apagar una serie cambia la forma de las demás.
 export const redibujables = { pie, stacked, stackedLine }
@@ -136,19 +136,33 @@ export const mount = () => {
     if (v === null) {
       pto.setAttribute('visibility', 'hidden')
 
-      return mostrar(ev, d.l ? d.l[i] : 'Punto ' + (i + 1), textos.empty, '', 'neutral')
+      return mostrar(ev, d.l ? d.l[i] : t('point', { n: i + 1 }), textos.empty, '', 'neutral')
     }
     pto.setAttribute('cx', x)
     // Un valor fuera de escala: el punto queda en el borde del plot, el tooltip dice el real.
-    pto.setAttribute('cy', d.T + entre(1 - v / d.max) * d.H)
+    pto.setAttribute('cy', d.T + entre(1 - (v - (d.min || 0)) / (d.max - (d.min || 0))) * d.H)
     pto.style.fill = col(hue)
     pto.setAttribute('visibility', 'visible')
 
-    const detalle = d.buf && i === N - 1 ? 'En curso'
-      : arriba ? 'Sobre el umbral de ' + conUnidad(d.thr, d.u)
-        : d.band ? (v >= d.band[0] && v <= d.band[1] ? 'Dentro del rango normal' : 'Fuera del rango normal') : ''
+    const detalle = d.buf && i === N - 1 ? textos.inProgress
+      : arriba ? d.ta || t('aboveThreshold', { value: conUnidad(d.thr, d.u) })
+        : d.band ? (v >= d.band[0] && v <= d.band[1] ? textos.inRange : textos.outRange) : ''
+    const filas = [detalle]
 
-    mostrar(ev, d.l ? d.l[i] : 'Punto ' + (i + 1), conUnidad(Math.round(v), d.u), detalle, hue)
+    // La serie de comparación y su diferencia con el valor.
+    if (d.c && d.c[i] !== null && d.c[i] !== undefined) {
+      const dif = v - d.c[i]
+
+      filas.push(d.cn + '  ' + conUnidad(d.c[i], d.u) + '  (' + (dif < 0 ? '−' : '+') + conUnidad(esFmt(d.u) ? Math.abs(dif) : Math.round(Math.abs(dif)), d.u) + ')')
+    }
+
+    // Los movimientos que caen en este punto (con la serie recortada, en su vecindad).
+    const origen = d.p ? d.p[i] : i
+    const holgura = d.p ? Math.ceil(d.n0 / N / 2) : 0
+
+    for (const e of d.ev || []) if (Math.abs(e.a - origen) <= holgura && e.t) filas.push(e.t)
+
+    mostrar(ev, d.l ? d.l[i] : t('point', { n: i + 1 }), conUnidad(esFmt(d.u) ? v : Math.round(v), d.u), filas.filter(Boolean).join('\n'), hue)
   }
 
   const seguirArea = (cap, ev) => {
@@ -174,7 +188,7 @@ export const mount = () => {
     if (d.s[0].v[i] === null) {
       for (const p of ptos) p.setAttribute('visibility', 'hidden')
 
-      return mostrar(ev, d.l ? d.l[i] : 'Punto ' + (i + 1), textos.empty, '', 'neutral')
+      return mostrar(ev, d.l ? d.l[i] : t('point', { n: i + 1 }), textos.empty, '', 'neutral')
     }
 
     d.s.forEach((se, k) => {
@@ -185,10 +199,10 @@ export const mount = () => {
     })
 
     // De arriba hacia abajo, en el mismo orden en que se ven las bandas.
-    const filas = d.s.map(se => se.n + '  ' + conUnidad(Math.round(se.v[i]), d.u)).reverse()
+    const filas = d.s.map(se => se.n + '  ' + conUnidad(esFmt(d.u) ? se.v[i] : Math.round(se.v[i]), d.u)).reverse()
 
-    if (d.buf && i === N - 1) filas.push('En curso')
-    mostrar(ev, d.l ? d.l[i] : 'Punto ' + (i + 1), d.tot + ' ' + conUnidad(Math.round(suma), d.u), filas.join('\n'), d.s.length ? d.s[d.s.length - 1].h : 'neutral')
+    if (d.buf && i === N - 1) filas.push(textos.inProgress)
+    mostrar(ev, d.l ? d.l[i] : t('point', { n: i + 1 }), d.tot + ' ' + conUnidad(esFmt(d.u) ? suma : Math.round(suma), d.u), filas.join('\n'), d.s.length ? d.s[d.s.length - 1].h : 'neutral')
   }
 
   const alMover = ev => {
