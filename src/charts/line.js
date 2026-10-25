@@ -144,7 +144,7 @@ export const line = o => {
   const r = esFmt(o.unit) ? n => Math.round(n * 100) / 100 : n1
   const datos = { v: v.map(n => (n === null ? null : r(n))), l: rotulos, p: idx, n0: N0, ...(min ? { min } : {}), max: o.max, thr, band: o.band || null, L, T, W, H, u: o.unit || '', hue, alerta, buf: Boolean(o.buffer) }
   if (o.threshold && o.threshold.aboveText) datos.ta = String(o.threshold.aboveText)
-  if (c && c.some(n => n !== null)) Object.assign(datos, { c: c.map(n => (n === null ? null : r(n))), cn: o.compare.label || textos.compare })
+  if (c && c.some(n => n !== null)) Object.assign(datos, { c: c.map(n => (n === null ? null : r(n))), cn: o.compare.label || textos.compare, ch: o.compare.hue || 'neutral' })
   if (evs.length) datos.ev = evs.map(e => ({ a: e.at, t: e.label || '', h: e.hue || 'violet' }))
 
   s += '<line class="sc-guia" x1="0" x2="0" y1="' + T + '" y2="' + y0 + '" visibility="hidden" opacity=".5" style="stroke:var(--sc-muted)"></line>'
