@@ -68,6 +68,15 @@ export const line = o => {
   // Con una escala que cruza el cero, el cero se marca: es la frontera entre ganar y perder.
   if (min < 0 && o.max > 0) s += '<line x1="' + L + '" x2="' + (L + W) + '" y1="' + y(0) + '" y2="' + y(0) + '" stroke-dasharray="3 4" opacity=".6" style="stroke:var(--sc-muted)"></line>'
 
+  // Un tramo de la pista con `shade` también tiñe el área de arriba, a lo alto del gráfico (detrás de la serie).
+  for (const g of pista) {
+    if (!g.shade) continue
+
+    const a = Math.max(0, g.from)
+
+    s += '<rect x="' + n1(L + (a / (N0 - 1 || 1)) * W) + '" y="' + T + '" width="' + Math.max(3, n1(((Math.min(N0 - 1, g.to) - a) / (N0 - 1 || 1)) * W)) + '" height="' + H + '" opacity=".16" style="fill:' + col(g.hue) + '"></rect>'
+  }
+
   if (o.band) {
     const caja = 'x="' + L + '" y="' + y(o.band[1]) + '" width="' + W + '" height="' + n1(y(o.band[0]) - y(o.band[1])) + '"'
 

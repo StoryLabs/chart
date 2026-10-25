@@ -334,7 +334,7 @@ pierden.
 | `band` | `[desde, hasta]` | |
 | `threshold` | `{ value, label, legend, aboveText }` | `label: ''` oculta el rótulo; `legend` y `aboveText` reemplazan los textos de la leyenda y del tooltip. |
 | `compare` | `{ values, label, hue }` | Una segunda serie punteada, en la misma escala. El tooltip muestra la diferencia. |
-| `track` | `{ from, to, hue, label, key }[]` | Una franja delgada bajo el área, con un tramo por estado (por ejemplo, en ganancia / en pérdida). `from` y `to` son posiciones de `values`; el tooltip dice el estado del punto y la leyenda lo apaga. |
+| `track` | `{ from, to, hue, label, key, shade }[]` | Una franja delgada bajo el área, con un tramo por estado (por ejemplo, en ganancia / en pérdida). `from` y `to` son posiciones de `values`; el tooltip dice el estado del punto y la leyenda lo apaga. Con `shade: true` el tramo también tiñe el área de arriba. |
 | `events` | `{ at, label, hue }[]` | Marcas sobre la serie (una guía y un punto) en la posición `at` de `values`. `eventsLabel` y `eventsHue` ajustan la leyenda. |
 | `buffer` | boolean | `false` |
 | `bufferLabel` | string | `'En curso'` |
