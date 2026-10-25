@@ -128,6 +128,20 @@ export const line = o => {
     s += '</g>'
   }
 
+  // Pista: una franja delgada bajo el área, de un estado por tramo (from y to en posiciones ORIGINALES, como `events`).
+  const pista = (o.track || []).filter(g => g && Number.isFinite(g.from) && Number.isFinite(g.to) && g.to > g.from)
+
+  if (pista.length) {
+    s += '<g class="sc-a-in">'
+    for (const g of pista) {
+      const a = Math.max(0, g.from)
+      const b = Math.min(N0 - 1, g.to)
+
+      s += '<rect data-sc-s="' + esc(g.key || g.label) + '" x="' + n1(L + (a / (N0 - 1 || 1)) * W) + '" y="' + (T + H + 6) + '" width="' + n1(((b - a) / (N0 - 1 || 1)) * W) + '" height="6" rx="3" style="fill:' + col(g.hue) + '"></rect>'
+    }
+    s += '</g>'
+  }
+
   const finHue = thr !== null && v[N - 1] >= thr ? alerta : hue
 
   // Buffer: el último punto todavía está en curso. Su tramo va punteado y el área, rayada.
@@ -145,6 +159,7 @@ export const line = o => {
   const datos = { v: v.map(n => (n === null ? null : r(n))), l: rotulos, p: idx, n0: N0, ...(min ? { min } : {}), max: o.max, thr, band: o.band || null, L, T, W, H, u: o.unit || '', hue, alerta, buf: Boolean(o.buffer) }
   if (o.threshold && o.threshold.aboveText) datos.ta = String(o.threshold.aboveText)
   if (c && c.some(n => n !== null)) Object.assign(datos, { c: c.map(n => (n === null ? null : r(n))), cn: o.compare.label || textos.compare, ch: o.compare.hue || 'neutral' })
+  if (pista.length) datos.tr = pista.map(g => [g.from, g.to, g.label || '', g.hue])
   if (evs.length) datos.ev = evs.map(e => ({ a: e.at, t: e.label || '', h: e.hue || 'violet' }))
 
   s += '<line class="sc-guia" x1="0" x2="0" y1="' + T + '" y2="' + y0 + '" visibility="hidden" opacity=".5" style="stroke:var(--sc-muted)"></line>'
@@ -159,6 +174,7 @@ export const line = o => {
   if (o.band) items.push({ key: 'band', label: t('band', { from: o.band[0], to: conUnidad(o.band[1], o.unit) }), hue, hatched: true })
   if (thr !== null) items.push({ key: 'threshold', label: o.threshold.legend || t('thresholdLegend', { value: conUnidad(thr, o.unit) }), hue: alerta })
   if (c && c.some(n => n !== null)) items.push({ key: 'compare', label: o.compare.label || textos.compare, hue: o.compare.hue || 'neutral' })
+  for (const g of pista) if (g.label && !items.some(it => it.key === (g.key || g.label))) items.push({ key: g.key || g.label, label: g.label, hue: g.hue })
   if (evs.length) items.push({ key: 'events', label: o.eventsLabel || textos.events, hue: o.eventsHue || (evs[0] && evs[0].hue) || 'violet' })
   if (huecos.length) items.push(itemHueco())
   if (o.buffer) items.push({ key: 'buffer', label: o.bufferLabel || textos.inProgress, hue: finHue, hatched: true })

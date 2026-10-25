@@ -171,6 +171,7 @@ export const mount = () => {
     const origen = d.p ? d.p[i] : i
     const holgura = d.p ? Math.ceil(d.n0 / N / 2) : 0
 
+    for (const g of d.tr || []) if (origen >= g[0] && origen <= g[1] && g[2]) filas.push({ h: g[3], l: g[2] })
     for (const e of d.ev || []) if (Math.abs(e.a - origen) <= holgura && e.t) filas.push({ h: e.h, l: e.t })
 
     mostrar(ev, d.l ? d.l[i] : t('point', { n: i + 1 }), conUnidad(esFmt(d.u) ? v : Math.round(v), d.u), detalle, hue, filas)
