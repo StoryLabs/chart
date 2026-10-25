@@ -18,7 +18,7 @@ export const mount = () => {
 
   tipEl.className = 'sc-tip'
   tipEl.hidden = true
-  tipEl.innerHTML = '<div class="sc-tip-t"><i></i><span></span></div><b></b><small></small>'
+  tipEl.innerHTML = '<div class="sc-tip-t"><i></i><span></span></div><b></b><div class="sc-tip-r"></div><small></small>'
   document.body.appendChild(tipEl)
 
   let resaltado = null
@@ -47,10 +47,21 @@ export const mount = () => {
     return mapa
   }
 
-  const mostrar = (ev, t, v, d, h) => {
+  // filas: [{ h, l, v, x }]: un punto de color, un rótulo y un valor (x, una nota tenue) por cada serie o marca que cae en el punto.
+  const mostrar = (ev, t, v, d, h, filas) => {
     tipEl.querySelector('.sc-tip-t span').textContent = t
     tipEl.querySelector('b').textContent = v
     tipEl.querySelector('small').textContent = d || ''
+    tipEl.querySelector('.sc-tip-r').replaceChildren(...(filas || []).map(f => {
+      const r = document.createElement('div')
+
+      r.style.setProperty('--c', col(f.h))
+      r.innerHTML = '<i></i><span></span><b></b>'
+      r.children[1].textContent = f.l
+      r.children[2].textContent = f.v ? f.v + (f.x ? ' ' + f.x : '') : ''
+
+      return r
+    }))
     tipEl.querySelector('small').hidden = !d
     tipEl.style.setProperty('--c', col(h))
     tipEl.hidden = false
@@ -147,22 +158,22 @@ export const mount = () => {
     const detalle = d.buf && i === N - 1 ? textos.inProgress
       : arriba ? d.ta || t('aboveThreshold', { value: conUnidad(d.thr, d.u) })
         : d.band ? (v >= d.band[0] && v <= d.band[1] ? textos.inRange : textos.outRange) : ''
-    const filas = [detalle]
+    const filas = []
 
     // La serie de comparación y su diferencia con el valor.
     if (d.c && d.c[i] !== null && d.c[i] !== undefined) {
       const dif = v - d.c[i]
 
-      filas.push(d.cn + '  ' + conUnidad(d.c[i], d.u) + '  (' + (dif < 0 ? '−' : '+') + conUnidad(esFmt(d.u) ? Math.abs(dif) : Math.round(Math.abs(dif)), d.u) + ')')
+      filas.push({ h: d.ch, l: d.cn, v: conUnidad(d.c[i], d.u), x: '(' + (dif < 0 ? '−' : '+') + conUnidad(esFmt(d.u) ? Math.abs(dif) : Math.round(Math.abs(dif)), d.u) + ')' })
     }
 
     // Los movimientos que caen en este punto (con la serie recortada, en su vecindad).
     const origen = d.p ? d.p[i] : i
     const holgura = d.p ? Math.ceil(d.n0 / N / 2) : 0
 
-    for (const e of d.ev || []) if (Math.abs(e.a - origen) <= holgura && e.t) filas.push(e.t)
+    for (const e of d.ev || []) if (Math.abs(e.a - origen) <= holgura && e.t) filas.push({ h: e.h, l: e.t })
 
-    mostrar(ev, d.l ? d.l[i] : t('point', { n: i + 1 }), conUnidad(esFmt(d.u) ? v : Math.round(v), d.u), filas.filter(Boolean).join('\n'), hue)
+    mostrar(ev, d.l ? d.l[i] : t('point', { n: i + 1 }), conUnidad(esFmt(d.u) ? v : Math.round(v), d.u), detalle, hue, filas)
   }
 
   const seguirArea = (cap, ev) => {

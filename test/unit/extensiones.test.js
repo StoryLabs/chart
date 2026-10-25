@@ -62,3 +62,15 @@ describe('line: opciones nuevas', () => {
     expect(SC.line({ ...o, events: [{ at: 1, hue: 'amber' }] })).toContain('--c:var(--sc-amber)')
   })
 })
+
+describe('tooltip: filas con punto de color', () => {
+  test('la comparación viaja con su color', () => {
+    const h = SC.line({ ...o, compare: { values: [90, 100, 100, 100], hue: 'sky' } })
+
+    expect(h).toContain('&quot;ch&quot;:&quot;sky&quot;')
+  })
+
+  test('sin comparación no viaja ch', () => {
+    expect(SC.line(o)).not.toContain('&quot;ch&quot;')
+  })
+})

@@ -90,6 +90,11 @@
   .sc-tip-t { display: flex; align-items: center; gap: 6px; color: var(--sc-muted); font-size: 12px; }
   .sc-tip-t i { width: 8px; height: 8px; border-radius: 50%; background: var(--c); flex: none; }
   .sc-tip b { font-size: 17px; font-weight: 700; letter-spacing: -.01em; line-height: 1.25; }
+  .sc-tip-r { display: grid; gap: 2px; margin-top: 4px; }
+  .sc-tip-r:empty { display: none; }
+  .sc-tip-r div { display: grid; grid-template-columns: auto 1fr auto; align-items: baseline; gap: 6px; color: var(--sc-muted); font-size: 12px; }
+  .sc-tip-r i { width: 8px; height: 8px; border-radius: 50%; background: var(--c); align-self: center; }
+  .sc-tip-r b { font-size: 12px; font-weight: 600; letter-spacing: 0; color: var(--sc-text); text-align: right; }
   .sc-tip small { color: var(--sc-muted); font-size: 12px; white-space: pre-line; }
 
   /* Estados: cargando, vacío y error. */
