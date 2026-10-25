@@ -55,7 +55,10 @@ export const line = o => {
   }
 
   const fuera = v.some(n => n !== null && (n > o.max || n < min))
-  let s = '<svg viewBox="0 0 ' + (L + W + 16) + ' 236" role="img" aria-label="' + esc(o.label || textos.lineLabel) + '">' + R.defs + (fuera ? recorte(R.k, L, T, W, H, v.some(n => n !== null && n < min)) : '')
+  // Pista: una franja bajo el área, de un estado por tramo (from y to en posiciones ORIGINALES, como `events`). Con ella el gráfico crece 14 px hacia abajo.
+  const pista = (o.track || []).filter(g => g && Number.isFinite(g.from) && Number.isFinite(g.to) && g.to > g.from)
+  const dy = pista.length ? 14 : 0
+  let s = '<svg viewBox="0 0 ' + (L + W + 16) + ' ' + (236 + dy) + '" role="img" aria-label="' + esc(o.label || textos.lineLabel) + '">' + R.defs + (fuera ? recorte(R.k, L, T, W, H, v.some(n => n !== null && n < min)) : '')
 
   for (const t of o.yTicks || [min, o.max]) {
     s += '<line x1="' + L + '" x2="' + (L + W) + '" y1="' + y(t) + '" y2="' + y(t) + '" style="stroke:var(--sc-line)"></line>'
@@ -128,8 +131,6 @@ export const line = o => {
     s += '</g>'
   }
 
-  // Pista: una franja delgada bajo el área, de un estado por tramo (from y to en posiciones ORIGINALES, como `events`).
-  const pista = (o.track || []).filter(g => g && Number.isFinite(g.from) && Number.isFinite(g.to) && g.to > g.from)
 
   if (pista.length) {
     s += '<g class="sc-a-in">'
@@ -137,7 +138,7 @@ export const line = o => {
       const a = Math.max(0, g.from)
       const b = Math.min(N0 - 1, g.to)
 
-      s += '<rect data-sc-s="' + esc(g.key || g.label) + '" x="' + n1(L + (a / (N0 - 1 || 1)) * W) + '" y="' + (T + H + 3) + '" width="' + n1(((b - a) / (N0 - 1 || 1)) * W) + '" height="5" rx="2.5" style="fill:' + col(g.hue) + '"></rect>'
+      s += '<rect data-sc-s="' + esc(g.key || g.label) + '" x="' + n1(L + (a / (N0 - 1 || 1)) * W) + '" y="' + (T + H + 7) + '" width="' + Math.max(3, n1(((b - a) / (N0 - 1 || 1)) * W)) + '" height="8" rx="4" style="fill:' + col(g.hue) + '"></rect>'
     }
     s += '</g>'
   }
@@ -166,8 +167,8 @@ export const line = o => {
   s += '<circle class="sc-pto" cx="0" cy="0" r="5" stroke-width="2.5" visibility="hidden" style="stroke:var(--sc-surface)"></circle>'
   s += '<rect data-sc-line="' + esc(JSON.stringify(datos)) + '" x="' + L + '" y="' + T + '" width="' + W + '" height="' + H + '" fill="transparent" style="cursor:crosshair"></rect>'
 
-  if (o.xLabels) s += '<text x="' + L + '" y="226">' + esc(o.xLabels[0]) + '</text><text x="' + (L + W) + '" y="226" text-anchor="end">' + esc(o.xLabels[1]) + '</text>'
-  if (o.unit && !esFmt(o.unit)) s += '<text x="' + (L - 8) + '" y="226" text-anchor="end" style="fill:var(--sc-faint)">' + esc(o.unit) + '</text>'
+  if (o.xLabels) s += '<text x="' + L + '" y="' + (226 + dy) + '">' + esc(o.xLabels[0]) + '</text><text x="' + (L + W) + '" y="' + (226 + dy) + '" text-anchor="end">' + esc(o.xLabels[1]) + '</text>'
+  if (o.unit && !esFmt(o.unit)) s += '<text x="' + (L - 8) + '" y="' + (226 + dy) + '" text-anchor="end" style="fill:var(--sc-faint)">' + esc(o.unit) + '</text>'
 
   const items = [{ key: 'series', label: o.label || textos.series, hue }]
 
