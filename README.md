@@ -340,6 +340,7 @@ pierden.
 | `bufferLabel` | string | `'En curso'` |
 | `gaps` | `'hatched'` \| `'empty'` | `'hatched'`. Ver [datos que faltan](#datos-que-faltan). |
 | `hue`, `hue2`, `alertHue` | tono | `'blue'`, `'sky'`, `'amber'` |
+| `legendHue` | tono | El de `hue`. El color de la serie en la leyenda, para cuando la línea cambia de color con el umbral y ninguno de los dos la representa. |
 | `maxPoints` | number | `600` |
 | `unit`, `label`, `headline` | | `unit` también acepta una especificación de formato: ver [formato de números](#formato-de-números). |
 

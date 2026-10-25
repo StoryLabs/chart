@@ -179,7 +179,7 @@ export const line = o => {
   if (o.xLabels) s += '<text x="' + L + '" y="' + (226 + dy) + '">' + esc(o.xLabels[0]) + '</text><text x="' + (L + W) + '" y="' + (226 + dy) + '" text-anchor="end">' + esc(o.xLabels[1]) + '</text>'
   if (o.unit && !esFmt(o.unit)) s += '<text x="' + (L - 8) + '" y="' + (226 + dy) + '" text-anchor="end" style="fill:var(--sc-faint)">' + esc(o.unit) + '</text>'
 
-  const items = [{ key: 'series', label: o.label || textos.series, hue }]
+  const items = [{ key: 'series', label: o.label || textos.series, hue: o.legendHue || hue }]
 
   if (o.band) items.push({ key: 'band', label: t('band', { from: o.band[0], to: conUnidad(o.band[1], o.unit) }), hue, hatched: true })
   if (thr !== null) items.push({ key: 'threshold', label: o.threshold.legend || t('thresholdLegend', { value: conUnidad(thr, o.unit) }), hue: alerta })
