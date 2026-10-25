@@ -137,7 +137,7 @@ export const line = o => {
       const a = Math.max(0, g.from)
       const b = Math.min(N0 - 1, g.to)
 
-      s += '<rect data-sc-s="' + esc(g.key || g.label) + '" x="' + n1(L + (a / (N0 - 1 || 1)) * W) + '" y="' + (T + H + 6) + '" width="' + n1(((b - a) / (N0 - 1 || 1)) * W) + '" height="6" rx="3" style="fill:' + col(g.hue) + '"></rect>'
+      s += '<rect data-sc-s="' + esc(g.key || g.label) + '" x="' + n1(L + (a / (N0 - 1 || 1)) * W) + '" y="' + (T + H + 3) + '" width="' + n1(((b - a) / (N0 - 1 || 1)) * W) + '" height="5" rx="2.5" style="fill:' + col(g.hue) + '"></rect>'
     }
     s += '</g>'
   }
