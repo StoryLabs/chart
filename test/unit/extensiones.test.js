@@ -81,7 +81,7 @@ describe('line: track', () => {
   test('dibuja un tramo por estado y los suma a la leyenda', () => {
     const h = SC.line({ ...o, track })
 
-    expect(h.match(/height="5" rx="2.5"/g)?.length).toBe(2)
+    expect(h.match(/height="8" rx="4"/g)?.length).toBe(2)
     expect(h).toContain('Up')
     expect(h).toContain('Down')
   })
@@ -92,6 +92,6 @@ describe('line: track', () => {
   })
 
   test('ignora tramos inválidos', () => {
-    expect(SC.line({ ...o, track: [{ from: 2, to: 1 }, null, { from: 'a', to: 3 }] })).not.toContain('height="5" rx="2.5"')
+    expect(SC.line({ ...o, track: [{ from: 2, to: 1 }, null, { from: 'a', to: 3 }] })).not.toContain('height="8" rx="4"')
   })
 })
