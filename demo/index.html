@@ -148,9 +148,10 @@
 
   <section class="bloque">
     <h2>Catálogo</h2>
-    <p>Doce gráficos. Pasá el cursor por cualquiera, hacé click en las leyendas y abrí «API» para ver la llamada que lo dibuja.</p>
+    <p>Trece gráficos. Pasá el cursor por cualquiera, hacé click en las leyendas y abrí «API» para ver la llamada que lo dibuja.</p>
     <div class="grid" id="grid">
       <article class="card c3 r2"><div class="card-head"><div class="kind">bullet()</div><h3>Valor contra su rango de referencia</h3></div><div class="slot" id="sBullet"></div><details class="api"><summary>API</summary><pre><code id="cBullet"></code></pre></details></article>
+      <article class="card c3"><div class="card-head"><div class="kind">meter()</div><h3>Señal contra sus zonas</h3></div><div class="slot" id="sMeter"></div><details class="api"><summary>API</summary><pre><code id="cMeter"></code></pre></details></article>
       <article class="card c3"><div class="card-head"><div class="kind">rings()</div><h3>Score por dimensión</h3></div><div class="slot" id="sRings"></div><details class="api"><summary>API</summary><pre><code id="cRings"></code></pre></details></article>
       <article class="card c3"><div class="card-head"><div class="kind">segmented()</div><h3>Reparto del tiempo en 24 h</h3></div><div class="slot" id="sSegmented"></div><details class="api"><summary>API</summary><pre><code id="cSegmented"></code></pre></details></article>
       <article class="card"><div class="card-head"><div class="kind">ribbon()</div><h3>Estado de una API en 24 h</h3></div><div class="slot" id="sRibbon"></div><details class="api"><summary>API</summary><pre><code id="cRibbon"></code></pre></details></article>
@@ -280,6 +281,18 @@ import * as StorylabsCharts from '../src/index.js'
 
   $('sBullet').innerHTML = '<div class="sc-group">' + BULLETS.map(SC.bullet).join('') + '</div>'
   $('cBullet').textContent = 'render(el, bullet(' + fmt(BULLETS[0]) + '))\n\n// Varios bullets dentro de <div class="sc-group"> comparten el hover:\n// al pasar por uno, los demás se atenúan.'
+
+  // El medidor de zonas: cada zona tiene su ancho fijo y el punto marca el valor dentro de su zona.
+  const ZONAS_5XX = [{ to: 1, hue: 'green' }, { to: 5, hue: 'amber' }, { hue: 'orange' }]
+  const METERS = [
+    { label: 'Errores 5xx', value: 0.93, unit: '%', max: 10, zones: ZONAS_5XX },
+    { label: 'Cola de reintentos', value: 3.2, unit: '%', max: 10, zones: ZONAS_5XX, side: 'aviso desde 04:12' },
+    { label: 'Cargadores conectados', value: 9, max: 10, better: 'higher', zones: [{ to: 3, hue: 'orange' }, { to: 7, hue: 'amber' }, { hue: 'green' }] },
+    { label: 'Saturación', value: null, unit: '%', max: 10, zones: ZONAS_5XX }
+  ]
+
+  $('sMeter').innerHTML = '<div class="sc-group">' + METERS.map(SC.meter).join('') + '</div>'
+  $('cMeter').textContent = 'render(el, meter(' + fmt(METERS[0]) + '))\n\n// La última zona va sin to, hasta max. Con better: \'higher\' lo malo queda a la izquierda.'
 
   pintar('rings', {
     center: { value: 84, label: 'score' },

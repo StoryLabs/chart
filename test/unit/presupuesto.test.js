@@ -5,7 +5,7 @@ import * as SC from '../../src/index.js'
 import { resetIds } from '../../src/core/ids.js'
 import { casos, salidas } from './casos.js'
 
-const TOPE_GZIP = 20000
+const TOPE_GZIP = 21000
 const HOLGURA = 1.1
 const raiz = new URL('../../', import.meta.url).pathname
 

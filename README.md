@@ -3,12 +3,12 @@
 # storylabs-charts
 
 **Gráficos en SVG y CSS hechos a mano.**<br>
-Sin dependencias, sin framework y en menos de 18 KB.
+Sin dependencias, sin framework y en menos de 21 KB.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/img/hero-dark.png">
   <source media="(prefers-color-scheme: light)" srcset="docs/img/hero-light.png">
-  <img alt="Doce gráficos de storylabs-charts: bullet, rings, ribbon, line, stacked, pie y heatmap, entre otros" src="docs/img/hero-light.png" width="860">
+  <img alt="Trece gráficos de storylabs-charts: bullet, meter, rings, ribbon, line, stacked, pie y heatmap, entre otros" src="docs/img/hero-light.png" width="860">
 </picture>
 
 </div>
@@ -658,7 +658,6 @@ range({
 <a id="diverging"></a>
 
 ### `diverging()` · desde un cero al medio
-
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/img/diverging-dark.png">
   <source media="(prefers-color-scheme: light)" srcset="docs/img/diverging-light.png">
@@ -695,6 +694,48 @@ barra de +30 mide lo mismo que una de -30. El valor se escribe con signo.
 | `sides` | `[izquierda, derecha]` | El rótulo de cada mitad. |
 | `hue`, `negativeHue` | tono | `'blue'` para positivo, `'green'` para negativo. |
 | `unit` | string | |
+
+</details>
+
+<a id="meter"></a>
+
+### `meter()` · un valor contra sus zonas
+
+```js
+meter({
+  label: 'Errores 5xx',
+  value: 0.93, unit: '%',
+  max: 10,
+  zones: [
+    { to: 1, hue: 'green' },
+    { to: 5, hue: 'amber' },
+    { hue: 'orange' }
+  ]
+})
+```
+
+Para señales operativas donde lo bueno suele ser estar en 0: una barra que crece desde 0 se lee
+al revés. Cada zona tiene un ancho visual fijo y el valor cae proporcionalmente dentro de la suya,
+marcado con un punto del color de la zona. En la primera zona el número va neutro; fuera de ella,
+con el color de su zona. Con `better: 'higher'` lo malo queda a la izquierda (por ejemplo,
+cargadores conectados). Sin valor se ven las zonas sin punto y el guion largo.
+
+<details>
+<summary>Opciones</summary>
+
+| Opción | Tipo | Default |
+|---|---|---|
+| `label` ★ | string | |
+| `value` | number | Sin valor no hay punto. |
+| `zones` ★ | `[{ to, hue }]` | La última sin `to`, hasta `max`. |
+| `max` ★ | number | La escala va de `min` a `max`. |
+| `min` | number | `0` |
+| `widths` | number[] | Con 3 zonas, `60/25/15`; si no, reparto parejo. |
+| `better` | `'lower'` \| `'higher'` | `'lower'` |
+| `unit` | string | `''` |
+| `side` | string | Texto a la derecha. |
+| `key` | string | `label` |
+| `compact` | boolean | `false`. Una sola línea, el número y el medidor, para una celda de tabla. El label va al tooltip. |
 
 </details>
 
@@ -787,7 +828,7 @@ line({ values: [64, 71, null, null, 69, 72], max: 100 })
 | `line`, `stackedLine` | La línea se corta. |
 | `columns`, `stacked` | Esa columna no se dibuja como medida: va rayada, o vacía con `gaps: 'empty'`. |
 | `pie`, `segmented` | Esa porción no entra al reparto. |
-| `bullet`, `rings`, `range` | Dibuja la escala, sin valor. |
+| `bullet`, `rings`, `range`, `meter` | Dibuja la escala, sin valor. |
 
 Con `gaps: 'hatched'`, que es el default, el hueco lleva una banda rayada neutra y la leyenda
 suma «Sin datos». Con `gaps: 'empty'` queda vacío.
@@ -856,7 +897,7 @@ Respeta `prefers-reduced-motion`.
 
 | Medida | Tope | Medido |
 |---|---|---|
-| Peso, JS y CSS con gzip | 18 KB | ver `bun run test` |
+| Peso, JS y CSS con gzip | 21 KB | ver `bun run test` |
 | Un gráfico: armar, insertar y acomodar | 1 ms | 0.2 ms |
 | Un tablero de 55 gráficos | 8 ms | 5 ms |
 | Una interacción, por evento | 1 ms | 0.7 ms |

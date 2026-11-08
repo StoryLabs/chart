@@ -149,6 +149,17 @@
   .sc-compact .sc-ref::before, .sc-compact .sc-ref::after { top: -2px; bottom: -2px; width: 2px; }
   .sc-compact .sc-val { border-radius: 3px; }
 
+  /* Medidor de zonas: franjas tenues de ancho fijo y el punto del range sobre el valor. La
+     barra es el flex; el punto es un <i> para no robarles el radio de cada punta a las franjas. */
+  .sc-meter { gap: 9px; }
+  .sc-meter-bar { position: relative; display: flex; gap: 2px; height: 14px; }
+  .sc-meter-seg { background: color-mix(in srgb, var(--c) var(--sc-track), transparent); min-width: 4px; }
+  .sc-meter-seg:first-of-type { border-radius: 7px 0 0 7px; }
+  .sc-meter-seg:last-of-type { border-radius: 0 7px 7px 0; }
+  .sc-meter-seg:only-of-type { border-radius: 7px; }
+  .sc-meter.sc-compact { grid-template-columns: max-content minmax(0, 1fr) auto; }
+  .sc-meter.sc-compact .sc-meter-bar { height: 8px; }
+
   .sc-comp { display: flex; height: 26px; border-radius: 8px; overflow: hidden; gap: 2px; }
   .sc-comp > div { background: var(--c); min-width: 3px; }
   .sc-comp > div.sc-hx { background: color-mix(in srgb, var(--c) var(--sc-track), transparent); }
