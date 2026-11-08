@@ -131,7 +131,7 @@ describe('bullet compacto', () => {
 })
 
 describe('rings', () => {
-  const arco = html => html.match(/d="M 130 24 A 106 106 0 (\d) 1 ([\d.]+) ([\d.]+)"/)
+  const arco = html => html.match(/d="M 130 24 A 106 106 0 (\d) 1 ([\d.]+) ([\d.]+)[^"]*"/)
 
   test('escala: un cuarto de vuelta termina a la derecha del centro', () => {
     const m = arco(SC.rings({ rings: [{ key: 'a', label: 'a', value: 25, hue: 'blue' }] }))
@@ -145,6 +145,16 @@ describe('rings', () => {
     expect(arco(SC.rings({ rings: [{ key: 'a', label: 'a', value: 500, hue: 'blue' }] }))[0]).toBe(lleno[0])
     expect(arco(SC.rings({ rings: [{ key: 'a', label: 'a', value: 30, max: 60, hue: 'blue' }] }))[1]).toBe('0')
     expect(lleno[1]).toBe('1')
+  })
+
+  test('al 100 % cada anillo cierra el círculo con dos medias vueltas, del radio más grande al más chico (1 a 6 anillos)', () => {
+    for (let n = 1; n <= 6; n++) {
+      const html = SC.rings({ rings: Array.from({ length: n }, (_, i) => ({ key: 'k' + i, label: 'K', value: 100, hue: 'blue' })) })
+      const trazos = [...html.matchAll(/<path class="sc-a-draw"[^>]* d="([^"]*)"/g)].map(m => m[1])
+
+      expect(trazos.length).toBe(n)
+      for (const d of trazos) expect(d.match(/ A /g).length).toBe(2)
+    }
   })
 
   test('el fondo de la escala completa va rayado en vertical (máscara v)', () => {

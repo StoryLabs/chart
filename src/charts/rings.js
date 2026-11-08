@@ -34,7 +34,11 @@ export const rings = o => {
     s += '<g data-sc-s="' + esc(it.key) + '" style="--c:' + col(it.hue) + ';--i:' + k + '"' + (val === null ? tip(it.label, textos.empty, '', it.hue) : tip(it.label, t('ringOf', { value: it.value, max: it.max || 100 }), t('ringLeft', { n: n1((it.max || 100) - it.value) }), it.hue)) + '>'
     s += '<circle ' + aro + ' style="stroke:' + tinte(it.hue, 'var(--sc-track)') + '"></circle>'
     s += '<circle ' + aro + ' mask="' + R.v + '" class="sc-hatch" style="stroke:' + col(it.hue) + '"></circle>'
-    if (val !== null) s += '<path class="sc-a-draw" pathLength="100" d="M ' + c + ' ' + (c - r) + ' A ' + r + ' ' + r + ' 0 ' + (frac > 0.5 ? 1 : 0) + ' 1 ' + ex + ' ' + ey + '" fill="none" stroke-width="' + sw + '" stroke-linecap="round" style="stroke:' + col(it.hue) + '"></path>'
+    // Al 100 % el arco de una sola vuelta queda con inicio = fin y el SVG no lo
+    // dibuja: se cierra el círculo con dos medias vueltas.
+    if (val !== null) s += frac >= 1
+      ? '<path class="sc-a-draw" pathLength="100" d="M ' + c + ' ' + (c - r) + ' A ' + r + ' ' + r + ' 0 1 1 ' + c + ' ' + (c + r) + ' A ' + r + ' ' + r + ' 0 1 1 ' + c + ' ' + (c - r) + '" fill="none" stroke-width="' + sw + '" stroke-linecap="round" style="stroke:' + col(it.hue) + '"></path>'
+      : '<path class="sc-a-draw" pathLength="100" d="M ' + c + ' ' + (c - r) + ' A ' + r + ' ' + r + ' 0 ' + (frac > 0.5 ? 1 : 0) + ' 1 ' + ex + ' ' + ey + '" fill="none" stroke-width="' + sw + '" stroke-linecap="round" style="stroke:' + col(it.hue) + '"></path>'
     if (val !== null) s += '<circle class="sc-a-in" cx="' + ex + '" cy="' + ey + '" r="' + punto + '" style="fill:var(--sc-surface)"></circle>'
     s += '</g>'
   })
