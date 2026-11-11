@@ -160,6 +160,10 @@
   .sc-meter.sc-compact { grid-template-columns: max-content minmax(0, 1fr) auto; }
   .sc-meter.sc-compact .sc-meter-bar { height: 8px; }
 
+  /* Línea compacta (mini-tendencia en una tarjeta): sin ejes ni leyenda, el trazo ocupa el alto del contenedor. */
+  .sc-line.sc-compact { gap: 0; }
+  .sc-line.sc-compact svg { width: 100%; height: 100%; display: block; }
+
   .sc-comp { display: flex; height: 26px; border-radius: 8px; overflow: hidden; gap: 2px; }
   .sc-comp > div { background: var(--c); min-width: 3px; }
   .sc-comp > div.sc-hx { background: color-mix(in srgb, var(--c) var(--sc-track), transparent); }

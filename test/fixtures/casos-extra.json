@@ -1762,6 +1762,27 @@
   ]
  },
  {
+  "id": "line-compacto",
+  "fn": "line",
+  "args": [
+   {
+    "id": "mini",
+    "compact": true,
+    "label": "Ventas 7 días",
+    "values": [
+     12,
+     18,
+     15,
+     22,
+     28,
+     24,
+     31
+    ],
+    "max": 40
+   }
+  ]
+ },
+ {
   "id": "rings-cinco",
   "fn": "rings",
   "args": [

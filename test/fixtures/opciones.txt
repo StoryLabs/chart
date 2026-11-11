@@ -8,7 +8,7 @@ segmented    segments[].key segments[].label segments[].value segments[].detail 
 ribbon       label headline.parts[][] headline.chip states.*.label states.*.hue states.*.lane states.*.hatched id
              rest domain[] segments[][] ticks[].at ticks[].label ticks[].sub unit format()
 line         label headline.parts[][] headline.chip values[] labels[] unit max yTicks[] xLabels[] band[] id
-             threshold.value threshold.label buffer bufferLabel hue hue2 alertHue maxPoints
+             threshold.value threshold.label buffer bufferLabel hue hue2 alertHue maxPoints compact
 stackedLine  label headline.parts[][] headline.chip wide unit max yTicks[] totalLabel buffer bufferLabel id
              labels[] xTicks[].at xTicks[].label series[].key series[].label series[].hue series[].values[]
              hidden[] maxPoints

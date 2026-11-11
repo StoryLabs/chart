@@ -15,6 +15,9 @@ export const line = o => {
   o = conEscala(o)
   // Un punto solo es un punto: no hay tramo en curso que dibujar.
   if (o.values.length < 2 && o.buffer) o = { ...o, buffer: false }
+  // Compacto (mini-tendencia en una tarjeta): sólo la línea y su área, sin ejes ni referencias.
+  const compact = Boolean(o.compact)
+  if (compact) o = { ...o, yTicks: [], band: null, threshold: null, buffer: false, track: null, compare: null, events: null, gaps: 'empty' }
 
   const vs = o.values.map(valor)
   const idx = muestreo(vs, o.maxPoints || 600)
@@ -24,7 +27,9 @@ export const line = o => {
   const N0 = o.values.length
   // El margen izquierdo se ajusta al rótulo más ancho del eje: una marca de moneda ($35.5K) no entra en 44 px.
   const tickTxt = (o.yTicks || [num(o.min), o.max]).map(t => String(tk(t, o.unit)))
-  const L = esFmt(o.unit) ? Math.max(44, Math.ceil(Math.max(...tickTxt.map(x => x.length), 0) * 6.8 + 14)) : 44, T = 14, W = 580, H = 190
+  // En compacto el trazo llena el lienzo (640 × 236): deja 8 px para que el punto final no se recorte.
+  const L = compact ? 8 : esFmt(o.unit) ? Math.max(44, Math.ceil(Math.max(...tickTxt.map(x => x.length), 0) * 6.8 + 14)) : 44
+  const T = compact ? 8 : 14, W = compact ? 616 : 580, H = compact ? 220 : 190
   const hue = o.hue || 'blue'
   const alerta = o.alertHue || 'amber'
   const thr = o.threshold ? o.threshold.value : null
@@ -58,7 +63,7 @@ export const line = o => {
   // Pista: una franja bajo el área, de un estado por tramo (from y to en posiciones ORIGINALES, como `events`). Con ella el gráfico crece 14 px hacia abajo.
   const pista = (o.track || []).filter(g => g && Number.isFinite(g.from) && Number.isFinite(g.to) && g.to > g.from)
   const dy = pista.length ? 14 : 0
-  let s = '<svg viewBox="0 0 ' + (L + W + 16) + ' ' + (236 + dy) + '" role="img" aria-label="' + esc(o.label || textos.lineLabel) + '">' + R.defs + (fuera ? recorte(R.k, L, T, W, H, v.some(n => n !== null && n < min)) : '')
+  let s = '<svg viewBox="0 0 ' + (L + W + 16) + ' ' + (236 + dy) + '"' + (compact ? ' preserveAspectRatio="none"' : '') + ' role="img" aria-label="' + esc(o.label || textos.lineLabel) + '">' + R.defs + (fuera ? recorte(R.k, L, T, W, H, v.some(n => n !== null && n < min)) : '')
 
   for (const t of o.yTicks || [min, o.max]) {
     s += '<line x1="' + L + '" x2="' + (L + W) + '" y1="' + y(t) + '" y2="' + y(t) + '" style="stroke:var(--sc-line)"></line>'
@@ -66,7 +71,7 @@ export const line = o => {
   }
 
   // Con una escala que cruza el cero, el cero se marca: es la frontera entre ganar y perder.
-  if (min < 0 && o.max > 0) s += '<line x1="' + L + '" x2="' + (L + W) + '" y1="' + y(0) + '" y2="' + y(0) + '" stroke-dasharray="3 4" opacity=".6" style="stroke:var(--sc-muted)"></line>'
+  if (!compact && min < 0 && o.max > 0) s += '<line x1="' + L + '" x2="' + (L + W) + '" y1="' + y(0) + '" y2="' + y(0) + '" stroke-dasharray="3 4" opacity=".6" style="stroke:var(--sc-muted)"></line>'
 
   // Un tramo de la pista con `shade` también tiñe el área de arriba, a lo alto del gráfico (detrás de la serie).
   for (const g of pista) {
@@ -175,6 +180,9 @@ export const line = o => {
   s += '<line class="sc-guia" x1="0" x2="0" y1="' + T + '" y2="' + y0 + '" visibility="hidden" opacity=".5" style="stroke:var(--sc-muted)"></line>'
   s += '<circle class="sc-pto" cx="0" cy="0" r="5" stroke-width="2.5" visibility="hidden" style="stroke:var(--sc-surface)"></circle>'
   s += '<rect data-sc-line="' + esc(JSON.stringify(datos)) + '" x="' + L + '" y="' + T + '" width="' + W + '" height="' + H + '" fill="transparent" style="cursor:crosshair"></rect>'
+
+  // En compacto no hay ejes, rótulos ni leyenda: la línea llena la tarjeta y el punto sigue con tooltip.
+  if (compact) return '<div class="sc-chart sc-line sc-compact" role="img" aria-label="' + esc(o.label || textos.lineLabel) + '">' + s + '</svg></div>'
 
   if (o.xLabels) s += '<text x="' + L + '" y="' + (226 + dy) + '">' + esc(o.xLabels[0]) + '</text><text x="' + (L + W) + '" y="' + (226 + dy) + '" text-anchor="end">' + esc(o.xLabels[1]) + '</text>'
   if (o.unit && !esFmt(o.unit)) s += '<text x="' + (L - 8) + '" y="' + (226 + dy) + '" text-anchor="end" style="fill:var(--sc-faint)">' + esc(o.unit) + '</text>'

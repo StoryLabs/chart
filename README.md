@@ -342,6 +342,7 @@ pierden.
 | `hue`, `hue2`, `alertHue` | tono | `'blue'`, `'sky'`, `'amber'` |
 | `legendHue` | tono | El de `hue`. El color de la serie en la leyenda, para cuando la línea cambia de color con el umbral y ninguno de los dos la representa. |
 | `maxPoints` | number | `600` |
+| `compact` | boolean | `false`. Sólo la línea y su área, sin ejes, leyenda ni referencias (band, threshold, buffer, track, compare, events), para una mini-tendencia en una tarjeta (unos 50 px de alto). El punto sigue con tooltip. |
 | `unit`, `label`, `headline` | | `unit` también acepta una especificación de formato: ver [formato de números](#formato-de-números). |
 
 </details>
