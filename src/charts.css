@@ -42,6 +42,9 @@
   .sc-group { display: grid; gap: 22px; min-width: 0; }
   .sc-chart svg { display: block; width: 100%; height: auto; }
   .sc-chart svg text { font-family: var(--sc-mono); font-size: 11px; fill: var(--sc-muted); }
+  /* El texto del SVG vive en unidades del viewBox y escalaría con el lienzo: se compensa
+     con el cociente que fija el runtime (--sc-fix) y queda en 11 px de pantalla. */
+  .sc-line svg text, .sc-heatmap svg text { font-size: calc(11px * var(--sc-fix, 1)); }
   .sc-chart svg text.sc-strong { fill: var(--sc-text); font-weight: 500; }
   .sc-scroll { overflow-x: auto; }
   .sc-scroll svg { min-width: 480px; }

@@ -3,6 +3,7 @@ import { stacked } from '../charts/stacked.js'
 import { stackedLine } from '../charts/stackedLine.js'
 import { pad, entre, col, conUnidad, cuenta, esFmt } from '../core/format.js'
 import { setHatch } from './hatch.js'
+import { watchFixedText } from './fixedText.js'
 import { textos, t } from '../core/textos.js'
 
 // Los gráficos que se REDIBUJAN al tocar su leyenda: apagar una serie cambia la forma de las demás.
@@ -299,4 +300,7 @@ export const mount = () => {
     for (const e of seriesDe(donde).get(clave) || []) e.classList.toggle('sc-off', apagar)
     tipEl.hidden = true
   })
+
+  // Los rótulos del SVG quedan en 11 px de pantalla aunque el lienzo se estire.
+  watchFixedText()
 }
